@@ -15,20 +15,14 @@ export function rateLimit(req: NextRequest, limit = 10, windowMs = 60_000): bool
 
   if (entry.count >= limit) return false
   entry.count++
+  // Limpeza inline quando map cresce demais
+  if (requestMap.size > 1000) {
+    for (const [k, v] of requestMap) { if (now > v.resetAt) requestMap.delete(k) }
+  }
   return true
 
-  // Limpar entradas antigas periodicamente (memory leak prevention)
 }
 
-// Limpeza periódica (a cada 5 minutos remove entradas expiradas)
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const now = Date.now()
-    for (const [key, val] of requestMap) {
-      if (now > val.resetAt) requestMap.delete(key)
-    }
-  }, 5 * 60 * 1000)
-}
 
 // ─── Sanitização XSS ────────────────────────────────────────────
 export function sanitize(str: string): string {

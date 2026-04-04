@@ -31,19 +31,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ erro: 'Já está ativa' }, { status: 400 })
     }
 
-    const modoTeste = process.env.NEXT_PUBLIC_MODO_TESTE === 'true'
+    const { error } = await supabase
+      .from('paginas')
+      .update({ hospedagem_vitalicia: true, expira_em: null })
+      .eq('slug', slug)
 
-    if (modoTeste) {
-      const { error } = await supabase
-        .from('paginas')
-        .update({ hospedagem_vitalicia: true, expira_em: null })
-        .eq('slug', slug)
-
-      if (error) return NextResponse.json({ erro: 'Erro ao ativar' }, { status: 500 })
-      return NextResponse.json({ sucesso: true, modo: 'teste' })
-    }
-
-    return NextResponse.json({ erro: 'Pagamento necessário.', valor: 49 }, { status: 402 })
+    if (error) return NextResponse.json({ erro: 'Erro ao ativar' }, { status: 500 })
+    return NextResponse.json({ sucesso: true })
   } catch {
     return NextResponse.json({ erro: 'Erro interno' }, { status: 500 })
   }

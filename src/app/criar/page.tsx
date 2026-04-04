@@ -921,11 +921,11 @@ function CriarPageContent() {
       if (form.fotoCapa) fd.append('fotoCapa', form.fotoCapa)
       form.eventos.forEach((ev, i) => { if (ev.foto) fd.append(`eventoFoto_${i}`, ev.foto) })
 
-      const modoTeste = process.env.NEXT_PUBLIC_MODO_TESTE === 'true'
-      const res = await fetch(modoTeste ? '/api/teste/criar' : '/api/pedidos', { method: 'POST', body: fd })
+
+      const res = await fetch('/api/criar', { method: 'POST', body: fd })
       const data = await res.json()
       if (!res.ok) throw new Error(data.erro || 'Erro ao criar')
-      router.push(modoTeste ? (data.sucesso || `/p/${data.slug}`) : `/pagamento/${data.pedidoId}`)
+      router.push(data.sucesso || `/p/${data.slug}`)
     } catch (e: unknown) {
       setErro(e instanceof Error ? e.message : 'Erro inesperado')
     } finally {
@@ -982,12 +982,6 @@ function CriarPageContent() {
           <span className="text-xs text-zinc-600 shrink-0 tabular-nums">{passo + 1}/{totalPassos}</span>
         </div>
       </div>
-
-      {process.env.NEXT_PUBLIC_MODO_TESTE === "true" && (
-        <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-1 text-center text-amber-500/60 text-xs">
-          Modo teste ativo
-        </div>
-      )}
 
       {/* Layout principal */}
       <div className="flex relative z-10">

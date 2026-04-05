@@ -1,7 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════
--- SQL COMPLETO PARA O ETERNIZAR (v2 — com segurança reforçada)
--- Rodar no Supabase → SQL Editor
--- Seguro pra rodar múltiplas vezes (IF NOT EXISTS em tudo)
+-- ETERNIZAR — SQL COMPLETO v3 (com autenticação)
+-- Rodar TUDO de uma vez no Supabase → SQL Editor
+-- Seguro pra rodar múltiplas vezes (IF NOT EXISTS + ADD COLUMN IF NOT EXISTS)
 -- ═══════════════════════════════════════════════════════════════════
 
 
@@ -9,31 +9,29 @@
 CREATE TABLE IF NOT EXISTS paginas (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   slug TEXT NOT NULL UNIQUE,
-  tipo TEXT NOT NULL CHECK (tipo IN ('casal', 'formatura', 'homenagem', 'lembrete')),
-  titulo TEXT NOT NULL CHECK (char_length(titulo) BETWEEN 1 AND 200),
-  subtitulo TEXT CHECK (char_length(subtitulo) <= 300),
-  mensagem TEXT NOT NULL CHECK (char_length(mensagem) BETWEEN 1 AND 2000),
+  tipo TEXT NOT NULL,
+  titulo TEXT NOT NULL,
+  subtitulo TEXT,
+  mensagem TEXT NOT NULL,
   musica_nome TEXT,
   musica_dados JSONB,
-  cor_tema TEXT DEFAULT 'pink' CHECK (cor_tema IN ('pink', 'violet', 'amber', 'blue', 'emerald', 'rose')),
+  cor_tema TEXT DEFAULT 'pink',
   fotos JSONB DEFAULT '[]'::jsonb,
   linha_do_tempo JSONB DEFAULT '[]'::jsonb,
   senha_hash TEXT,
-  senha_dica TEXT CHECK (char_length(senha_dica) <= 200),
+  senha_dica TEXT,
   dados_casal JSONB,
   dados_formatura JSONB,
   ativa BOOLEAN DEFAULT true,
   expira_em TIMESTAMPTZ,
   hospedagem_vitalicia BOOLEAN DEFAULT false,
   visualizacoes INTEGER DEFAULT 0,
-  email_cliente TEXT CHECK (char_length(email_cliente) <= 254),
+  email_cliente TEXT,
+  user_id UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_paginas_slug ON paginas(slug);
-CREATE INDEX IF NOT EXISTS idx_paginas_ativa ON paginas(ativa) WHERE ativa = true;
-
--- Colunas extras (seguro pra rodar em tabelas existentes)
+-- Colunas que podem não existir (seguro rodar em tabelas existentes)
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS musica_dados JSONB;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS senha_dica TEXT;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS dados_casal JSONB;
@@ -43,27 +41,33 @@ ALTER TABLE paginas ADD COLUMN IF NOT EXISTS visualizacoes INTEGER DEFAULT 0;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS email_cliente TEXT;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS ativa BOOLEAN DEFAULT true;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+ALTER TABLE paginas ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id);
+
+-- Índices
+CREATE INDEX IF NOT EXISTS idx_paginas_slug ON paginas(slug);
+CREATE INDEX IF NOT EXISTS idx_paginas_ativa ON paginas(ativa) WHERE ativa = true;
+CREATE INDEX IF NOT EXISTS idx_paginas_user_id ON paginas(user_id) WHERE user_id IS NOT NULL;
 
 
 -- ─── 2. TABELA: pedidos ──────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS pedidos (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  tipo TEXT NOT NULL CHECK (tipo IN ('casal', 'formatura', 'homenagem', 'lembrete')),
-  email_cliente TEXT NOT NULL CHECK (char_length(email_cliente) <= 254),
-  status TEXT DEFAULT 'pendente' CHECK (status IN ('pendente', 'pago', 'cancelado')),
-  valor NUMERIC NOT NULL CHECK (valor > 0 AND valor < 1000),
+  tipo TEXT NOT NULL,
+  email_cliente TEXT NOT NULL,
+  status TEXT DEFAULT 'pendente',
+  valor NUMERIC NOT NULL,
   payment_id TEXT,
   dados_pagina JSONB,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
 
--- ─── 3. TABELA: mensagens_visita ─────────────────────────────────
+-- ─── 3. TABELA: mensagens_visita (Guestbook) ────────────────────
 CREATE TABLE IF NOT EXISTS mensagens_visita (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  slug TEXT NOT NULL CHECK (char_length(slug) <= 60),
-  nome TEXT NOT NULL CHECK (char_length(nome) BETWEEN 1 AND 50),
-  mensagem TEXT NOT NULL CHECK (char_length(mensagem) BETWEEN 1 AND 300),
+  slug TEXT NOT NULL,
+  nome TEXT NOT NULL,
+  mensagem TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -71,83 +75,68 @@ CREATE INDEX IF NOT EXISTS idx_mensagens_visita_slug ON mensagens_visita(slug);
 CREATE INDEX IF NOT EXISTS idx_mensagens_visita_created ON mensagens_visita(created_at);
 
 
--- ─── 4. TABELA: lembretes ────────────────────────────────────────
+-- ─── 4. TABELA: lembretes (futuro) ──────────────────────────────
 CREATE TABLE IF NOT EXISTS lembretes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  email TEXT NOT NULL CHECK (char_length(email) <= 254),
-  nome_evento TEXT NOT NULL CHECK (char_length(nome_evento) <= 100),
+  email TEXT NOT NULL,
+  nome_evento TEXT NOT NULL,
   data_evento DATE NOT NULL,
-  dias_antes INTEGER DEFAULT 3 CHECK (dias_antes BETWEEN 1 AND 30),
+  dias_antes INTEGER DEFAULT 3,
   enviado BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
 
 -- ═══════════════════════════════════════════════════════════════════
--- 5. ROW LEVEL SECURITY — TODAS AS TABELAS
+-- 5. ROW LEVEL SECURITY
 -- ═══════════════════════════════════════════════════════════════════
 
--- ─── paginas: SELECT público (ativas), tudo mais só service role ─
+-- ─── paginas ─────────────────────────────────────────────────────
 ALTER TABLE paginas ENABLE ROW LEVEL SECURITY;
 
--- Drop e recria policies para garantir estado correto
 DROP POLICY IF EXISTS "Paginas leitura publica" ON paginas;
-CREATE POLICY "Paginas leitura publica" ON paginas
-  FOR SELECT USING (ativa = true);
+DROP POLICY IF EXISTS "Usuario ve suas paginas" ON paginas;
+DROP POLICY IF EXISTS "Usuario edita suas paginas" ON paginas;
 
--- NENHUMA policy de INSERT/UPDATE/DELETE para anon
--- Isso significa que SOMENTE service_role pode inserir/atualizar/deletar
--- O frontend anon key NÃO pode modificar paginas
+-- Público vê ativas OU dono vê todas as suas
+CREATE POLICY "Paginas leitura" ON paginas
+  FOR SELECT USING (
+    ativa = true
+    OR (auth.uid() IS NOT NULL AND user_id = auth.uid())
+  );
 
--- ─── pedidos: ZERO acesso público ────────────────────────────────
+-- Dono pode editar suas páginas
+CREATE POLICY "Paginas edicao dono" ON paginas
+  FOR UPDATE USING (
+    auth.uid() IS NOT NULL AND user_id = auth.uid()
+  );
+
+-- INSERT e DELETE = somente service_role (API backend)
+
+-- ─── pedidos ─────────────────────────────────────────────────────
 ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;
--- Sem policies = somente service_role acessa
+-- Zero policies = somente service_role
 
--- ─── mensagens_visita: SELECT e INSERT públicos ──────────────────
+-- ─── mensagens_visita ────────────────────────────────────────────
 ALTER TABLE mensagens_visita ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Mensagens leitura publica" ON mensagens_visita;
-CREATE POLICY "Mensagens leitura publica" ON mensagens_visita
+DROP POLICY IF EXISTS "Mensagens escrita publica" ON mensagens_visita;
+
+CREATE POLICY "Mensagens leitura" ON mensagens_visita
   FOR SELECT USING (true);
 
-DROP POLICY IF EXISTS "Mensagens escrita publica" ON mensagens_visita;
-CREATE POLICY "Mensagens escrita publica" ON mensagens_visita
+CREATE POLICY "Mensagens escrita" ON mensagens_visita
   FOR INSERT WITH CHECK (
     char_length(nome) BETWEEN 1 AND 50
     AND char_length(mensagem) BETWEEN 1 AND 300
-    AND char_length(slug) <= 60
   );
 
--- NENHUMA policy de UPDATE/DELETE para mensagens (imutáveis)
-
--- ─── lembretes: ZERO acesso público ─────────────────────────────
+-- ─── lembretes ───────────────────────────────────────────────────
 ALTER TABLE lembretes ENABLE ROW LEVEL SECURITY;
--- Sem policies = somente service_role acessa
+-- Zero policies = somente service_role
 
 
 -- ═══════════════════════════════════════════════════════════════════
--- 6. STORAGE — Políticas do bucket 'fotos'
+-- PRONTO! Agora configure o Google Auth no Dashboard.
 -- ═══════════════════════════════════════════════════════════════════
-
--- Rodar APENAS se o bucket já existe (criar via Dashboard se necessário)
-
--- Leitura pública (fotos são acessíveis por URL)
--- Isso é configurado no Dashboard: Storage > fotos > Public
-
--- Escrita: bloquear via policy (somente service_role faz upload)
--- No Dashboard: Storage > Policies > fotos
--- Não criar policy de INSERT para anon = somente service_role faz upload
-
-
--- ═══════════════════════════════════════════════════════════════════
--- 7. CHECKLIST DE SEGURANÇA PÓS-DEPLOY
--- ═══════════════════════════════════════════════════════════════════
--- [ ] Remover NEXT_PUBLIC_MODO_TESTE do .env
--- [ ] Configurar MERCADOPAGO_ACCESS_TOKEN real
--- [ ] Configurar domínio no Vercel
--- [ ] Verificar que service_role NÃO está exposta no frontend
--- [ ] Verificar Storage bucket policies no Dashboard
--- [ ] Rodar npm audit e corrigir vulnerabilidades
--- [ ] Configurar SENHA_SALT forte no env de produção
--- [ ] Testar webhook do Mercado Pago com sandbox
--- [ ] Verificar que /api/teste/criar retorna 403 sem MODO_TESTE

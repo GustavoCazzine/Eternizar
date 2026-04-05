@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Heart, ArrowDown, Sparkles, Music, Camera, QrCode, ChevronRight } from 'lucide-react'
+import AuthButton from '@/components/AuthButton'
 
 // ─── Partículas de fundo (marca registrada) ──────────────────────
 function Particulas({ cor = '#ff2d78' }: { cor?: string }) {
@@ -91,6 +92,7 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           <a href="#como-funciona" className="text-zinc-400 hover:text-white text-sm transition-colors">Como Funciona</a>
           <a href="#depoimentos" className="text-zinc-400 hover:text-white text-sm transition-colors">Depoimentos</a>
+          <AuthButton variant="navbar" />
           <Link
             href="/criar"
             className="px-5 py-2 rounded-full text-sm font-semibold text-white border border-[#ff2d78] hover:bg-[#ff2d78] transition-all duration-300"
@@ -99,12 +101,15 @@ function Navbar() {
           </Link>
         </div>
 
-        <Link
-          href="/criar"
-          className="md:hidden px-4 py-2 rounded-full text-xs font-semibold text-white bg-[#ff2d78] transition-all"
-        >
-          Criar
-        </Link>
+        <div className="md:hidden flex items-center gap-3">
+          <AuthButton variant="navbar" />
+          <Link
+            href="/criar"
+            className="px-4 py-2 rounded-full text-xs font-semibold text-white bg-[#ff2d78] transition-all"
+          >
+            Criar
+          </Link>
+        </div>
       </div>
     </motion.nav>
   )

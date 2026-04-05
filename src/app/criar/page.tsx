@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, GraduationCap, Star, Bell, ArrowRight, ArrowLeft, Upload, X, Plus, Camera, Check, ChevronRight, Music, Calendar } from 'lucide-react'
 import BuscaMusica from '@/components/BuscaMusica'
+import AuthButton from '@/components/AuthButton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -965,7 +966,7 @@ function CriarPageContent() {
         ))}
       </div>
 
-      {/* Header minimalista: logo + progress */}
+      {/* Header minimalista: logo + progress + auth */}
       <div className="sticky top-0 z-40 bg-[#08080c]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-3xl mx-auto px-6 h-14 flex items-center gap-4">
           <a href="/" className="shrink-0">
@@ -980,6 +981,9 @@ function CriarPageContent() {
             />
           </div>
           <span className="text-xs text-zinc-600 shrink-0 tabular-nums">{passo + 1}/{totalPassos}</span>
+          <div className="shrink-0 pl-2 border-l border-white/5">
+            <AuthButton variant="header" />
+          </div>
         </div>
       </div>
 

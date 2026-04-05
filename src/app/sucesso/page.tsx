@@ -5,6 +5,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Download, Share2, ArrowRight } from 'lucide-react'
 import CapaInstagram from '@/components/CapaInstagram'
+import AuthButton from '@/components/AuthButton'
 
 // ─── Glow Orbs ───────────────────────────────────────────────────
 function GlowOrbs() {
@@ -262,11 +263,9 @@ function SucessoContent() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/"><img src="/logo.png" alt="Eternizar" className="h-11" /></a>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="/#recursos" className="text-zinc-400 hover:text-white text-sm transition-colors">Recursos</a>
-            <a href="/#precos" className="text-zinc-400 hover:text-white text-sm transition-colors">Preços</a>
-            <a href="#" className="text-zinc-400 hover:text-white text-sm transition-colors">Suporte</a>
-            <a href="/criar" className="text-zinc-400 hover:text-white text-sm transition-colors">Minha Conta</a>
+          <div className="flex items-center gap-6">
+            <a href="/#como-funciona" className="text-zinc-400 hover:text-white text-sm transition-colors hidden md:inline">Como Funciona</a>
+            <AuthButton variant="header" />
           </div>
         </div>
       </nav>

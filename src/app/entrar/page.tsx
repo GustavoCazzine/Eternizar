@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Mail, ArrowRight } from 'lucide-react'
 import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
 
 function LoginContent() {
   const [email, setEmail] = useState('')
@@ -14,6 +13,13 @@ function LoginContent() {
   const [erro, setErro] = useState('')
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/painel'
+
+  // Exibe mensagem quando o callback OAuth falha
+  useEffect(() => {
+    if (searchParams.get('erro') === 'auth') {
+      setErro('Não foi possível concluir o login. Tente novamente.')
+    }
+  }, [searchParams])
 
   async function loginGoogle() {
     setCarregando(true)

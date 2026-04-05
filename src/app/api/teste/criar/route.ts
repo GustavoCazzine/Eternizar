@@ -5,6 +5,7 @@ import {
   validarTipo, validarCor, validarArquivo, validarData,
   parseJsonSeguro, rateLimit
 } from '@/lib/security'
+import { getAuthUser } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
   // ─── Gate: modo teste ──────────────────────────────────
@@ -16,6 +17,10 @@ export async function POST(req: NextRequest) {
   if (!rateLimit(req, 5, 60_000)) {
     return NextResponse.json({ erro: 'Muitas tentativas. Aguarde um momento.' }, { status: 429 })
   }
+
+  // Vincular à conta do usuário logado (se houver)
+  const user = await getAuthUser(req)
+  const userId = user?.id || null
 
   try {
     const fd = await req.formData()
@@ -197,6 +202,7 @@ export async function POST(req: NextRequest) {
       expira_em: expiraEm.toISOString(),
       visualizacoes: 0,
       email_cliente: emailCliente,
+      user_id: userId,
     })
 
     if (erroPagina) {

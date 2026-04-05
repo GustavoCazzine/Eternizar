@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit, sanitize, gerarSlug, validarEmail } from '@/lib/security'
+import { getAuthUser } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
   // Rate limiting: max 5 pedidos por minuto por IP
   if (!rateLimit(req, 5, 60_000)) {
     return NextResponse.json({ erro: 'Muitas requisições. Tente novamente em breve.' }, { status: 429 })
   }
+
+  // Vincular pedido à conta do usuário logado (se houver)
+  const authUser = await getAuthUser(req)
+  const userId = authUser?.id || null
 
   try {
     const fd = await req.formData()
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
     let senhaHash = null
     if (senhaProtegida) {
       const encoder = new TextEncoder()
-      const data = encoder.encode(senhaProtegida + process.env.SENHA_SALT || 'eternizar_salt_2026')
+      const data = encoder.encode(senhaProtegida + (process.env.SENHA_SALT || 'eternizar_salt_2026'))
       const hashBuffer = await crypto.subtle.digest('SHA-256', data)
       senhaHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
     }
@@ -100,6 +105,7 @@ export async function POST(req: NextRequest) {
           eventos,
           senha_hash: senhaHash,
           expira_em: expiraEm.toISOString(),
+          user_id: userId,
         }
       })
       .select('id')

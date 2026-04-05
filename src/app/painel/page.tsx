@@ -3,6 +3,9 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { redirect } from 'next/navigation'
 import PainelCliente from './PainelCliente'
 
+// Página 100% dinâmica — depende do cookie de sessão, nunca pré-renderizar
+export const dynamic = 'force-dynamic'
+
 export default async function PainelPage() {
   const supabase = await createSupabaseServer()
   const { data: { user } } = await supabase.auth.getUser()

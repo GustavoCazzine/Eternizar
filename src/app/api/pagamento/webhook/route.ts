@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       expira_em: dados.expira_em,
       visualizacoes: 0,
       email_cliente: pedido.email_cliente,
+      user_id: dados.user_id || null,
     })
 
     await supabase.from('pedidos').update({

@@ -197,6 +197,7 @@ export async function POST(req: NextRequest) {
       expira_em: expiraEm.toISOString(),
       visualizacoes: 0,
       email_cliente: emailCliente,
+      user_id: userId,
     })
 
     if (erroPagina) {

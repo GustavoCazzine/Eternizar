@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, GraduationCap, Star, Bell, ArrowRight, ArrowLeft, Upload, X, Plus, Camera, Check, ChevronRight, Music, Calendar } from 'lucide-react'
+import { Heart, GraduationCap, Star, ArrowRight, ArrowLeft, Upload, X, Plus, Camera, Check, ChevronRight, Music, Calendar } from 'lucide-react'
 import BuscaMusica from '@/components/BuscaMusica'
 import AuthButton from '@/components/AuthButton'
+import { useBlobUrl, useBlobUrls } from '@/lib/useBlobUrl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -39,9 +40,9 @@ interface FormData {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const tipos = [
-  { id: 'casal', label: 'Página do Casal', icon: '❤️', preco: 29, cor: '#ec4899', gradiente: 'from-pink-500 to-rose-600', desc: 'Aniversário de namoro, Dia dos Namorados, surpresa romântica' },
-  { id: 'formatura', label: 'Álbum de Formatura', icon: '🎓', preco: 59, cor: '#8b5cf6', gradiente: 'from-violet-500 to-purple-700', desc: 'Álbum digital interativo com fotos e memórias da turma' },
-  { id: 'homenagem', label: 'Homenagem Especial', icon: '⭐', preco: 29, cor: '#f59e0b', gradiente: 'from-amber-500 to-orange-600', desc: 'Aniversários, conquistas, agradecimentos' },
+  { id: 'casal', label: 'Página do Casal', icon: '❤️', cor: '#ec4899', desc: 'Aniversário de namoro, Dia dos Namorados, surpresa romântica' },
+  { id: 'formatura', label: 'Álbum de Formatura', icon: '🎓', cor: '#8b5cf6', desc: 'Álbum digital interativo com fotos e memórias da turma' },
+  { id: 'homenagem', label: 'Homenagem Especial', icon: '⭐', cor: '#f59e0b', desc: 'Aniversários, conquistas, agradecimentos' },
 ]
 
 const cores = [
@@ -56,7 +57,6 @@ const cores = [
 const emojisRapidos = ['❤️', '🌹', '✈️', '🎉', '💍', '🏠', '🐾', '🎓', '⭐', '🌙', '🌊', '🎵']
 
 const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
-const inputClassSm = "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -119,7 +119,8 @@ function Label({ children, sub }: { children: React.ReactNode; sub?: string }) {
 function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
   form: FormData; tituloFinal: string; subtituloFinal: string; corHex: string
 }) {
-  const fotoCapa = form.fotoCapa ? URL.createObjectURL(form.fotoCapa) : null
+  const fotoCapa = useBlobUrl(form.fotoCapa)
+  const fotosUrls = useBlobUrls(form.fotos.map(f => f.file))
   const totalFotos = form.fotos.length
   const totalMomentos = form.eventos.filter(e => e.titulo).length
 
@@ -164,8 +165,10 @@ function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
           <div className="absolute bottom-14 left-3 right-3 flex gap-1.5 justify-center">
             {form.fotos.slice(0, 4).map((f, i) => (
               <div key={i} className="w-7 h-7 rounded-full overflow-hidden" style={{ outline: `1.5px solid ${corHex}`, outlineOffset: "1px" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={URL.createObjectURL(f.file)} alt="" className="w-full h-full object-cover" />
+                {fotosUrls[i] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={fotosUrls[i]!} alt="" className="w-full h-full object-cover" />
+                )}
               </div>
             ))}
             {totalFotos > 4 && <span className="text-white/30 text-[9px] self-center">+{totalFotos - 4}</span>}
@@ -353,6 +356,9 @@ function PassoNomes({ form, upd, updCasal, updFormatura }: PassoProps) {
 
 // Passo 3: Foto de capa + fotos extras
 function PassoFotos({ form, upd, handleFotos, removerFoto, atualizarLegenda }: PassoProps) {
+  const fotoCapaUrl = useBlobUrl(form.fotoCapa)
+  const fotosUrls = useBlobUrls(form.fotos.map(f => f.file))
+
   function handleCapa(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files?.[0]) return
     upd('fotoCapa', e.target.files[0])
@@ -363,10 +369,10 @@ function PassoFotos({ form, upd, handleFotos, removerFoto, atualizarLegenda }: P
       {/* Foto de capa */}
       <div>
         <Label sub="Aparece na abertura da página e na capa para Instagram">Foto de capa *</Label>
-        {form.fotoCapa ? (
+        {form.fotoCapa && fotoCapaUrl ? (
           <div className="relative rounded-2xl overflow-hidden aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={URL.createObjectURL(form.fotoCapa)} alt="Capa" className="w-full h-full object-cover" />
+            <img src={fotoCapaUrl} alt="Capa" className="w-full h-full object-cover" />
             <button onClick={() => upd('fotoCapa', null)}
               className="absolute top-2 right-2 w-8 h-8 bg-black/70 rounded-full flex items-center justify-center">
               <X className="w-4 h-4 text-white" />
@@ -395,8 +401,10 @@ function PassoFotos({ form, upd, handleFotos, removerFoto, atualizarLegenda }: P
         <div className="space-y-2">
           {form.fotos.map((f, i) => (
             <div key={i} className="flex items-center gap-3 p-2.5 bg-white/5 rounded-xl border border-white/10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={URL.createObjectURL(f.file)} alt="" className="w-12 h-12 rounded-lg object-cover shrink-0" />
+              {fotosUrls[i] && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={fotosUrls[i]!} alt="" className="w-12 h-12 rounded-lg object-cover shrink-0" />
+              )}
               <input value={f.legenda} onChange={e => atualizarLegenda(i, e.target.value)}
                 placeholder={`Legenda da foto ${i + 1}...`}
                 className="flex-1 bg-transparent text-sm text-white placeholder-gray-600 focus:outline-none" />
@@ -428,10 +436,39 @@ const SUGESTOES_FORMATURA = [
   { emoji: '🎓', titulo: 'Colau!', placeholder: 'Ex: O dia que finalmente...' },
 ]
 
+// Componente interno: preview com cleanup de blob URL
+function FotoEventoPreview({ foto, onRemove, onSelect }: {
+  foto: File | null
+  onRemove: () => void
+  onSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
+}) {
+  const url = useBlobUrl(foto)
+
+  if (foto && url) {
+    return (
+      <div className="flex items-center gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={url} alt="" className="w-16 h-16 rounded-xl object-cover" />
+        <div>
+          <p className="text-xs text-gray-400 mb-1">Foto adicionada</p>
+          <button onClick={onRemove} className="text-xs text-red-400 hover:text-red-300">Remover</button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer hover:text-gray-300 transition py-1">
+      <Camera className="w-3.5 h-3.5" />
+      <span>Adicionar foto deste momento</span>
+      <input type="file" accept="image/*" onChange={onSelect} className="hidden" />
+    </label>
+  )
+}
+
 function PassoTimeline({ form, upd, addEvento, addEventoComDados, removeEvento, updEvento, handleFotoEvento }: PassoProps) {
   const sugestoes = form.tipo === 'formatura' ? SUGESTOES_FORMATURA : SUGESTOES_CASAL
   const [expandido, setExpandido] = useState<number | null>(0)
-
   function aplicarSugestao(s: typeof sugestoes[0]) {
     const idxVazio = form.eventos.findIndex(e => !e.titulo)
     if (idxVazio >= 0) {
@@ -551,22 +588,11 @@ function PassoTimeline({ form, upd, addEvento, addEventoComDados, removeEvento, 
                     <p className="text-xs text-gray-600 text-right">{ev.descricao.length}/300</p>
 
                     {/* Foto do momento */}
-                    {ev.foto ? (
-                      <div className="flex items-center gap-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={URL.createObjectURL(ev.foto)} alt="" className="w-16 h-16 rounded-xl object-cover" />
-                        <div>
-                          <p className="text-xs text-gray-400 mb-1">Foto adicionada</p>
-                          <button onClick={() => updEvento(i, 'foto', null)} className="text-xs text-red-400 hover:text-red-300">Remover</button>
-                        </div>
-                      </div>
-                    ) : (
-                      <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer hover:text-gray-300 transition py-1">
-                        <Camera className="w-3.5 h-3.5" />
-                        <span>Adicionar foto deste momento</span>
-                        <input type="file" accept="image/*" onChange={e => handleFotoEvento(i, e)} className="hidden" />
-                      </label>
-                    )}
+                    <FotoEventoPreview
+                      foto={ev.foto}
+                      onRemove={() => updEvento(i, 'foto', null)}
+                      onSelect={e => handleFotoEvento(i, e)}
+                    />
                   </div>
                 </motion.div>
               )}
@@ -769,20 +795,19 @@ function PassoEmail({ form, upd, tituloFinal, subtituloFinal, corHex, tipoSel, c
 interface Passo {
   id: string
   titulo: string
-  icone: string
   opcional?: boolean
   visivel: (form: FormData) => boolean
 }
 
 const PASSOS: Passo[] = [
-  { id: 'tipo', titulo: 'Tipo', icone: '✨', visivel: () => true },
-  { id: 'nomes', titulo: 'Nomes', icone: '👤', visivel: () => true },
-  { id: 'fotos', titulo: 'Fotos', icone: '📸', visivel: () => true },
-  { id: 'timeline', titulo: 'Momentos', icone: '📅', visivel: () => true, opcional: true },
-  { id: 'musica', titulo: 'Música', icone: '🎵', visivel: () => true, opcional: true },
-  { id: 'detalhes', titulo: 'Detalhes', icone: '✏️', visivel: () => true },
-  { id: 'mensagem', titulo: 'Mensagem', icone: '💌', visivel: () => true },
-  { id: 'email', titulo: 'Finalizar', icone: '🚀', visivel: () => true },
+  { id: 'tipo', titulo: 'Tipo', visivel: () => true },
+  { id: 'nomes', titulo: 'Nomes', visivel: () => true },
+  { id: 'fotos', titulo: 'Fotos', visivel: () => true },
+  { id: 'timeline', titulo: 'Momentos', visivel: () => true, opcional: true },
+  { id: 'musica', titulo: 'Música', visivel: () => true, opcional: true },
+  { id: 'detalhes', titulo: 'Detalhes', visivel: () => true },
+  { id: 'mensagem', titulo: 'Mensagem', visivel: () => true },
+  { id: 'email', titulo: 'Finalizar', visivel: () => true },
 ]
 
 // ─── Componente principal ────────────────────────────────────────────────────
@@ -795,7 +820,6 @@ function CriarPageContent() {
   const [passo, setPasso] = useState(tipoInicial ? 1 : 0)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
-  const [senhaDica, setSenhaDica] = useState('')
 
   const [form, setForm] = useState<FormData>({
     tipo: tipoInicial,

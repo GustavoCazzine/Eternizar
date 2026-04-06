@@ -3,7 +3,20 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit, sanitize, gerarSlug, validarEmail } from '@/lib/security'
 import { getAuthUser } from '@/lib/auth'
 
+// ⚠️ DESATIVADO — fluxo de pagamento Mercado Pago não está em uso.
+// A plataforma foi convertida para free; criação acontece via /api/criar.
+// Esta rota é mantida pra eventual reativação de monetização, mas
+// retorna 410 Gone se for chamada acidentalmente.
+const FLUXO_PAGAMENTO_ATIVO = false
+
 export async function POST(req: NextRequest) {
+  if (!FLUXO_PAGAMENTO_ATIVO) {
+    return NextResponse.json(
+      { erro: 'Fluxo de pagamento desativado. Use /api/criar.' },
+      { status: 410 }
+    )
+  }
+
   // Rate limiting: max 5 pedidos por minuto por IP
   if (!rateLimit(req, 5, 60_000)) {
     return NextResponse.json({ erro: 'Muitas requisições. Tente novamente em breve.' }, { status: 429 })

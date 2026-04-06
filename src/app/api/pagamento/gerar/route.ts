@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit } from '@/lib/security'
 
+// ⚠️ DESATIVADO — fluxo de pagamento Mercado Pago não está em uso.
+const FLUXO_PAGAMENTO_ATIVO = false
+
 export async function POST(req: NextRequest) {
+  if (!FLUXO_PAGAMENTO_ATIVO) {
+    return NextResponse.json(
+      { erro: 'Fluxo de pagamento desativado.' },
+      { status: 410 }
+    )
+  }
+
   if (!rateLimit(req, 10, 60_000)) {
     return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
   }

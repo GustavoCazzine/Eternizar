@@ -39,23 +39,40 @@ export default function BuscaMusica({ valor, onChange }: Props) {
   const [buscando, setBuscando] = useState(false)
   const [tocando, setTocando] = useState<string | null>(null)
   const [aberto, setAberto] = useState(false)
+  const [erroBusca, setErroBusca] = useState<string>('')
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     return () => {
       audioRef.current?.pause()
+      audioRef.current = null
       if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
 
   async function buscar(q: string) {
-    if (q.trim().length < 2) { setResultados([]); return }
+    if (q.trim().length < 2) { setResultados([]); setErroBusca(''); return }
     setBuscando(true)
+    setErroBusca('')
     try {
       const res = await fetch(`/api/musica?q=${encodeURIComponent(q)}`)
+      if (!res.ok) {
+        if (res.status === 429) {
+          setErroBusca('Muitas buscas. Aguarde um momento.')
+        } else {
+          setErroBusca('Erro ao buscar. Tente novamente.')
+        }
+        setResultados([])
+        setAberto(true)
+        return
+      }
       const data = await res.json()
-      setResultados(data.resultados || [])
+      setResultados(Array.isArray(data.resultados) ? data.resultados : [])
+      setAberto(true)
+    } catch {
+      setErroBusca('Sem conexão. Verifique sua internet.')
+      setResultados([])
       setAberto(true)
     } finally {
       setBuscando(false)
@@ -81,10 +98,17 @@ export default function BuscaMusica({ valor, onChange }: Props) {
     audioRef.current?.pause()
     const audio = new Audio(musica.previewUrl)
     audio.volume = 0.6
-    audio.play()
     audio.onended = () => setTocando(null)
+    audio.onerror = () => setTocando(null)
     audioRef.current = audio
     setTocando(musica.id)
+
+    // Browsers rejeitam play() sem gesto do usuário ou se o arquivo falhar.
+    // Trata pra evitar Unhandled Promise Rejection e reseta o estado visual.
+    audio.play().catch(() => {
+      setTocando(null)
+      if (audioRef.current === audio) audioRef.current = null
+    })
   }
 
   function selecionar(musica: Musica) {
@@ -165,6 +189,22 @@ export default function BuscaMusica({ valor, onChange }: Props) {
       </div>
 
       <AnimatePresence>
+        {aberto && erroBusca && resultados.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="absolute z-50 w-full mt-2 rounded-2xl border border-red-500/20 bg-[#1a1a1a] shadow-2xl overflow-hidden"
+          >
+            <div className="px-4 py-3 text-xs text-red-400 flex items-center justify-between">
+              <span>{erroBusca}</span>
+              <button onClick={() => { setAberto(false); setErroBusca('') }} className="text-zinc-600 hover:text-zinc-400">
+                Fechar
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         {aberto && resultados.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}

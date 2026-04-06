@@ -1,18 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { rateLimit } from '@/lib/security'
 
+// ⚠️ DESATIVADO — polling de pagamento não está em uso pois o fluxo
+// Mercado Pago foi desativado. Mantido pra quando reativarmos.
+const FLUXO_PAGAMENTO_ATIVO = false
+
+// Polling de status do pedido de pagamento.
+// Retorna status + slug (lido de dados_pagina.slug, não de pagina_slug).
 export async function GET(req: NextRequest) {
+  if (!FLUXO_PAGAMENTO_ATIVO) {
+    return NextResponse.json(
+      { erro: 'Fluxo de pagamento desativado.' },
+      { status: 410 }
+    )
+  }
+
+  if (!rateLimit(req, 60, 60_000)) {
+    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
+  }
+
   const pedidoId = req.nextUrl.searchParams.get('pedidoId')
-  if (!pedidoId) return NextResponse.json({ erro: 'pedidoId obrigatório' }, { status: 400 })
+  if (!pedidoId) {
+    return NextResponse.json({ erro: 'pedidoId obrigatório' }, { status: 400 })
+  }
 
-  const { data } = await supabaseAdmin()
-    .from('pedidos')
-    .select('status, pagina_slug')
-    .eq('id', pedidoId)
-    .single()
+  // Validação básica de UUID (evita queries com lixo)
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(pedidoId)) {
+    return NextResponse.json({ erro: 'pedidoId inválido' }, { status: 400 })
+  }
 
-  return NextResponse.json({
-    status: data?.status || 'pendente',
-    slug: data?.pagina_slug || '',
-  })
+  try {
+    const { data, error } = await supabaseAdmin()
+      .from('pedidos')
+      .select('status, dados_pagina')
+      .eq('id', pedidoId)
+      .maybeSingle()
+
+    if (error) {
+      console.error('[API/pagamento/status]', error.message)
+      return NextResponse.json({ erro: 'Erro ao consultar pedido' }, { status: 500 })
+    }
+
+    if (!data) {
+      return NextResponse.json({ erro: 'Pedido não encontrado' }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      status: data.status || 'pendente',
+      slug: data.dados_pagina?.slug || '',
+    })
+  } catch (e) {
+    console.error('[API/pagamento/status]', e instanceof Error ? e.message : 'unknown')
+    return NextResponse.json({ erro: 'Erro interno' }, { status: 500 })
+  }
 }

@@ -2,8 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit } from '@/lib/security'
 
+// ⚠️ DESATIVADO — webhook do Mercado Pago não processa mais pedidos.
+// Se o MP ainda enviar callbacks (config antiga), respondemos 200 ok
+// vazio para evitar retry infinito da parte deles.
+const FLUXO_PAGAMENTO_ATIVO = false
+
 // Webhook do Mercado Pago
 export async function POST(req: NextRequest) {
+  if (!FLUXO_PAGAMENTO_ATIVO) {
+    return NextResponse.json({ ok: true, ignored: true })
+  }
+
   // Rate limit webhooks (20/min)
   if (!rateLimit(req, 20, 60_000)) {
     return NextResponse.json({ erro: 'Rate limited' }, { status: 429 })

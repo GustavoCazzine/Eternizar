@@ -90,7 +90,9 @@ export function parseJsonSeguro<T>(str: string, fallback: T): T {
   try {
     const parsed = JSON.parse(str)
     if (typeof parsed === 'object' && parsed !== null) {
-      if ('__proto__' in parsed || 'constructor' in parsed || 'prototype' in parsed) {
+      if (Object.prototype.hasOwnProperty.call(parsed, '__proto__') ||
+          Object.prototype.hasOwnProperty.call(parsed, 'constructor') ||
+          Object.prototype.hasOwnProperty.call(parsed, 'prototype')) {
         return fallback
       }
     }

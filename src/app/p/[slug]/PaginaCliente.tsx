@@ -517,7 +517,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
   }
 
   return (
-    <div ref={containerRef} className="text-white overflow-x-hidden"
+    <div ref={containerRef} className="text-white overflow-x-hidden relative"
       style={{ background: '#08080c' }}>
 
       {/* Barra de progresso */}

@@ -1,15 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 // ─── Hook: useBlobUrl ─────────────────────────────────────────────
 // Gera uma URL de preview pra um File e libera automaticamente quando
-// o file muda ou o componente desmonta. Evita vazamento de memória
-// causado por chamadas diretas a URL.createObjectURL() em cada render.
-//
-// Uso:
-//   const url = useBlobUrl(file)
-//   <img src={url ?? undefined} />
+// o file muda ou o componente desmonta.
 export function useBlobUrl(file: File | null | undefined): string | null {
   const [url, setUrl] = useState<string | null>(null)
 
@@ -29,15 +24,24 @@ export function useBlobUrl(file: File | null | undefined): string | null {
 }
 
 // ─── Hook: useBlobUrls ────────────────────────────────────────────
-// Versão pra array de Files. Mantém um map File→URL estável e só
-// cria/revoga quando a lista muda. Evita recriar URLs existentes.
-//
-// Uso:
-//   const urls = useBlobUrls(form.fotos.map(f => f.file))
-//   {urls.map(u => <img src={u} />)}
+// Versão pra array de Files. Mantém cache estável e revoga URLs
+// quando files saem da lista. Usa uma chave string derivada dos
+// files (size + lastModified) como dep — array de tamanho 1 fixo,
+// obedecendo a regra do useEffect.
 export function useBlobUrls(files: (File | null | undefined)[]): (string | null)[] {
   const cacheRef = useRef<Map<File, string>>(new Map())
-  const [urls, setUrls] = useState<(string | null)[]>([])
+
+  // Chave estável que muda quando a lista muda de verdade.
+  // Files iguais (mesma referência) produzem mesma chave → no-op.
+  const chave = useMemo(
+    () =>
+      files
+        .map(f => (f ? `${f.name}:${f.size}:${f.lastModified}` : 'null'))
+        .join('|'),
+    [files]
+  )
+
+  const [urls, setUrls] = useState<(string | null)[]>(() => files.map(() => null))
 
   useEffect(() => {
     const cache = cacheRef.current
@@ -58,7 +62,7 @@ export function useBlobUrls(files: (File | null | undefined)[]): (string | null)
       novosUrls.push(u)
     }
 
-    // Revoga URLs de files que sumiram da lista
+    // Revoga URLs de files que sumiram
     for (const [file, url] of cache.entries()) {
       if (!ativos.has(file)) {
         URL.revokeObjectURL(url)
@@ -67,9 +71,8 @@ export function useBlobUrls(files: (File | null | undefined)[]): (string | null)
     }
 
     setUrls(novosUrls)
-    // files é array novo a cada render; a comparação por length+refs é suficiente
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files.length, ...files])
+  }, [chave])
 
   // Cleanup final no unmount
   useEffect(() => {

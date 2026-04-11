@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
     // ─── 3. Parse JSON com proteção ──────────────────────
     const musica = parseJsonSeguro(fd.get('musica') as string, null)
     const eventos = parseJsonSeguro<Array<Record<string, unknown>>>(fd.get('eventos') as string, [])
-    const dadosCasal = parseJsonSeguro(fd.get('dadosCasal') as string, null)
-    const dadosFormatura = parseJsonSeguro(fd.get('dadosFormatura') as string, null)
+    const dadosCasal = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosCasal') as string, null)
+    const dadosFormatura = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosFormatura') as string, null)
     const fotosLegendas = parseJsonSeguro<string[]>(fd.get('fotosLegendas') as string, [])
 
     // ─── 4. Validar dados específicos do tipo ────────────

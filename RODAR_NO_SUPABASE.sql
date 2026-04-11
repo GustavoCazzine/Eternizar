@@ -69,11 +69,17 @@ CREATE TABLE IF NOT EXISTS mensagens_visita (
   slug TEXT NOT NULL,
   nome TEXT NOT NULL,
   mensagem TEXT NOT NULL,
+  aprovado BOOLEAN DEFAULT false,
+  pagina_user_id UUID,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE mensagens_visita ADD COLUMN IF NOT EXISTS aprovado BOOLEAN DEFAULT false;
+ALTER TABLE mensagens_visita ADD COLUMN IF NOT EXISTS pagina_user_id UUID;
+
 CREATE INDEX IF NOT EXISTS idx_mensagens_visita_slug ON mensagens_visita(slug);
 CREATE INDEX IF NOT EXISTS idx_mensagens_visita_created ON mensagens_visita(created_at);
+CREATE INDEX IF NOT EXISTS idx_msg_aprovado ON mensagens_visita(slug, aprovado);
 
 
 -- ─── 4. TABELA: lembretes (futuro) ──────────────────────────────

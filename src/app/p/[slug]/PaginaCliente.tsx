@@ -403,20 +403,44 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
   const [storyInicial, setStoryInicial] = useState(0)
 
   // Guestbook
-  const [guestMsgs, setGuestMsgs] = useState<{id: string; nome: string; mensagem: string; created_at: string}[]>([])
+  const [guestMsgs, setGuestMsgs] = useState<{id: string; nome: string; mensagem: string; created_at: string; aprovado?: boolean}[]>([])
+  const [ehDono, setEhDono] = useState(false)
   const [guestNome, setGuestNome] = useState('')
   const [guestMsg, setGuestMsg] = useState('')
   const [guestEnviando, setGuestEnviando] = useState(false)
   const [guestSucesso, setGuestSucesso] = useState(false)
+  const [guestPendente, setGuestPendente] = useState(false)
   const [guestErro, setGuestErro] = useState('')
 
   // Carregar mensagens do guestbook
   useEffect(() => {
     fetch(`/api/guestbook?slug=${encodeURIComponent(pagina.slug)}`)
       .then(r => r.json())
-      .then(d => { if (d.mensagens) setGuestMsgs(d.mensagens) })
+      .then(d => {
+        if (d.mensagens) setGuestMsgs(d.mensagens)
+        if (d.ehDono) setEhDono(true)
+      })
       .catch(() => {})
   }, [pagina.slug])
+
+  async function aprovarMsg(id: string, aprovar: boolean) {
+    const res = await fetch('/api/guestbook', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, aprovar })
+    })
+    if (res.ok) {
+      setGuestMsgs(prev => prev.map(m => m.id === id ? { ...m, aprovado: aprovar } : m))
+    }
+  }
+
+  async function deletarMsg(id: string) {
+    if (!confirm('Remover esta mensagem?')) return
+    const res = await fetch(`/api/guestbook?id=${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setGuestMsgs(prev => prev.filter(m => m.id !== id))
+    }
+  }
 
   async function enviarGuestbook() {
     if (!guestNome.trim() || !guestMsg.trim()) return
@@ -430,11 +454,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
       })
       const data = await res.json()
       if (res.ok && data.sucesso) {
-        setGuestMsgs(prev => [data.mensagem, ...prev])
         setGuestNome('')
         setGuestMsg('')
         setGuestSucesso(true)
-        setTimeout(() => setGuestSucesso(false), 3000)
+        setGuestPendente(true)
+        setTimeout(() => { setGuestSucesso(false); setGuestPendente(false) }, 5000)
       } else {
         setGuestErro(data.erro || 'Erro ao enviar')
       }
@@ -1057,8 +1081,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                 </button>
               </div>
               {guestSucesso && (
-                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-green-400 text-sm mt-3 text-center">
-                  Mensagem enviada com carinho! 💖
+                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-emerald-400 text-sm mt-3 text-center">
+                  {guestPendente ? 'Mensagem enviada! Aguardando aprovação do criador 💖' : 'Mensagem enviada com carinho! 💖'}
                 </motion.p>
               )}
               {guestErro && (
@@ -1077,9 +1101,17 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: Math.min(i * 0.05, 0.3) }}
-                  className="rounded-2xl p-5 backdrop-blur-sm"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  className="rounded-2xl p-5 backdrop-blur-sm relative"
+                  style={{
+                    background: msg.aprovado === false ? 'rgba(245,158,11,0.06)' : 'rgba(255,255,255,0.04)',
+                    border: msg.aprovado === false ? '1px solid rgba(245,158,11,0.25)' : '1px solid rgba(255,255,255,0.08)',
+                  }}
                 >
+                  {ehDono && msg.aprovado === false && (
+                    <span className="absolute top-3 right-3 text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      Pendente
+                    </span>
+                  )}
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: `${cor}20`, color: cor }}>
                       {msg.nome.charAt(0).toUpperCase()}
@@ -1092,6 +1124,26 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                     </div>
                   </div>
                   <p className="text-gray-300 text-sm leading-relaxed break-words">{msg.mensagem}</p>
+
+                  {ehDono && (
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
+                      {msg.aprovado === false ? (
+                        <button onClick={() => aprovarMsg(msg.id, true)}
+                          className="flex-1 py-2 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition">
+                          ✓ Aprovar
+                        </button>
+                      ) : (
+                        <button onClick={() => aprovarMsg(msg.id, false)}
+                          className="flex-1 py-2 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 hover:bg-amber-500/20 transition">
+                          Ocultar
+                        </button>
+                      )}
+                      <button onClick={() => deletarMsg(msg.id)}
+                        className="px-3 py-2 rounded-lg text-xs font-semibold bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition">
+                        Excluir
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </div>

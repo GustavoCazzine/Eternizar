@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Heart, Plus, Eye, Calendar, ExternalLink, LogOut, ChevronRight, Share2 } from 'lucide-react'
+import { Heart, Plus, Eye, Calendar, ExternalLink, LogOut, ChevronRight, Share2, Pencil } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -235,6 +235,12 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
                     </div>
 
                     <div className="flex items-center gap-1">
+                      <Link href={`/editar/${p.slug}`}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/5 transition"
+                        title="Editar"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Link>
                       <button
                         onClick={() => compartilhar(p.slug)}
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/5 transition"

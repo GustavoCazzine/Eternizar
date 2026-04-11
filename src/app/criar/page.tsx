@@ -992,9 +992,9 @@ function CriarPageContent() {
 
       {/* Header minimalista: logo + progress + auth */}
       <div className="sticky top-0 z-40 bg-[#08080c]/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center gap-4">
+        <div className="max-w-3xl mx-auto px-3 sm:px-6 h-14 flex items-center gap-3 sm:gap-4">
           <a href="/" className="shrink-0">
-            <img src="/logo.png" alt="Eternizar" className="h-11" />
+            <img src="/logo.png" alt="Eternizar" className="h-9 sm:h-11" />
           </a>
           <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
             <motion.div
@@ -1016,7 +1016,7 @@ function CriarPageContent() {
 
         {/* Formulário — centro */}
         <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full min-h-[calc(100vh-3.5rem)]">
-          <div className="flex-1 px-6 py-10">
+          <div className="flex-1 px-3 sm:px-6 py-6 sm:py-10">
 
             {/* Cabeçalho do passo */}
             {passoAtual && passoAtual.id !== "tipo" && (
@@ -1060,19 +1060,19 @@ function CriarPageContent() {
 
           {/* Navegação inferior */}
           {passoAtual?.id !== "tipo" && passoAtual?.id !== "email" && (
-            <div className="px-6 py-4 border-t border-white/5 flex gap-3 sticky bottom-0 bg-[#08080c]/90 backdrop-blur-xl">
-              <button onClick={voltar} className="px-4 py-3 rounded-xl text-sm text-zinc-500 hover:text-white border border-white/10 hover:border-white/20 transition">
+            <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-white/5 flex gap-2 sm:gap-3 sticky bottom-0 bg-[#08080c]/90 backdrop-blur-xl">
+              <button onClick={voltar} className="px-3 sm:px-4 py-3 rounded-xl text-sm text-zinc-500 hover:text-white border border-white/10 hover:border-white/20 transition min-h-[44px]">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               {passoAtual?.opcional && (
                 <button onClick={() => { setErro(""); setPasso(p => p + 1) }}
-                  className="px-5 py-3 text-sm text-zinc-500 hover:text-zinc-300 transition">
+                  className="px-4 sm:px-5 py-3 text-sm text-zinc-500 hover:text-zinc-300 transition min-h-[44px]">
                   Pular
                 </button>
               )}
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 onClick={avancar}
-                className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all"
+                className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all min-h-[44px]"
                 style={{ background: erro ? "rgba(244,63,94,0.2)" : `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
                 {erro ? <span className="text-red-300 text-sm">{erro}</span> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
               </motion.button>

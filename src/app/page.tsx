@@ -86,7 +86,7 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/">
-          <img src="/logo.png" alt="Eternizar" className="h-11" />
+          <img src="/logo.png" alt="Eternizar" className="h-14" />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -439,7 +439,7 @@ export default function Home() {
       {/* ═══ FOOTER ═══ */}
       <footer className="relative z-10 border-t border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo.png" alt="Eternizar" className="h-7 opacity-40" />
+          <img src="/logo.png" alt="Eternizar" className="h-10 opacity-70" />
           <p className="text-zinc-700 text-xs">
             © {new Date().getFullYear()} Eternizar. Todos os direitos reservados.
           </p>

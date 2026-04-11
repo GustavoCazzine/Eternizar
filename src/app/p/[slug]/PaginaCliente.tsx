@@ -596,7 +596,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
             <p className="text-xs uppercase tracking-[0.25em] mb-6 font-medium" style={{ color: cor }}>
               Uma surpresa especial para você
             </p>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-none nome-capitalize"
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
               style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none" }}>
               {pagina.titulo}
             </h1>
@@ -631,10 +631,10 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
       {/* ===== SLIDE 2 — CONTADOR (apenas casal) ===== */}
       {pagina.tipo === 'casal' && pagina.dados_casal?.dataInicio && (
-        <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
+        <section className="py-16 sm:py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
           <Secao className="text-center mb-10">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Juntos há exatamente</p>
-            <h2 className="text-4xl font-black mb-2">Contando cada segundo</h2>
+            <h2 className="text-3xl sm:text-4xl font-black mb-2">Contando cada segundo</h2>
             <p className="text-gray-500 text-sm">Desde {new Date(pagina.dados_casal.dataInicio).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
           </Secao>
           <Secao delay={0.2}>
@@ -683,7 +683,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
           <Secao className="text-center mb-10">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Uma conquista coletiva</p>
-            <h2 className="text-4xl font-black">{pagina.dados_formatura.curso}</h2>
+            <h2 className="text-3xl sm:text-4xl font-black">{pagina.dados_formatura.curso}</h2>
             {pagina.dados_formatura.instituicao && <p className="text-gray-400 mt-2">{pagina.dados_formatura.instituicao} · {pagina.dados_formatura.anoFormatura}</p>}
           </Secao>
           <Secao delay={0.2} className="max-w-sm mx-auto space-y-3">
@@ -716,7 +716,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         <section className="py-24 px-4">
           <Secao className="text-center mb-10">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Memórias que ficam</p>
-            <h2 className="text-4xl font-black">Nossos momentos</h2>
+            <h2 className="text-3xl sm:text-4xl font-black">Nossos momentos</h2>
             <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
           </Secao>
 
@@ -781,7 +781,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <Secao className="max-w-2xl mx-auto text-center">
             <p className="text-xs uppercase tracking-[0.25em] mb-4 font-medium" style={{ color: cor }}>A nossa história</p>
             <div className="text-6xl font-serif mb-4 select-none" style={{ color: `${cor}40` }}>“</div>
-            <p className="text-xl text-gray-300 leading-relaxed italic">
+            <p className="text-base sm:text-xl text-gray-300 leading-relaxed italic break-words px-2">
               {pagina.dados_casal.comoSeConheceram}
             </p>
             <div className="text-6xl font-serif mt-2 text-right select-none" style={{ color: `${cor}40` }}>”</div>
@@ -791,13 +791,13 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
       {/* ===== LINHA DO TEMPO ===== */}
       {pagina.linha_do_tempo?.length > 0 && (
-        <section className="py-24 overflow-hidden" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo} 50%, #08080c)` }}>
+        <section className="py-16 sm:py-24 overflow-hidden" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo} 50%, #08080c)` }}>
           <Secao className="text-center mb-20 px-4">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa história</p>
-            <h2 className="text-4xl font-black">Linha do tempo</h2>
+            <h2 className="text-3xl sm:text-4xl font-black">Linha do tempo</h2>
           </Secao>
 
-          <div className="max-w-2xl mx-auto px-4 relative">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
             <motion.div
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
@@ -815,14 +815,14 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-                  className="flex gap-6 pl-20 relative pb-20 last:pb-0"
+                  className="flex gap-4 sm:gap-6 pl-16 sm:pl-20 relative pb-14 sm:pb-20 last:pb-0"
                 >
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.2 }}
-                    className="absolute left-7 top-6 h-px w-12 origin-left"
+                    className="absolute left-6 sm:left-7 top-6 h-px w-8 sm:w-12 origin-left"
                     style={{ background: `linear-gradient(to right, ${cor}80, transparent)` }}
                   />
 
@@ -831,7 +831,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                     whileInView={{ scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
                     transition={{ type: 'spring', duration: 0.8, bounce: 0.4, delay: 0.15 }}
-                    className="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden text-2xl shrink-0"
+                    className="absolute left-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden text-2xl shrink-0"
                     style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 8px 40px ${cor}50` }}
                   >
                     <EmojiAnimado emoji={ev.emoji || '⭐'} tamanho={36} />
@@ -857,7 +857,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.3 }}
-                      className="text-2xl font-black mb-3 leading-tight"
+                      className="text-xl sm:text-2xl font-black mb-3 leading-tight break-words"
                     >
                       {ev.titulo}
                     </motion.h3>
@@ -902,10 +902,10 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
       {/* ===== SLIDE 4 — PLAYER DE MÚSICA ===== */}
       {(pagina.musica_dados || pagina.musica_nome) && (
-        <section className="py-32 px-4" style={{ background: `linear-gradient(180deg, #08080c 0%, ${paleta.fundo} 50%, #08080c 100%)` }}>
+        <section className="py-20 sm:py-32 px-4" style={{ background: `linear-gradient(180deg, #08080c 0%, ${paleta.fundo} 50%, #08080c 100%)` }}>
           <Secao className="text-center mb-12">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa música</p>
-            <h2 className="text-4xl font-black">
+            <h2 className="text-3xl sm:text-4xl font-black px-4 break-words">
               {pagina.musica_dados ? pagina.musica_dados.nome : pagina.musica_nome}
             </h2>
           </Secao>
@@ -956,13 +956,13 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           </motion.div>
 
           {/* Aspas decorativas */}
-          <div className="text-7xl md:text-8xl font-serif leading-none mb-6 select-none" style={{ color: `${cor}20` }}>"</div>
+          <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-4 sm:mb-6 select-none" style={{ color: `${cor}20` }}>"</div>
 
-          <p className="text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-8 px-4 md:px-8 break-words">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-6 sm:mb-8 px-2 sm:px-8 break-words">
             {pagina.mensagem}
           </p>
 
-          <div className="text-7xl md:text-8xl font-serif leading-none mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
+          <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
 
           {/* Coração pulsante */}
           <motion.div
@@ -1009,8 +1009,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
       <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
         <Secao className="text-center mb-12">
           <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Deixe sua marca</p>
-          <h2 className="text-4xl font-black flex items-center justify-center gap-3">
-            <MessageCircle className="w-8 h-8" style={{ color: cor }} />
+          <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center gap-3">
+            <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" style={{ color: cor }} />
             Livro de Visitas
           </h2>
           <p className="text-gray-500 text-sm mt-2">Deixe uma mensagem carinhosa</p>
@@ -1082,7 +1082,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">{msg.mensagem}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed break-words">{msg.mensagem}</p>
                 </motion.div>
               ))}
             </div>
@@ -1093,7 +1093,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
       {/* Rodapé */}
       <div className="py-8 text-center border-t border-white/5">
         <a href="/" className="inline-flex items-center justify-center gap-2 text-xs text-gray-700 hover:text-gray-500 transition">
-          Criado com <img src="/logo.png" alt="Eternizar" className="h-4 inline-block opacity-60" />
+          Criado com <img src="/logo.png" alt="Eternizar" className="h-7 inline-block opacity-80" />
         </a>
       </div>
     </div>

@@ -140,7 +140,11 @@ export default function StoriesViewer({ fotos, cor, aberto, indiceInicial = 0, o
 
   return (
     <AnimatePresence>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.88, y: 40 }}
+        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
         className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
 
         {/* Container principal */}

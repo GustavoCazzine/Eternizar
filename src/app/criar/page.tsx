@@ -31,6 +31,7 @@ interface MusicaObj {
 interface FormData {
   tipo: string; titulo: string; subtitulo: string; mensagem: string
   emailCliente: string; emailDestinatario: string; corTema: string
+  fontePar: string
   fotoCapa: File | null
   musica: MusicaObj | null; fotos: FotoComLegenda[]; eventos: Evento[]
   senhaProtegida: string; senhaDica: string
@@ -55,6 +56,13 @@ const cores = [
 ]
 
 const emojisRapidos = ['❤️', '🌹', '✈️', '🎉', '💍', '🏠', '🐾', '🎓', '⭐', '🌙', '🌊', '🎵']
+
+const paresFonte = [
+  { id: 'classico', nome: 'Clássico', desc: 'Elegante e atemporal', titulo: 'var(--font-cormorant)', corpo: 'var(--font-outfit)', preview: 'Cormorant + Outfit' },
+  { id: 'moderno', nome: 'Moderno', desc: 'Limpo e contemporâneo', titulo: 'var(--font-space)', corpo: 'var(--font-inter)', preview: 'Space Grotesk + Inter' },
+  { id: 'romantico', nome: 'Romântico', desc: 'Suave e poético', titulo: 'var(--font-playfair)', corpo: 'var(--font-outfit)', preview: 'Playfair + Outfit' },
+  { id: 'divertido', nome: 'Divertido', desc: 'Casual e descontraído', titulo: 'var(--font-caveat)', corpo: 'var(--font-inter)', preview: 'Caveat + Inter' },
+]
 
 const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
 
@@ -676,6 +684,20 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
           ))}
         </div>
       </div>
+
+      {/* Tipografia */}
+      <div>
+        <Label sub="Define o estilo das fontes da página">Tipografia</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {paresFonte.map(p => (
+            <button key={p.id} onClick={() => upd('fontePar', p.id)}
+              className={`p-3 rounded-xl border text-left transition-all ${form.fontePar === p.id ? 'border-pink-500 bg-pink-500/10' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}>
+              <p className="text-base font-bold text-white" style={{ fontFamily: p.titulo }}>{p.nome}</p>
+              <p className="text-[11px] text-zinc-500 mt-0.5" style={{ fontFamily: p.corpo }}>{p.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
@@ -825,7 +847,7 @@ function CriarPageContent() {
     tipo: tipoInicial,
     titulo: '', subtitulo: '', mensagem: '',
     emailCliente: '', emailDestinatario: '',
-    corTema: 'pink', fotoCapa: null, musica: null,
+    corTema: 'pink', fontePar: 'classico', fotoCapa: null, musica: null,
     fotos: [], eventos: [{ data: '', titulo: '', descricao: '', emoji: '❤️', foto: null }],
     senhaProtegida: '', senhaDica: '',
     dadosCasal: { nome1: '', nome2: '', dataInicio: '', apelido1: '', apelido2: '', cidadePrimeiroEncontro: '', comeFavorita: '', filmeFavorito: '', musicaFavorita: '', comoSeConheceram: '' },
@@ -935,6 +957,7 @@ function CriarPageContent() {
       fd.append('emailCliente', form.emailCliente)
       fd.append('emailDestinatario', form.emailDestinatario)
       fd.append('corTema', form.corTema)
+      fd.append('fontePar', form.fontePar)
       fd.append('musica', JSON.stringify(form.musica))
       fd.append('eventos', JSON.stringify(form.eventos.map(e => ({ data: e.data, titulo: e.titulo, descricao: e.descricao, emoji: e.emoji }))))
       fd.append('senhaProtegida', form.senhaProtegida)

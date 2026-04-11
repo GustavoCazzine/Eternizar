@@ -60,6 +60,7 @@ interface Pagina {
   musica_nome?: string
   musica_dados?: MusicaDados | null
   cor_tema: string
+  fonte_par?: string
   fotos: Foto[] | string[]
   linha_do_tempo: Evento[]
   senha_hash?: string
@@ -76,6 +77,13 @@ const paletas: Record<string, { primaria: string; secundaria: string; brilho: st
   blue:    { primaria: '#3b82f6', secundaria: '#06b6d4', brilho: '#93c5fd', fundo: '#000d1a', fundoAlt: '#001830', texto: '#dbeafe' },
   emerald: { primaria: '#10b981', secundaria: '#14b8a6', brilho: '#6ee7b7', fundo: '#001a0d', fundoAlt: '#002d18', texto: '#d1fae5' },
   rose:    { primaria: '#f43f5e', secundaria: '#ec4899', brilho: '#fda4af', fundo: '#1a0008', fundoAlt: '#2d0010', texto: '#ffe4e6' },
+}
+
+const paresFonte: Record<string, { titulo: string; corpo: string }> = {
+  classico:  { titulo: 'var(--font-cormorant)', corpo: 'var(--font-outfit)' },
+  moderno:   { titulo: 'var(--font-space)', corpo: 'var(--font-inter)' },
+  romantico: { titulo: 'var(--font-playfair)', corpo: 'var(--font-outfit)' },
+  divertido: { titulo: 'var(--font-caveat)', corpo: 'var(--font-inter)' },
 }
 
 // Componente de seção com entrada animada
@@ -446,6 +454,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
   const paleta = paletas[pagina.cor_tema] || paletas.pink
   const cor = paleta.primaria
   const corTexto = paleta.texto
+  const fontes = paresFonte[pagina.fonte_par || 'classico'] || paresFonte.classico
 
   const tipo = pagina.tipo
   const emoji = tipo === 'casal' ? '❤️' : tipo === 'formatura' ? '🎓' : tipo === 'homenagem' ? '⭐' : '💌'
@@ -518,7 +527,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
   return (
     <div ref={containerRef} className="text-white overflow-x-hidden relative"
-      style={{ background: '#08080c' }}>
+      style={{ background: '#08080c', fontFamily: fontes.corpo }}>
 
       {/* Barra de progresso */}
       <div className="fixed top-0 left-0 right-0 h-0.5 z-50" style={{ background: 'rgba(255,255,255,0.05)' }}>
@@ -597,7 +606,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
               Uma surpresa especial para você
             </p>
             <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
-              style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none" }}>
+              style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: fontes.titulo }}>
               {pagina.titulo}
             </h1>
             {pagina.subtitulo && (

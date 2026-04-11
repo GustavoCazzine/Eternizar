@@ -251,16 +251,10 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
                     </div>
                   </div>
 
-                  {/* Toast copiado */}
                   {copiado === p.slug && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute bottom-16 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/90 text-white shadow-lg z-20"
-                    >
+                    <div className="absolute bottom-16 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/90 text-white shadow-lg z-20 pointer-events-none">
                       Link copiado!
-                    </motion.div>
+                    </div>
                   )}
                 </motion.div>
               )

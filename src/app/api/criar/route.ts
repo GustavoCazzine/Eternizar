@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
     const emailCliente = (fd.get('emailCliente') as string || '').trim().toLowerCase()
     const emailDestinatario = (fd.get('emailDestinatario') as string || '').trim().toLowerCase()
     const corTema = sanitize(fd.get('corTema') as string || 'pink')
+    const fontePar = sanitize(fd.get('fontePar') as string || 'classico')
     const senhaDica = sanitize(fd.get('senhaDica') as string || '').slice(0, 100)
     const senhaProtegida = (fd.get('senhaProtegida') as string || '').slice(0, 100)
 
@@ -187,6 +188,7 @@ export async function POST(req: NextRequest) {
       musica_nome: musicaLimpa ? `${musicaLimpa.nome} - ${musicaLimpa.artista}` : '',
       musica_dados: musicaLimpa,
       cor_tema: corTema,
+      fonte_par: ['classico','moderno','romantico','divertido'].includes(fontePar) ? fontePar : 'classico',
       fotos: fotosUrls,
       linha_do_tempo: eventosComFoto,
       senha_hash: senhaHash,

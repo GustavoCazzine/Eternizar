@@ -40,6 +40,40 @@ const emojisRapidos = ['❤️', '🌹', '✈️', '🎉', '💍', '🏠', '🐾
 
 const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
 
+function calcTempoJuntos(dataInicio: string) {
+  if (!dataInicio) return null
+  const inicio = new Date(dataInicio)
+  const agora = new Date()
+  const diff = agora.getTime() - inicio.getTime()
+  if (diff <= 0) return null
+  const dias = Math.floor(diff / 86400000)
+  const anos = Math.floor(dias / 365)
+  const meses = Math.floor((dias % 365) / 30)
+  const partes: string[] = []
+  if (anos > 0) partes.push(`${anos} ano${anos > 1 ? 's' : ''}`)
+  if (meses > 0 && anos < 4) partes.push(`${meses} ${meses > 1 ? 'meses' : 'mês'}`)
+  return partes.join(' e ') || `${dias} dias`
+}
+
+function gerarTituloAuto(tipo: string, dc: DadosCasal): string {
+  if (tipo === 'casal') {
+    const n1 = dc.nome1.trim(), n2 = dc.nome2.trim()
+    if (n1 && n2) return `${n1} & ${n2}`
+    return n1 || ''
+  }
+  return ''
+}
+
+function gerarSubtituloAuto(tipo: string, dc: DadosCasal): string {
+  if (tipo !== 'casal') return ''
+  const tempo = calcTempoJuntos(dc.dataInicio)
+  const ap1 = dc.apelido1.trim(), ap2 = dc.apelido2.trim()
+  if (tempo && ap1 && ap2) return `${ap1} e ${ap2} — ${tempo} juntos 🥂`
+  if (tempo) return `${tempo} de uma história linda 🥂`
+  if (ap1 && ap2) return `${ap1} e ${ap2} ❤️`
+  return 'Uma história de amor 💕'
+}
+
 export default function EditarCliente({ pagina }: { pagina: Pagina }) {
   const router = useRouter()
   const [salvando, setSalvando] = useState(false)
@@ -59,6 +93,7 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
     musicaFavorita: '', comoSeConheceram: ''
   })
   const [eventos, setEventos] = useState<Evento[]>(pagina.linha_do_tempo || [])
+  const [reloadKey, setReloadKey] = useState(0)
 
   function updCasal(campo: keyof DadosCasal, valor: string) {
     setDadosCasal(prev => ({ ...prev, [campo]: valor }))
@@ -82,11 +117,13 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
     setErro('')
     setMsg('')
     try {
+      const tituloFinal = titulo.trim() || gerarTituloAuto(pagina.tipo, dadosCasal)
+      const subFinal = subtitulo.trim() || gerarSubtituloAuto(pagina.tipo, dadosCasal)
       const res = await fetch(`/api/paginas/${pagina.slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          titulo, subtitulo, mensagem,
+          titulo: tituloFinal, subtitulo: subFinal, mensagem,
           cor_tema: corTema, fonte_par: fontePar,
           senha_dica: senhaDica,
           dados_casal: pagina.tipo === 'casal' ? dadosCasal : undefined,
@@ -96,6 +133,9 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
       const data = await res.json()
       if (!res.ok) throw new Error(data.erro || 'Erro')
       setMsg('Salvo com sucesso!')
+      if (!titulo.trim()) setTitulo(tituloFinal)
+      if (!subtitulo.trim()) setSubtitulo(subFinal)
+      setReloadKey(k => k + 1)
       setTimeout(() => setMsg(''), 3000)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro')
@@ -142,15 +182,21 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 px-4 sm:px-6 py-6">
+      <main className="flex-1 lg:max-w-2xl space-y-8">
         {msg && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm text-center">{msg}</div>}
         {erro && <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm text-center">{erro}</div>}
 
         {/* Título + subtítulo */}
         <section className="space-y-3">
           <h2 className="text-lg font-bold">Título</h2>
-          <input value={titulo} onChange={e => setTitulo(e.target.value)} className={inputClass} placeholder="Título" />
-          <input value={subtitulo} onChange={e => setSubtitulo(e.target.value)} className={inputClass} placeholder="Subtítulo" />
+          {pagina.tipo === 'casal' && (
+            <p className="text-xs text-zinc-500">Deixe em branco para gerar automaticamente dos nomes do casal.</p>
+          )}
+          <input value={titulo} onChange={e => setTitulo(e.target.value)} className={inputClass}
+            placeholder={pagina.tipo === 'casal' ? gerarTituloAuto(pagina.tipo, dadosCasal) || 'Título' : 'Título'} />
+          <input value={subtitulo} onChange={e => setSubtitulo(e.target.value)} className={inputClass}
+            placeholder={pagina.tipo === 'casal' ? gerarSubtituloAuto(pagina.tipo, dadosCasal) || 'Subtítulo' : 'Subtítulo'} />
         </section>
 
         {/* Casal */}
@@ -258,6 +304,28 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
           </button>
         </section>
       </main>
+
+      {/* Prévia ao vivo */}
+      <aside className="hidden lg:block w-[380px] shrink-0">
+        <div className="sticky top-20">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-600">Prévia ao vivo</p>
+            <button onClick={() => setReloadKey(k => k + 1)}
+              className="text-xs text-zinc-500 hover:text-white transition">
+              ↻ Atualizar
+            </button>
+          </div>
+          <div className="rounded-[28px] overflow-hidden border border-white/10 bg-black shadow-2xl"
+            style={{ aspectRatio: '9/19.5' }}>
+            <iframe key={reloadKey} src={`/p/${pagina.slug}`}
+              className="w-full h-full"
+              style={{ border: 0 }}
+              title="Prévia" />
+          </div>
+          <p className="text-[11px] text-zinc-600 mt-2 text-center">Clique em "Salvar" e "Atualizar" para ver mudanças</p>
+        </div>
+      </aside>
+      </div>
     </div>
   )
 }

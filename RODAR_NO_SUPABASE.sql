@@ -43,6 +43,7 @@ ALTER TABLE paginas ADD COLUMN IF NOT EXISTS ativa BOOLEAN DEFAULT true;
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id);
 ALTER TABLE paginas ADD COLUMN IF NOT EXISTS fonte_par TEXT DEFAULT 'classico';
+ALTER TABLE paginas ADD COLUMN IF NOT EXISTS compartilhavel BOOLEAN DEFAULT true;
 
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_paginas_slug ON paginas(slug);

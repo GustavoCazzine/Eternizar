@@ -36,6 +36,13 @@ function diasRestantes(expira_em: string | null, vitalicia: boolean): string {
   return `${dias}d`
 }
 
+function mascararEmail(email: string): string {
+  const [user, dom] = email.split('@')
+  if (!user || !dom) return email
+  const visivel = user.length <= 3 ? user[0] : user.slice(0, 2)
+  return `${visivel}•••@${dom}`
+}
+
 export default function PainelCliente({ user, paginas }: { user: User; paginas: Pagina[] }) {
   const cor = '#ff2d78'
   const [copiado, setCopiado] = useState<string | null>(null)
@@ -81,8 +88,8 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-sm text-white font-medium nome-capitalize">{user.nome || user.email}</p>
-              {user.nome && <p className="text-[11px] text-zinc-600">{user.email}</p>}
+              <p className="text-sm text-white font-medium nome-capitalize">{user.nome || mascararEmail(user.email)}</p>
+              {user.nome && <p className="text-[11px] text-zinc-600">{mascararEmail(user.email)}</p>}
             </div>
             {user.avatar ? (
               // eslint-disable-next-line @next/next/no-img-element

@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     const emailDestinatario = (fd.get('emailDestinatario') as string || '').trim().toLowerCase()
     const corTema = sanitize(fd.get('corTema') as string || 'pink')
     const fontePar = sanitize(fd.get('fontePar') as string || 'classico')
+    const compartilhavel = (fd.get('compartilhavel') as string) !== 'false'
     const senhaDica = sanitize(fd.get('senhaDica') as string || '').slice(0, 100)
     const senhaProtegida = (fd.get('senhaProtegida') as string || '').slice(0, 100)
 
@@ -189,6 +190,7 @@ export async function POST(req: NextRequest) {
       musica_dados: musicaLimpa,
       cor_tema: corTema,
       fonte_par: ['classico','moderno','romantico','divertido'].includes(fontePar) ? fontePar : 'classico',
+      compartilhavel,
       fotos: fotosUrls,
       linha_do_tempo: eventosComFoto,
       senha_hash: senhaHash,

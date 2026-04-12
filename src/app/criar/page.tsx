@@ -32,6 +32,7 @@ interface FormData {
   tipo: string; titulo: string; subtitulo: string; mensagem: string
   emailCliente: string; emailDestinatario: string; corTema: string
   fontePar: string
+  compartilhavel: boolean
   fotoCapa: File | null
   musica: MusicaObj | null; fotos: FotoComLegenda[]; eventos: Evento[]
   senhaProtegida: string; senhaDica: string
@@ -131,80 +132,119 @@ function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
   const fotosUrls = useBlobUrls(form.fotos.map(f => f.file))
   const totalFotos = form.fotos.length
   const totalMomentos = form.eventos.filter(e => e.titulo).length
+  const paleta = cores.find(c => c.valor === form.corTema)
+  const fundoAlt = paleta ? `${corHex}15` : '#2d0018'
+
+  const fontes: Record<string, string> = {
+    classico: 'var(--font-cormorant)',
+    moderno: 'var(--font-space)',
+    romantico: 'var(--font-playfair)',
+    divertido: 'var(--font-caveat)',
+  }
+  const fontTitulo = fontes[form.fontePar] || fontes.classico
 
   return (
-    <div className="rounded-[28px] overflow-hidden border border-white/8 shadow-2xl" style={{ background: "#0c0c10" }}>
-      {/* Phone screen */}
-      <div className="relative aspect-[9/16] w-full overflow-hidden" style={{
-        background: fotoCapa
-          ? `linear-gradient(to bottom, transparent 30%, rgba(8,8,12,0.95) 100%), url(${fotoCapa}) center/cover`
-          : `radial-gradient(ellipse at 50% 30%, ${corHex}20, #08080c)`
-      }}>
+    <div className="rounded-[28px] overflow-hidden border border-white/8 shadow-2xl bg-black">
+      {/* Hero fiel */}
+      <div className="relative aspect-[9/16] w-full overflow-hidden">
+        {/* Foto de capa como fundo */}
+        {fotoCapa && (
+          <div className="absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={fotoCapa} alt="" className="w-full h-full object-cover opacity-40 scale-110" />
+          </div>
+        )}
+
+        {/* Overlay gradient */}
+        <div className="absolute inset-0" style={{
+          background: fotoCapa
+            ? `linear-gradient(to bottom, ${fundoAlt} 0%, rgba(8,8,12,0.7) 50%, #08080c 100%)`
+            : `radial-gradient(ellipse at 50% 30%, ${corHex}25, #08080c 70%)`
+        }} />
+
         {/* Glow orb */}
-        <div className="absolute w-40 h-40 rounded-full blur-3xl opacity-20 top-1/4 left-1/2 -translate-x-1/2"
+        <div className="absolute w-40 h-40 rounded-full blur-3xl opacity-25 top-1/4 left-1/2 -translate-x-1/2"
           style={{ background: corHex }} />
 
         {/* Partículas */}
-        {[...Array(3)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <motion.div key={i} className="absolute rounded-full"
-            style={{ width: 2 + i, height: 2 + i, background: `${corHex}${30 + i * 15}`,
-              left: `${20 + i * 25}%`, top: `${30 + i * 15}%` }}
-            animate={{ y: [-8, 8, -8], opacity: [0.2, 0.5, 0.2] }}
+            style={{ width: 2 + i, height: 2 + i, background: `${corHex}${40 + i * 10}`,
+              left: `${15 + i * 22}%`, top: `${25 + i * 12}%` }}
+            animate={{ y: [-8, 8, -8], opacity: [0.3, 0.7, 0.3] }}
             transition={{ duration: 3 + i, repeat: Infinity, delay: i * 0.5 }}
           />
         ))}
 
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-5">
-          <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-            <Heart className="w-8 h-8 fill-current mb-3" style={{ color: corHex, filter: `drop-shadow(0 0 15px ${corHex}50)` }} />
-          </motion.div>
-          <h1 className="text-base font-bold text-white leading-tight mb-1 nome-capitalize">
-            {tituloFinal || <span className="text-white/20">Título</span>}
-          </h1>
-          <p className="text-[10px] text-white/50 nome-capitalize">
-            {subtituloFinal || <span className="text-white/15">Subtítulo</span>}
+        {/* Conteúdo centralizado */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <p className="text-[8px] uppercase tracking-[0.25em] mb-2 font-medium" style={{ color: corHex }}>
+            Uma surpresa especial
           </p>
-          <div className="w-6 h-px mt-2 rounded-full" style={{ background: `${corHex}40` }} />
+          <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+            <Heart className="w-7 h-7 fill-current mb-2" style={{ color: corHex, filter: `drop-shadow(0 0 10px ${corHex}80)` }} />
+          </motion.div>
+          <h1 className="text-xl font-black text-white leading-tight mb-1 nome-capitalize px-2 break-words"
+            style={{ fontFamily: fontTitulo, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+            {tituloFinal || <span className="text-white/30">Título aqui</span>}
+          </h1>
+          <p className="text-[10px] text-white/70 mt-1 nome-capitalize px-2">
+            {subtituloFinal || <span className="text-white/20">Subtítulo</span>}
+          </p>
         </div>
-
-        {/* Story bubbles */}
-        {totalFotos > 0 && (
-          <div className="absolute bottom-14 left-3 right-3 flex gap-1.5 justify-center">
-            {form.fotos.slice(0, 4).map((f, i) => (
-              <div key={i} className="w-7 h-7 rounded-full overflow-hidden" style={{ outline: `1.5px solid ${corHex}`, outlineOffset: "1px" }}>
-                {fotosUrls[i] && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={fotosUrls[i]!} alt="" className="w-full h-full object-cover" />
-                )}
-              </div>
-            ))}
-            {totalFotos > 4 && <span className="text-white/30 text-[9px] self-center">+{totalFotos - 4}</span>}
-          </div>
-        )}
       </div>
 
-      {/* Info panel */}
-      <div className="px-3 py-2.5 space-y-1.5 border-t border-white/5">
+      {/* Seções resumidas */}
+      <div className="bg-[#08080c] p-3 space-y-2">
+        {totalFotos > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-2">
+              {form.fotos.slice(0, 4).map((_, i) => (
+                fotosUrls[i] && (
+                  <div key={i} className="w-6 h-6 rounded-full overflow-hidden border-2" style={{ borderColor: corHex }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={fotosUrls[i]!} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )
+              ))}
+            </div>
+            <span className="text-[10px] text-zinc-500">{totalFotos} memor{totalFotos === 1 ? 'ia' : 'ias'}</span>
+          </div>
+        )}
+
+        {totalMomentos > 0 && (
+          <div className="flex items-center gap-2 text-[10px] text-zinc-500">
+            <Calendar className="w-3 h-3" style={{ color: corHex }} />
+            <span>{totalMomentos} momento{totalMomentos !== 1 ? 's' : ''} na linha do tempo</span>
+          </div>
+        )}
+
         {form.musica && (
           <div className="flex items-center gap-2 text-[10px] text-zinc-500">
-            <Music className="w-3 h-3 shrink-0" style={{ color: corHex }} />
+            <Music className="w-3 h-3" style={{ color: corHex }} />
             <span className="truncate">{form.musica.nome}</span>
           </div>
         )}
-        {totalMomentos > 0 && (
-          <div className="flex items-center gap-2 text-[10px] text-zinc-500">
-            <Calendar className="w-3 h-3 shrink-0" style={{ color: corHex }} />
-            <span>{totalMomentos} momento{totalMomentos !== 1 ? "s" : ""}</span>
+
+        {form.mensagem && (
+          <div className="pt-2 border-t border-white/5">
+            <p className="text-[9px] text-white/60 italic line-clamp-3 leading-relaxed" style={{ fontFamily: fontTitulo }}>
+              “{form.mensagem}”
+            </p>
           </div>
         )}
+
         {form.senhaProtegida && (
-          <div className="flex items-center gap-2 text-[10px] text-zinc-600">
-            <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: corHex }}>
+          <div className="flex items-center gap-2 text-[10px] text-zinc-600 pt-1">
+            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: corHex }}>
               <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
             </svg>
-            <span>Protegida</span>
+            <span>Protegida por senha</span>
           </div>
+        )}
+
+        {form.compartilhavel === false && (
+          <div className="text-[10px] text-amber-400/80 pt-1">🔒 Modo privado (sem comentários)</div>
         )}
       </div>
     </div>
@@ -725,6 +765,26 @@ function PassoMensagem({ form, upd }: PassoProps) {
             className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-pink-500" />
         )}
       </div>
+
+      {/* Toggle compartilhamento */}
+      <div className="p-4 rounded-2xl border border-white/10 bg-white/5">
+        <button onClick={() => upd('compartilhavel', !form.compartilhavel)}
+          className="w-full flex items-start gap-3 text-left">
+          <div className={`shrink-0 w-11 h-6 rounded-full transition-all relative ${form.compartilhavel ? 'bg-pink-500' : 'bg-white/10'}`}>
+            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${form.compartilhavel ? 'left-5' : 'left-0.5'}`} />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-white">
+              {form.compartilhavel ? '🌍 Modo público' : '🔒 Modo privado'}
+            </p>
+            <p className="text-xs text-zinc-500 mt-1">
+              {form.compartilhavel
+                ? 'Permite livro de visitas, capa para Instagram e botões de compartilhar'
+                : 'Apenas vocês dois. Sem commentários, sem capa de Instagram, sem compartilhamento'}
+            </p>
+          </div>
+        </button>
+      </div>
     </div>
   )
 }
@@ -847,7 +907,7 @@ function CriarPageContent() {
     tipo: tipoInicial,
     titulo: '', subtitulo: '', mensagem: '',
     emailCliente: '', emailDestinatario: '',
-    corTema: 'pink', fontePar: 'classico', fotoCapa: null, musica: null,
+    corTema: 'pink', fontePar: 'classico', compartilhavel: true, fotoCapa: null, musica: null,
     fotos: [], eventos: [{ data: '', titulo: '', descricao: '', emoji: '❤️', foto: null }],
     senhaProtegida: '', senhaDica: '',
     dadosCasal: { nome1: '', nome2: '', dataInicio: '', apelido1: '', apelido2: '', cidadePrimeiroEncontro: '', comeFavorita: '', filmeFavorito: '', musicaFavorita: '', comoSeConheceram: '' },
@@ -958,6 +1018,7 @@ function CriarPageContent() {
       fd.append('emailDestinatario', form.emailDestinatario)
       fd.append('corTema', form.corTema)
       fd.append('fontePar', form.fontePar)
+      fd.append('compartilhavel', form.compartilhavel ? 'true' : 'false')
       fd.append('musica', JSON.stringify(form.musica))
       fd.append('eventos', JSON.stringify(form.eventos.map(e => ({ data: e.data, titulo: e.titulo, descricao: e.descricao, emoji: e.emoji }))))
       fd.append('senhaProtegida', form.senhaProtegida)

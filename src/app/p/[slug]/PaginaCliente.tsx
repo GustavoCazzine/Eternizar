@@ -61,6 +61,7 @@ interface Pagina {
   musica_dados?: MusicaDados | null
   cor_tema: string
   fonte_par?: string
+  compartilhavel?: boolean
   fotos: Foto[] | string[]
   linha_do_tempo: Evento[]
   senha_hash?: string
@@ -1039,6 +1040,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
       </section>
 
       {/* ===== LIVRO DE VISITAS ===== */}
+      {pagina.compartilhavel !== false && (
       <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
         <Secao className="text-center mb-12">
           <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Deixe sua marca</p>
@@ -1150,6 +1152,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           )}
         </div>
       </section>
+      )}
 
       {/* Rodapé */}
       <div className="py-8 text-center border-t border-white/5">

@@ -39,6 +39,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (typeof body.fonte_par === 'string' && ['classico','moderno','romantico','divertido'].includes(body.fonte_par)) {
       update.fonte_par = body.fonte_par
     }
+    if (typeof body.compartilhavel === 'boolean') update.compartilhavel = body.compartilhavel
     if (typeof body.senha_dica === 'string') update.senha_dica = sanitize(body.senha_dica).slice(0, 100) || null
     if (body.dados_casal && typeof body.dados_casal === 'object') {
       const dc = body.dados_casal as Record<string, string>

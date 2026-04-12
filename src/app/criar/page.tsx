@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, GraduationCap, Star, ArrowRight, ArrowLeft, Upload, X, Plus, Camera, Check, ChevronRight, Music, Calendar } from 'lucide-react'
+import { Heart, GraduationCap, Star, ArrowRight, ArrowLeft, Upload, X, Plus, Camera, Check, ChevronRight, Music, Calendar, ImageIcon, Lock, MapPin, Clapperboard, Utensils } from 'lucide-react'
 import BuscaMusica from '@/components/BuscaMusica'
 import AuthButton from '@/components/AuthButton'
 import { useBlobUrl, useBlobUrls } from '@/lib/useBlobUrl'
+import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -428,7 +429,7 @@ function PassoFotos({ form, upd, handleFotos, removerFoto, atualizarLegenda }: P
           </div>
         ) : (
           <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-2xl cursor-pointer hover:border-pink-500/60 transition">
-            <span className="text-3xl mb-2">🖼️</span>
+            <ImageIcon className="w-8 h-8 text-zinc-500 mb-2" />
             <p className="text-sm text-gray-400">Clique para selecionar a foto principal</p>
             <p className="text-xs text-gray-600 mt-1">Recomendado: foto dos dois juntos</p>
             <input type="file" accept="image/*" onChange={handleCapa} className="hidden" />
@@ -688,18 +689,18 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-gray-400 mb-1.5">📍 Cidade do 1º encontro</p>
+              <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> Cidade do 1º encontro</p>
               <input value={form.dadosCasal.cidadePrimeiroEncontro} onChange={e => updCasal('cidadePrimeiroEncontro', e.target.value)}
                 placeholder="Ex: São Paulo" className={inputClass} />
             </div>
             <div>
-              <p className="text-xs text-gray-400 mb-1.5">🍕 Comida favorita</p>
+              <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><Utensils className="w-3 h-3" /> Comida favorita</p>
               <input value={form.dadosCasal.comeFavorita} onChange={e => updCasal('comeFavorita', e.target.value)}
                 placeholder="Ex: Pizza de calabresa" className={inputClass} />
             </div>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1.5">🎬 Filme/série favorito</p>
+            <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><Clapperboard className="w-3 h-3" /> Filme/série favorito</p>
             <input value={form.dadosCasal.filmeFavorito} onChange={e => updCasal('filmeFavorito', e.target.value)}
               placeholder="Ex: La La Land" className={inputClass} />
           </div>
@@ -756,7 +757,7 @@ function PassoMensagem({ form, upd }: PassoProps) {
       </div>
 
       <div className="p-4 rounded-2xl border border-white/10 bg-white/5 space-y-3">
-        <Label sub="Só quem sabe a resposta pode abrir a página (opcional)">🔐 Senha secreta</Label>
+        <Label sub="Só quem sabe a resposta pode abrir a página (opcional)"><span className="inline-flex items-center gap-2"><Lock className="w-4 h-4" /> Senha secreta</span></Label>
         <input value={form.senhaProtegida} onChange={e => upd('senhaProtegida', e.target.value)}
           placeholder="Ex: nome do pet, música favorita..." className={inputClass} />
         {form.senhaProtegida && (
@@ -889,7 +890,6 @@ const PASSOS: Passo[] = [
   { id: 'musica', titulo: 'Música', visivel: () => true, opcional: true },
   { id: 'detalhes', titulo: 'Detalhes', visivel: () => true },
   { id: 'mensagem', titulo: 'Mensagem', visivel: () => true },
-  { id: 'email', titulo: 'Finalizar', visivel: () => true },
 ]
 
 // ─── Componente principal ────────────────────────────────────────────────────
@@ -902,6 +902,16 @@ function CriarPageContent() {
   const [passo, setPasso] = useState(tipoInicial ? 1 : 0)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowser()
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email || null)
+      setAuthChecked(true)
+    })
+  }, [])
 
   const [form, setForm] = useState<FormData>({
     tipo: tipoInicial,
@@ -1005,7 +1015,11 @@ function CriarPageContent() {
 
   async function handleSubmit() {
     setErro('')
-    if (!form.emailCliente) { setErro('Preencha seu e-mail.'); return }
+    if (!userEmail) {
+      const redirect = encodeURIComponent('/criar')
+      router.push(`/entrar?redirect=${redirect}`)
+      return
+    }
     if (!form.mensagem) { setErro('Preencha a mensagem.'); return }
     setCarregando(true)
     try {
@@ -1014,8 +1028,8 @@ function CriarPageContent() {
       fd.append('titulo', tituloFinal)
       fd.append('subtitulo', subtituloFinal)
       fd.append('mensagem', form.mensagem)
-      fd.append('emailCliente', form.emailCliente)
-      fd.append('emailDestinatario', form.emailDestinatario)
+      fd.append('emailCliente', userEmail)
+      fd.append('emailDestinatario', '')
       fd.append('corTema', form.corTema)
       fd.append('fontePar', form.fontePar)
       fd.append('compartilhavel', form.compartilhavel ? 'true' : 'false')
@@ -1143,7 +1157,7 @@ function CriarPageContent() {
           </div>
 
           {/* Navegação inferior */}
-          {passoAtual?.id !== "tipo" && passoAtual?.id !== "email" && (
+          {passoAtual?.id !== "tipo" && (
             <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-white/5 flex gap-2 sm:gap-3 sticky bottom-0 bg-[#08080c]/90 backdrop-blur-xl">
               <button onClick={voltar} className="px-3 sm:px-4 py-3 rounded-xl text-sm text-zinc-500 hover:text-white border border-white/10 hover:border-white/20 transition min-h-[44px]">
                 <ArrowLeft className="w-4 h-4" />
@@ -1154,24 +1168,39 @@ function CriarPageContent() {
                   Pular
                 </button>
               )}
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                onClick={avancar}
-                className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all min-h-[44px]"
-                style={{ background: erro ? "rgba(244,63,94,0.2)" : `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
-                {erro ? <span className="text-red-300 text-sm">{erro}</span> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
-              </motion.button>
+              {passo === totalPassos - 1 ? (
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={handleSubmit} disabled={carregando}
+                  className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all min-h-[44px] disabled:opacity-50"
+                  style={{ background: erro ? "rgba(244,63,94,0.2)" : `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
+                  {carregando ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
+                    : erro ? <span className="text-red-300 text-sm">{erro}</span>
+                    : !userEmail && authChecked ? <>Entrar para finalizar <ArrowRight className="w-4 h-4" /></>
+                    : <>Criar homenagem <ArrowRight className="w-4 h-4" /></>}
+                </motion.button>
+              ) : (
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={avancar}
+                  className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all min-h-[44px]"
+                  style={{ background: erro ? "rgba(244,63,94,0.2)" : `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
+                  {erro ? <span className="text-red-300 text-sm">{erro}</span> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
+                </motion.button>
+              )}
             </div>
           )}
         </div>
 
-        {/* Prévia — direita (desktop) */}
+        {/* Prévia — direita (desktop) — oculta até escolher tipo */}
+        {form.tipo && (
         <div className="hidden lg:flex w-80 xl:w-96 border-l border-white/5 p-6 flex-col gap-4 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
           <p className="text-xs text-zinc-600 uppercase tracking-[0.2em]">Prévia ao vivo</p>
           <Previa form={form} tituloFinal={tituloFinal} subtituloFinal={subtituloFinal} corHex={corHex} />
         </div>
+        )}
       </div>
 
-      {/* Prévia mobile */}
+      {/* Prévia mobile — oculta até escolher tipo */}
+      {form.tipo && (
       <div className="lg:hidden fixed bottom-20 right-4 z-30">
         <details className="group">
           <summary className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer list-none shadow-lg shadow-black/50 border border-white/10"
@@ -1183,6 +1212,7 @@ function CriarPageContent() {
           </div>
         </details>
       </div>
+      )}
     </div>
   )
 }

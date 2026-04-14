@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "audit": "node scripts/audit-security.mjs",
+    "typecheck": "tsc --noEmit",
+    "predeploy": "npm run audit && npm run typecheck && npm run lint"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "^2.100.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
     "mercadopago": "^2.12.0",

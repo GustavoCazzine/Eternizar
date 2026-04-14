@@ -1,39 +1,42 @@
-import { NextRequest } from 'next/server'
+﻿import { NextRequest } from 'next/server'
 
-// ─── Rate Limiting ───────────────────────────────────────────────
-// ATENÇÃO: este rate-limiter é em memória e NÃO funciona corretamente
-// em ambiente serverless (cada cold start reseta o Map, instâncias
-// são isoladas). É uma defesa best-effort até migrarmos pra Upstash
+// â”€â”€â”€ Rate Limiting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ATENÃ‡ÃƒO: este rate-limiter Ã© em memÃ³ria e NÃƒO funciona corretamente
+// em ambiente serverless (cada cold start reseta o Map, instÃ¢ncias
+// sÃ£o isoladas). Ã‰ uma defesa best-effort atÃ© migrarmos pra Upstash
 // Redis ou tabela no Supabase. Mantido porque qualquer defesa > zero.
 const requestMap = new Map<string, { count: number; resetAt: number }>()
 
+// Síncrono — fallback in-memory (não escala em serverless).
+// Mantido para compat com rotas antigas. Migrar para rateLimitAsync.
 export function rateLimit(req: NextRequest, limit = 10, windowMs = 60_000): boolean {
-  const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown'
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? req.headers.get('x-real-ip') ?? 'unknown'
   const now = Date.now()
   const entry = requestMap.get(ip)
-
   if (!entry || now > entry.resetAt) {
     requestMap.set(ip, { count: 1, resetAt: now + windowMs })
     return true
   }
-
   if (entry.count >= limit) return false
   entry.count++
-
-  // Limpeza inline quando map cresce demais
   if (requestMap.size > 1000) {
-    for (const [k, v] of requestMap) {
-      if (now > v.resetAt) requestMap.delete(k)
-    }
+    for (const [k, v] of requestMap) if (now > v.resetAt) requestMap.delete(k)
   }
   return true
 }
 
-// ─── Sanitização XSS ────────────────────────────────────────────
+// Assíncrono — usa Upstash Redis se UPSTASH_REDIS_REST_URL setado, senão fallback.
+// Use em rotas críticas (criar, hospedagem, webhook, verificar-senha).
+export async function rateLimitAsync(req: NextRequest, limit = 10, windowMs = 60_000): Promise<boolean> {
+  const { rateLimitRedis } = await import('./rate-limit')
+  return rateLimitRedis(req, limit, windowMs)
+}
+
+// â”€â”€â”€ SanitizaÃ§Ã£o XSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Escapa caracteres que poderiam ser interpretados como HTML.
-// IMPORTANTE: o React já escapa automaticamente ao renderizar texto,
-// então esse sanitize é defesa extra para contexto de logs, e-mails,
-// concatenação de strings — NUNCA confie só nele.
+// IMPORTANTE: o React jÃ¡ escapa automaticamente ao renderizar texto,
+// entÃ£o esse sanitize Ã© defesa extra para contexto de logs, e-mails,
+// concatenaÃ§Ã£o de strings â€” NUNCA confie sÃ³ nele.
 export function sanitize(str: string): string {
   if (typeof str !== 'string') return ''
   return str
@@ -58,7 +61,7 @@ export function sanitizeTexto(str: string, maxLen = 600): string {
     .slice(0, maxLen)
 }
 
-// ─── Validações ──────────────────────────────────────────────────
+// â”€â”€â”€ ValidaÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export function validarTipo(tipo: string): boolean {
   return ['casal', 'formatura', 'homenagem', 'lembrete'].includes(tipo)
 }
@@ -79,11 +82,11 @@ export function validarData(data: string): boolean {
   if (isNaN(d.getTime())) return false
   const minDate = new Date('1950-01-01')
   const maxDate = new Date()
-  maxDate.setFullYear(maxDate.getFullYear() + 6) // Permite até 6 anos no futuro (formaturas)
+  maxDate.setFullYear(maxDate.getFullYear() + 6) // Permite atÃ© 6 anos no futuro (formaturas)
   return d >= minDate && d <= maxDate
 }
 
-// ─── Parser JSON seguro ──────────────────────────────────────────
+// â”€â”€â”€ Parser JSON seguro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Protege contra prototype pollution (__proto__, constructor, prototype).
 export function parseJsonSeguro<T>(str: string, fallback: T): T {
   if (typeof str !== 'string' || !str) return fallback
@@ -102,25 +105,25 @@ export function parseJsonSeguro<T>(str: string, fallback: T): T {
   }
 }
 
-// ─── Validação de upload de arquivo ──────────────────────────────
+// â”€â”€â”€ ValidaÃ§Ã£o de upload de arquivo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export function validarArquivo(file: File, maxSizeMB = 10): { ok: boolean; erro?: string } {
-  if (!(file instanceof File)) return { ok: false, erro: 'Arquivo inválido' }
+  if (!(file instanceof File)) return { ok: false, erro: 'Arquivo invÃ¡lido' }
   if (file.size === 0) return { ok: false, erro: 'Arquivo vazio' }
   if (file.size > maxSizeMB * 1024 * 1024) return { ok: false, erro: `Arquivo maior que ${maxSizeMB}MB` }
 
   const ext = file.name.split('.').pop()?.toLowerCase() || ''
   const permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif']
-  if (!permitidos.includes(ext)) return { ok: false, erro: 'Formato não permitido' }
+  if (!permitidos.includes(ext)) return { ok: false, erro: 'Formato nÃ£o permitido' }
 
   const mimePermitidos = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-  if (!mimePermitidos.includes(file.type)) return { ok: false, erro: 'Tipo MIME não permitido' }
+  if (!mimePermitidos.includes(file.type)) return { ok: false, erro: 'Tipo MIME nÃ£o permitido' }
 
   return { ok: true }
 }
 
-// ─── Geração de slug ─────────────────────────────────────────────
-// Transforma o título em kebab-case ASCII + 5 chars aleatórios.
-// ~60M combinações por título; colisão é raríssima mas possível
+// â”€â”€â”€ GeraÃ§Ã£o de slug â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Transforma o tÃ­tulo em kebab-case ASCII + 5 chars aleatÃ³rios.
+// ~60M combinaÃ§Ãµes por tÃ­tulo; colisÃ£o Ã© rarÃ­ssima mas possÃ­vel
 // (o caller deve tratar com retry em unique constraint violation).
 export function gerarSlug(titulo: string): string {
   if (typeof titulo !== 'string') return `pagina-${Date.now()}`

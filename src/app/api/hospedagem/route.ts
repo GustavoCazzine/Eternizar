@@ -1,34 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { rateLimit, sanitize } from '@/lib/security'
+import { rateLimitAsync, sanitize } from '@/lib/security'
+import { getAuthUser } from '@/lib/auth'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
 
 export async function POST(request: NextRequest) {
-  if (!rateLimit(request, 3, 60_000)) {
+  if (!(await rateLimitAsync(request, 3, 60_000))) {
     return NextResponse.json({ erro: 'Muitas tentativas.' }, { status: 429 })
   }
+
+  const user = await getAuthUser(request)
+  if (!user) return NextResponse.json({ erro: 'NÃ£o autenticado' }, { status: 401 })
 
   try {
     const body = await request.json()
     const slug = sanitize(String(body.slug || ''))
 
-    if (!slug || slug.length > 60) {
-      return NextResponse.json({ erro: 'Slug inválido' }, { status: 400 })
+    if (!slug || slug.length > 60 || !/^[a-z0-9-]+$/i.test(slug)) {
+      return NextResponse.json({ erro: 'Slug invÃ¡lido' }, { status: 400 })
     }
 
     const supabase = supabaseAdmin()
 
     const { data: pagina, error: errBusca } = await supabase
       .from('paginas')
-      .select('id, slug, hospedagem_vitalicia')
+      .select('id, slug, user_id, hospedagem_vitalicia')
       .eq('slug', slug)
       .single()
 
     if (errBusca || !pagina) {
-      return NextResponse.json({ erro: 'Página não encontrada' }, { status: 404 })
+      return NextResponse.json({ erro: 'PÃ¡gina nÃ£o encontrada' }, { status: 404 })
+    }
+
+    if (pagina.user_id !== user.id) {
+      return NextResponse.json({ erro: 'Sem permissÃ£o' }, { status: 403 })
     }
 
     if (pagina.hospedagem_vitalicia) {
-      return NextResponse.json({ erro: 'Já está ativa' }, { status: 400 })
+      return NextResponse.json({ erro: 'JÃ¡ estÃ¡ ativa' }, { status: 400 })
     }
 
     const { error } = await supabase

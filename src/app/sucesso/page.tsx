@@ -1,13 +1,14 @@
-'use client'
+﻿'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Download, Share2, ArrowRight } from 'lucide-react'
 import CapaInstagram from '@/components/CapaInstagram'
+import CapaSpotify from '@/components/CapaSpotify'
 import AuthButton from '@/components/AuthButton'
 
-// ─── Glow Orbs ───────────────────────────────────────────────────
+// â”€â”€â”€ Glow Orbs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function GlowOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -27,8 +28,8 @@ function GlowOrbs() {
   )
 }
 
-// ─── Floating Hearts ─────────────────────────────────────────────
-// ─── Partículas premium ──────────────────────────────────────────
+// â”€â”€â”€ Floating Hearts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€â”€ PartÃ­culas premium â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Particulas() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -51,7 +52,7 @@ function Particulas() {
   )
 }
 
-// ─── Phone Mockup ────────────────────────────────────────────────
+// â”€â”€â”€ Phone Mockup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
   titulo: string; subtitulo: string; corTema: string; fotoCapa?: string
 }) {
@@ -79,7 +80,7 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
               className="w-24 h-24 rounded-full mb-4 flex items-center justify-center text-4xl"
               style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}15)`, border: `2px solid ${accentColor}50` }}
             >
-              💑
+              ðŸ’‘
             </div>
             <p className="text-white font-bold text-base">{titulo}</p>
             <p className="text-pink-300/80 text-[11px] mt-1 max-w-[180px]">{subtitulo}</p>
@@ -89,13 +90,13 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
               ))}
             </div>
             <div className="mt-4 flex gap-3 items-center">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm" style={{ background: `${accentColor}20` }}>🎵</div>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm" style={{ background: `${accentColor}20` }}>ðŸŽµ</div>
               <div className="text-left">
                 <div className="text-white text-[10px] font-medium">Tocando agora</div>
-                <div className="text-zinc-500 text-[9px]">♪ ♫ ♬</div>
+                <div className="text-zinc-500 text-[9px]">â™ª â™« â™¬</div>
               </div>
             </div>
-            {['💖', '🎶', '✨'].map((e, i) => (
+            {['ðŸ’–', 'ðŸŽ¶', 'âœ¨'].map((e, i) => (
               <motion.div
                 key={i}
                 className="absolute text-sm"
@@ -113,7 +114,7 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
   )
 }
 
-// ─── Stat Box ────────────────────────────────────────────────────
+// â”€â”€â”€ Stat Box â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function StatBox({ value, label }: { value: string | number; label: string }) {
   return (
     <div className="text-center">
@@ -123,16 +124,16 @@ function StatBox({ value, label }: { value: string | number; label: string }) {
   )
 }
 
-// ═════════════════════════════════════════════════════════════════
-// ─── SUCCESS CONTENT ─────────────────────────────────────────────
-// ═════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€â”€ SUCCESS CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function SucessoContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
   const slug = searchParams.get('slug') || ''
   const cor = searchParams.get('cor') || 'pink'
-  const titulo = searchParams.get('titulo') || 'Sua página'
+  const titulo = searchParams.get('titulo') || 'Sua pÃ¡gina'
   const subtitulo = searchParams.get('subtitulo') || ''
   const tipo = searchParams.get('tipo') || 'casal'
   const fotoCapa = searchParams.get('fotoCapa') || ''
@@ -225,7 +226,7 @@ function SucessoContent() {
     win.document.write(`
       <html>
         <head>
-          <title>QR Code — ${titulo}</title>
+          <title>QR Code â€” ${titulo}</title>
           <style>
             body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:system-ui,sans-serif; background:#fff; gap:16px; }
             img { width:260px; height:260px; border-radius:16px; }
@@ -238,7 +239,7 @@ function SucessoContent() {
           <img src="${dataUrl}" alt="QR Code" />
           <h2>${titulo}</h2>
           <p>${url}</p>
-          <span class="badge">Criado com Eternizar ✨</span>
+          <span class="badge">Criado com Eternizar âœ¨</span>
           <script>setTimeout(()=>window.print(),500)<\/script>
         </body>
       </html>
@@ -248,7 +249,7 @@ function SucessoContent() {
 
   async function compartilhar() {
     if (navigator.share) {
-      await navigator.share({ title: titulo, text: '🎁 Tenho uma surpresa especial para você!', url })
+      await navigator.share({ title: titulo, text: 'ðŸŽ Tenho uma surpresa especial para vocÃª!', url })
     } else {
       copiarLink()
     }
@@ -273,7 +274,7 @@ function SucessoContent() {
       <section className="relative z-10 min-h-screen lg:h-screen pt-16 pb-4 px-6 flex items-start lg:items-center">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
-            {/* ─── LEFT COLUMN ─── */}
+            {/* â”€â”€â”€ LEFT COLUMN â”€â”€â”€ */}
             <div className="flex flex-col items-center lg:items-start">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -281,9 +282,9 @@ function SucessoContent() {
                 transition={{ duration: 0.6 }}
                 className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight mb-4 text-center lg:text-left"
               >
-                Parabéns! Sua Homenagem{' '}
+                ParabÃ©ns! Sua Homenagem{' '}
                 <br className="hidden sm:block" />
-                Está Online ✨
+                EstÃ¡ Online âœ¨
               </motion.h1>
 
               <div className="flex justify-center lg:justify-start">
@@ -296,7 +297,7 @@ function SucessoContent() {
               </div>
             </div>
 
-            {/* ─── RIGHT COLUMN ─── */}
+            {/* â”€â”€â”€ RIGHT COLUMN â”€â”€â”€ */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -305,7 +306,7 @@ function SucessoContent() {
             >
               {/* Sharing Actions Card */}
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6">
-                <h2 className="text-lg font-bold mb-6 text-center">Ações de Compartilhamento</h2>
+                <h2 className="text-lg font-bold mb-6 text-center">AÃ§Ãµes de Compartilhamento</h2>
 
                 {/* QR Code */}
                 <div className="flex justify-center mb-4">
@@ -346,7 +347,7 @@ function SucessoContent() {
                     className="w-full py-2.5 rounded-xl border border-white/15 bg-white/[0.04] text-white font-semibold text-sm hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center gap-2"
                   >
                     {copiado ? (
-                      <><span className="text-green-400">✓</span> Link Copiado!</>
+                      <><span className="text-green-400">âœ“</span> Link Copiado!</>
                     ) : (
                       <><Copy className="w-4 h-4" /> Copiar Link</>
                     )}
@@ -390,12 +391,12 @@ function SucessoContent() {
                 {/* Stats */}
                 <div className="border-t border-white/10 pt-5 mb-5">
                   <h3 className="text-zinc-400 text-xs font-semibold tracking-wider uppercase mb-4 text-center">
-                    Visitas e Interações
+                    Visitas e InteraÃ§Ãµes
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     <StatBox value={0} label="Visitas hoje" />
                     <StatBox value={0} label="Curtidas" />
-                    <StatBox value={0} label="Interações" />
+                    <StatBox value={0} label="InteraÃ§Ãµes" />
                   </div>
                 </div>
 
@@ -405,7 +406,7 @@ function SucessoContent() {
                   style={{ borderColor: `${corHex}30`, background: `${corHex}08` }}
                 >
                   <div>
-                    <p className="text-zinc-400 text-xs">Sua Página Expira em</p>
+                    <p className="text-zinc-400 text-xs">Sua PÃ¡gina Expira em</p>
                     <p className="text-white text-lg font-bold">{hospedagemAtiva ? "Para sempre" : "60 dias"}</p>
                   </div>
                   <button
@@ -414,7 +415,7 @@ function SucessoContent() {
                     className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all duration-200 hover:opacity-90 disabled:opacity-60"
                     style={{ background: hospedagemAtiva ? '#10b981' : `linear-gradient(135deg, ${corHex}, ${corHex}bb)` }}
                   >
-                    {hospedagemAtiva ? "Ativa para sempre!" : hospedagemLoading ? "Ativando..." : "Ativar Hospedagem Vitalícia"}
+                    {hospedagemAtiva ? "Ativa para sempre!" : hospedagemLoading ? "Ativando..." : "Ativar Hospedagem VitalÃ­cia"}
                   </button>
                 </div>
               </div>
@@ -426,7 +427,7 @@ function SucessoContent() {
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm"
                   style={{ background: `linear-gradient(135deg, ${corHex}, ${corHex}bb)`, boxShadow: `0 8px 32px ${corHex}40` }}
                 >
-                  Ver minha página <ArrowRight className="w-5 h-5" />
+                  Ver minha pÃ¡gina <ArrowRight className="w-5 h-5" />
                 </button>
               </motion.div>
             </motion.div>
@@ -439,22 +440,25 @@ function SucessoContent() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-12 flex justify-center"
             >
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6 max-w-sm w-full">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6 max-w-2xl w-full">
                 <div className="flex items-center gap-2 mb-4 justify-center">
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: corHex }}>
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                     <circle cx="12" cy="12" r="4" />
                     <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
                   </svg>
-                  <h3 className="text-lg font-bold">Capa para Instagram Stories</h3>
+                  <h3 className="text-lg font-bold">Capas para compartilhar</h3>
                 </div>
-                <CapaInstagram
-                  titulo={titulo}
-                  subtitulo={subtitulo}
-                  corHex={corHex}
-                  tipo={tipo}
-                  fotoCapa={fotoCapa || undefined}
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-xs text-zinc-500 text-center mb-2">Story (1080×1920)</p>
+                    <CapaInstagram titulo={titulo} subtitulo={subtitulo} corHex={corHex} tipo={tipo} fotoCapa={fotoCapa || undefined} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-500 text-center mb-2">Spotify (1080×1080)</p>
+                    <CapaSpotify titulo={titulo} subtitulo={subtitulo} corHex={corHex} tipo={tipo} fotoCapa={fotoCapa || undefined} />
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
@@ -465,7 +469,7 @@ function SucessoContent() {
       <footer className="relative z-10 border-t border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src="/logo.png" alt="Eternizar" className="h-7 opacity-40" />
-          <p className="text-zinc-600 text-xs">Criado com Eternizar ✨</p>
+          <p className="text-zinc-600 text-xs">Criado com Eternizar âœ¨</p>
         </div>
       </footer>
     </main>

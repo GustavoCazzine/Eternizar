@@ -1,11 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit, sanitize, gerarSlug, validarEmail } from '@/lib/security'
 import { getAuthUser } from '@/lib/auth'
 
-// ⚠️ DESATIVADO — fluxo de pagamento Mercado Pago não está em uso.
-// A plataforma foi convertida para free; criação acontece via /api/criar.
-// Esta rota é mantida pra eventual reativação de monetização, mas
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+
+// âš ï¸ DESATIVADO â€” fluxo de pagamento Mercado Pago nÃ£o estÃ¡ em uso.
+// A plataforma foi convertida para free; criaÃ§Ã£o acontece via /api/criar.
+// Esta rota Ã© mantida pra eventual reativaÃ§Ã£o de monetizaÃ§Ã£o, mas
 // retorna 410 Gone se for chamada acidentalmente.
 const FLUXO_PAGAMENTO_ATIVO = false
 
@@ -19,10 +23,10 @@ export async function POST(req: NextRequest) {
 
   // Rate limiting: max 5 pedidos por minuto por IP
   if (!rateLimit(req, 5, 60_000)) {
-    return NextResponse.json({ erro: 'Muitas requisições. Tente novamente em breve.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes. Tente novamente em breve.' }, { status: 429 })
   }
 
-  // Vincular pedido à conta do usuário logado (se houver)
+  // Vincular pedido Ã  conta do usuÃ¡rio logado (se houver)
   const authUser = await getAuthUser(req)
   const userId = authUser?.id || null
 
@@ -40,15 +44,15 @@ export async function POST(req: NextRequest) {
     const senhaProtegida = fd.get('senhaProtegida') as string || ''
     const eventosRaw = fd.get('eventos') as string
 
-    // Validações
+    // ValidaÃ§Ãµes
     if (!tipo || !titulo || !mensagem || !emailCliente) {
-      return NextResponse.json({ erro: 'Campos obrigatórios faltando.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Campos obrigatÃ³rios faltando.' }, { status: 400 })
     }
     if (!validarEmail(emailCliente)) {
-      return NextResponse.json({ erro: 'E-mail inválido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'E-mail invÃ¡lido.' }, { status: 400 })
     }
     if (!['casal', 'formatura', 'homenagem', 'lembrete'].includes(tipo)) {
-      return NextResponse.json({ erro: 'Tipo inválido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Tipo invÃ¡lido.' }, { status: 400 })
     }
 
     const precos: Record<string, number> = { casal: 29, formatura: 59, homenagem: 29, lembrete: 15 }
@@ -93,7 +97,7 @@ export async function POST(req: NextRequest) {
       senhaHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
     }
 
-    // Calcular expiração (60 dias para páginas, 365 para lembrete)
+    // Calcular expiraÃ§Ã£o (60 dias para pÃ¡ginas, 365 para lembrete)
     const diasExpiracao = tipo === 'lembrete' ? 365 : 60
     const expiraEm = new Date()
     expiraEm.setDate(expiraEm.getDate() + diasExpiracao)

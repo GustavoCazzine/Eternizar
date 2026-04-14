@@ -1,0 +1,18 @@
+{
+  "framework": "nextjs",
+  "regions": ["gru1"],
+  "functions": {
+    "src/app/api/criar/route.ts": { "maxDuration": 60, "memory": 1024 },
+    "src/app/api/pagamento/webhook/route.ts": { "maxDuration": 30 },
+    "src/app/api/paginas/[slug]/route.ts": { "maxDuration": 30 }
+  },
+  "headers": [
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
+  "crons": []
+}

@@ -1,26 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import {
   sanitize, sanitizeTexto, gerarSlug, validarEmail,
   validarTipo, validarCor, validarArquivo, validarData,
-  parseJsonSeguro, rateLimit
+  parseJsonSeguro, rateLimitAsync
 } from '@/lib/security'
 import { getAuthUser } from '@/lib/auth'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+
 export async function POST(req: NextRequest) {
-  // ─── Rate limiting: 5 criações por minuto por IP ───────
-  if (!rateLimit(req, 5, 60_000)) {
+  // â”€â”€â”€ Rate limiting: 5 criaÃ§Ãµes por minuto por IP â”€â”€â”€â”€â”€â”€â”€
+  if (!(await rateLimitAsync(req, 5, 60_000))) {
     return NextResponse.json({ erro: 'Muitas tentativas. Aguarde um momento.' }, { status: 429 })
   }
 
 
-  // ─── Verificar usuário autenticado (opcional por agora) ─────
+  // â”€â”€â”€ Verificar usuÃ¡rio autenticado (opcional por agora) â”€â”€â”€â”€â”€
   const user = await getAuthUser(req)
   const userId = user?.id || null
   try {
     const fd = await req.formData()
 
-    // ─── 1. Extrair e sanitizar campos ───────────────────
+    // â”€â”€â”€ 1. Extrair e sanitizar campos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const tipo = sanitize(fd.get('tipo') as string || '')
     const titulo = sanitize(fd.get('titulo') as string || '')
     const subtitulo = sanitize(fd.get('subtitulo') as string || '')
@@ -33,37 +37,37 @@ export async function POST(req: NextRequest) {
     const senhaDica = sanitize(fd.get('senhaDica') as string || '').slice(0, 100)
     const senhaProtegida = (fd.get('senhaProtegida') as string || '').slice(0, 100)
 
-    // ─── 2. Validação obrigatória ────────────────────────
+    // â”€â”€â”€ 2. ValidaÃ§Ã£o obrigatÃ³ria â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (!tipo || !validarTipo(tipo)) {
-      return NextResponse.json({ erro: 'Tipo de página inválido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Tipo de pÃ¡gina invÃ¡lido.' }, { status: 400 })
     }
     if (!titulo || titulo.length < 1 || titulo.length > 100) {
-      return NextResponse.json({ erro: 'Título inválido (1-100 caracteres).' }, { status: 400 })
+      return NextResponse.json({ erro: 'TÃ­tulo invÃ¡lido (1-100 caracteres).' }, { status: 400 })
     }
     if (!mensagem || mensagem.length < 5 || mensagem.length > 1000) {
-      return NextResponse.json({ erro: 'Mensagem inválida (5-1000 caracteres).' }, { status: 400 })
+      return NextResponse.json({ erro: 'Mensagem invÃ¡lida (5-1000 caracteres).' }, { status: 400 })
     }
     if (!emailCliente || !validarEmail(emailCliente)) {
-      return NextResponse.json({ erro: 'E-mail inválido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'E-mail invÃ¡lido.' }, { status: 400 })
     }
     if (emailDestinatario && !validarEmail(emailDestinatario)) {
-      return NextResponse.json({ erro: 'E-mail do destinatário inválido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'E-mail do destinatÃ¡rio invÃ¡lido.' }, { status: 400 })
     }
     if (!validarCor(corTema)) {
-      return NextResponse.json({ erro: 'Cor inválida.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Cor invÃ¡lida.' }, { status: 400 })
     }
 
-    // ─── 3. Parse JSON com proteção ──────────────────────
+    // â”€â”€â”€ 3. Parse JSON com proteÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const musica = parseJsonSeguro(fd.get('musica') as string, null)
     const eventos = parseJsonSeguro<Array<Record<string, unknown>>>(fd.get('eventos') as string, [])
     const dadosCasal = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosCasal') as string, null)
     const dadosFormatura = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosFormatura') as string, null)
     const fotosLegendas = parseJsonSeguro<string[]>(fd.get('fotosLegendas') as string, [])
 
-    // ─── 4. Validar dados específicos do tipo ────────────
+    // â”€â”€â”€ 4. Validar dados especÃ­ficos do tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (tipo === 'casal' && dadosCasal) {
       if (dadosCasal.dataInicio && !validarData(dadosCasal.dataInicio)) {
-        return NextResponse.json({ erro: 'Data de início inválida.' }, { status: 400 })
+        return NextResponse.json({ erro: 'Data de inÃ­cio invÃ¡lida.' }, { status: 400 })
       }
       // Sanitizar campos internos
       if (dadosCasal.nome1) dadosCasal.nome1 = sanitize(dadosCasal.nome1).slice(0, 50)
@@ -79,20 +83,20 @@ export async function POST(req: NextRequest) {
       if (dadosFormatura.anoFormatura) {
         const ano = parseInt(dadosFormatura.anoFormatura)
         if (isNaN(ano) || ano < 1950 || ano > new Date().getFullYear() + 6) {
-          return NextResponse.json({ erro: 'Ano de formatura inválido.' }, { status: 400 })
+          return NextResponse.json({ erro: 'Ano de formatura invÃ¡lido.' }, { status: 400 })
         }
       }
     }
 
-    // ─── 5. Validar e limitar eventos ────────────────────
+    // â”€â”€â”€ 5. Validar e limitar eventos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const eventosLimpos = (Array.isArray(eventos) ? eventos : []).slice(0, 20).map(ev => ({
       data: sanitize(String(ev.data || '')).slice(0, 30),
       titulo: sanitize(String(ev.titulo || '')).slice(0, 80),
       descricao: sanitizeTexto(String(ev.descricao || ''), 300),
-      emoji: String(ev.emoji || '⭐').slice(0, 4),
+      emoji: String(ev.emoji || 'â­').slice(0, 4),
     })).filter(ev => ev.titulo) // Remove eventos vazios
 
-    // ─── 6. Validar música ───────────────────────────────
+    // â”€â”€â”€ 6. Validar mÃºsica â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let musicaLimpa = null
     if (musica && musica.nome) {
       musicaLimpa = {
@@ -108,7 +112,7 @@ export async function POST(req: NextRequest) {
       if (musicaLimpa.previewUrl && !musicaLimpa.previewUrl.startsWith('https://')) musicaLimpa.previewUrl = ''
     }
 
-    // ─── 7. Hash da senha ────────────────────────────────
+    // â”€â”€â”€ 7. Hash da senha â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let senhaHash: string | null = null
     if (senhaProtegida) {
       const encoder = new TextEncoder()
@@ -120,7 +124,7 @@ export async function POST(req: NextRequest) {
     const supabase = supabaseAdmin()
     const slug = gerarSlug(titulo)
 
-    // ─── 8. Upload foto de capa ──────────────────────────
+    // â”€â”€â”€ 8. Upload foto de capa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let fotoCapa = ''
     const fotoCapaFile = fd.get('fotoCapa') as File | null
     if (fotoCapaFile instanceof File && fotoCapaFile.size > 0) {
@@ -137,7 +141,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ─── 9. Upload fotos stories ─────────────────────────
+    // â”€â”€â”€ 9. Upload fotos stories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const fotosUrls: { url: string; legenda: string; isCapa?: boolean }[] = []
     if (fotoCapa) fotosUrls.push({ url: fotoCapa, legenda: '', isCapa: true })
 
@@ -158,7 +162,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ─── 10. Upload fotos dos eventos ────────────────────
+    // â”€â”€â”€ 10. Upload fotos dos eventos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const eventosComFoto = [...eventosLimpos]
     for (let idx = 0; idx < eventosLimpos.length; idx++) {
       const fotoEvento = fd.get(`eventoFoto_${idx}`) as File | null
@@ -176,7 +180,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ─── 11. Inserir no banco ────────────────────────────
+    // â”€â”€â”€ 11. Inserir no banco â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const expiraEm = new Date()
     expiraEm.setDate(expiraEm.getDate() + 60)
 
@@ -206,7 +210,7 @@ export async function POST(req: NextRequest) {
 
     if (erroPagina) {
       console.error('[API/teste/criar] DB error:', erroPagina.message)
-      return NextResponse.json({ erro: 'Erro ao criar página.' }, { status: 500 })
+      return NextResponse.json({ erro: 'Erro ao criar pÃ¡gina.' }, { status: 500 })
     }
 
     return NextResponse.json({

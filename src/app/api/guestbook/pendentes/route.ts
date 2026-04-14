@@ -1,15 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getAuthUser } from '@/lib/auth'
 import { rateLimit } from '@/lib/security'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+
 export async function GET(request: NextRequest) {
   if (!rateLimit(request, 30, 60_000)) {
-    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes.' }, { status: 429 })
   }
 
   const user = await getAuthUser(request)
-  if (!user) return NextResponse.json({ erro: 'Não autenticado' }, { status: 401 })
+  if (!user) return NextResponse.json({ erro: 'NÃ£o autenticado' }, { status: 401 })
 
   const supabase = supabaseAdmin()
 

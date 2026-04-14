@@ -1,9 +1,11 @@
-'use client'
+﻿'use client'
 
 import { motion } from 'framer-motion'
-import { Heart, Plus, Eye, Calendar, ExternalLink, LogOut, ChevronRight, Share2, Pencil } from 'lucide-react'
+import { Heart, Plus, Eye, Calendar, ExternalLink, LogOut, ChevronRight, Share2, Pencil, Download, X } from 'lucide-react'
+import CapaInstagram from '@/components/CapaInstagram'
+import CapaSpotify from '@/components/CapaSpotify'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Pagina {
   slug: string; tipo: string; titulo: string; subtitulo: string
@@ -24,12 +26,12 @@ const coresMap: Record<string, { primaria: string; secundaria: string; fundo: st
 }
 
 const tiposIcons: Record<string, string> = {
-  casal: '❤️', formatura: '🎓', homenagem: '⭐',
+  casal: 'â¤ï¸', formatura: 'ðŸŽ“', homenagem: 'â­',
 }
 
 function diasRestantes(expira_em: string | null, vitalicia: boolean): string {
   if (vitalicia) return 'Permanente'
-  if (!expira_em) return '—'
+  if (!expira_em) return 'â€”'
   const dias = Math.ceil((new Date(expira_em).getTime() - Date.now()) / 86400000)
   if (dias < 0) return 'Expirada'
   if (dias === 0) return 'Expira hoje'
@@ -40,12 +42,25 @@ function mascararEmail(email: string): string {
   const [user, dom] = email.split('@')
   if (!user || !dom) return email
   const visivel = user.length <= 3 ? user[0] : user.slice(0, 2)
-  return `${visivel}•••@${dom}`
+  return `${visivel}â€¢â€¢â€¢@${dom}`
 }
 
 export default function PainelCliente({ user, paginas }: { user: User; paginas: Pagina[] }) {
   const cor = '#ff2d78'
   const [copiado, setCopiado] = useState<string | null>(null)
+  const [modalCapa, setModalCapa] = useState<Pagina | null>(null)
+
+  useEffect(() => {
+    if (!modalCapa) return
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalCapa(null) }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [modalCapa])
+  const coresMap: Record<string, string> = { pink:'#ff2d78', violet:'#8b5cf6', amber:'#f59e0b', blue:'#3b82f6', emerald:'#10b981', rose:'#f43f5e' }
 
   async function compartilhar(slug: string) {
     const url = `${window.location.origin}/p/${slug}`
@@ -68,7 +83,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
           style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
       </div>
 
-      {/* Partículas */}
+      {/* PartÃ­culas */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {[...Array(5)].map((_, i) => (
           <motion.div key={i} className="absolute rounded-full"
@@ -110,16 +125,16 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
 
       {/* Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
-        {/* Título */}
+        {/* TÃ­tulo */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10"
         >
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#ff2d78]">Sua coleção</p>
+            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#ff2d78]">Sua coleÃ§Ã£o</p>
             <h1 className="text-3xl sm:text-4xl font-black">Minhas Homenagens</h1>
-            <p className="text-zinc-500 text-sm mt-2">{paginas.length} página{paginas.length !== 1 ? 's' : ''} criada{paginas.length !== 1 ? 's' : ''}</p>
+            <p className="text-zinc-500 text-sm mt-2">{paginas.length} pÃ¡gina{paginas.length !== 1 ? 's' : ''} criada{paginas.length !== 1 ? 's' : ''}</p>
           </div>
           <Link href="/criar"
             className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] min-h-[44px] shrink-0"
@@ -141,8 +156,8 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
             >
               <Heart className="w-16 h-16 mx-auto fill-current" style={{ color: `${cor}40`, filter: `drop-shadow(0 0 30px ${cor}30)` }} />
             </motion.div>
-            <h2 className="text-xl sm:text-2xl font-bold text-zinc-300 mb-2">Sua primeira história espera</h2>
-            <p className="text-zinc-600 text-sm mb-8 max-w-sm mx-auto">Crie uma homenagem e surpreenda alguém especial com momentos eternizados.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-zinc-300 mb-2">Sua primeira histÃ³ria espera</h2>
+            <p className="text-zinc-600 text-sm mb-8 max-w-sm mx-auto">Crie uma homenagem e surpreenda alguÃ©m especial com momentos eternizados.</p>
             <Link href="/criar"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
               style={{ background: `linear-gradient(135deg, ${cor}, ${cor}aa)`, boxShadow: `0 8px 24px ${cor}25` }}>
@@ -157,7 +172,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
               const capa = p.fotos?.find((f: { isCapa?: boolean }) => f.isCapa)?.url
               const status = diasRestantes(p.expira_em, p.hospedagem_vitalicia)
               const expirada = status === 'Expirada'
-              const icon = tiposIcons[p.tipo] || '💌'
+              const icon = tiposIcons[p.tipo] || 'ðŸ’Œ'
 
               return (
                 <motion.div
@@ -208,14 +223,14 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
                       </span>
                     </div>
 
-                    {/* Coração centralizado quando sem capa */}
+                    {/* CoraÃ§Ã£o centralizado quando sem capa */}
                     {!capa && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Heart className="w-16 h-16 fill-current" style={{ color: corTema, filter: `drop-shadow(0 0 20px ${corTema}80)` }} />
                       </div>
                     )}
 
-                    {/* Conteúdo embaixo */}
+                    {/* ConteÃºdo embaixo */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                       <h3 className="font-black text-white text-xl leading-tight nome-capitalize line-clamp-2 mb-1"
                         style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
@@ -255,6 +270,13 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
                       >
                         <Share2 className="w-4 h-4" />
                       </button>
+                      <button
+                        onClick={() => setModalCapa(p)}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/5 transition"
+                        title="Baixar capas"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
                       <Link href={`/p/${p.slug}`} target="_blank"
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/5 transition"
                         title="Abrir"
@@ -274,6 +296,31 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
             })}
           </div>
         )}
+
+        {modalCapa && (() => {
+          const corHex = coresMap[modalCapa.cor_tema] || (modalCapa.cor_tema?.startsWith('#') ? modalCapa.cor_tema : '#ff2d78')
+          const fotoCapa = modalCapa.fotos?.find(f => f.isCapa)?.url || modalCapa.fotos?.[0]?.url
+          return (
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setModalCapa(null)}>
+              <div className="bg-[#0f0f14] border border-white/10 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold text-white">Baixar capas</h3>
+                  <button onClick={() => setModalCapa(null)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-xs text-zinc-500 text-center mb-2">Story (1080x1920)</p>
+                    <CapaInstagram titulo={modalCapa.titulo} subtitulo={modalCapa.subtitulo} corHex={corHex} tipo={modalCapa.tipo} fotoCapa={fotoCapa} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-500 text-center mb-2">Spotify (1080x1080)</p>
+                    <CapaSpotify titulo={modalCapa.titulo} subtitulo={modalCapa.subtitulo} corHex={corHex} tipo={modalCapa.tipo} fotoCapa={fotoCapa} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </main>
     </div>
   )

@@ -12,7 +12,7 @@ interface Props {
 }
 
 const EMOJIS: Record<string, string> = {
-  casal: '❤️', formatura: 'ðŸŽ“', homenagem: '⭐'
+  casal: '♥', formatura: '★', homenagem: '★'
 }
 
 export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tipo }: Props) {

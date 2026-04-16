@@ -26,12 +26,12 @@ const coresMap: Record<string, { primaria: string; secundaria: string; fundo: st
 }
 
 const tiposIcons: Record<string, string> = {
-  casal: '❤️', formatura: 'ðŸŽ“', homenagem: '⭐',
+  casal: '♥', formatura: '★', homenagem: '★',
 }
 
 function diasRestantes(expira_em: string | null, vitalicia: boolean): string {
   if (vitalicia) return 'Permanente'
-  if (!expira_em) return 'â€”'
+  if (!expira_em) return ''
   const dias = Math.ceil((new Date(expira_em).getTime() - Date.now()) / 86400000)
   if (dias < 0) return 'Expirada'
   if (dias === 0) return 'Expira hoje'
@@ -42,7 +42,7 @@ function mascararEmail(email: string): string {
   const [user, dom] = email.split('@')
   if (!user || !dom) return email
   const visivel = user.length <= 3 ? user[0] : user.slice(0, 2)
-  return `${visivel}â€¢â€¢â€¢@${dom}`
+  return `${visivel}***@${dom}`
 }
 
 export default function PainelCliente({ user, paginas }: { user: User; paginas: Pagina[] }) {
@@ -77,9 +77,9 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
     <div className="min-h-screen bg-[#08080c] text-white relative overflow-hidden">
       {/* Glow */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute w-[600px] h-[600px] rounded-full blur-[180px] opacity-12"
+        <div className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-12"
           style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-10%' }} />
-        <div className="absolute w-[400px] h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[100px] opacity-8"
+        <div className="absolute w-[400px] h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[30px] md:blur-[60px] opacity-8"
           style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
       </div>
 
@@ -172,7 +172,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
               const capa = p.fotos?.find((f: { isCapa?: boolean }) => f.isCapa)?.url
               const status = diasRestantes(p.expira_em, p.hospedagem_vitalicia)
               const expirada = status === 'Expirada'
-              const icon = tiposIcons[p.tipo] || 'ðŸ’Œ'
+              const icon = tiposIcons[p.tipo] || '’Œ'
 
               return (
                 <motion.div

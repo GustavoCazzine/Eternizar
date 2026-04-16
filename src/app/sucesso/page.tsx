@@ -13,7 +13,7 @@ function GlowOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <div
-        className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] opacity-15"
+        className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-[80px] md:blur-[40px] md:blur-[70px] opacity-15"
         style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-5%' }}
       />
     </div>
@@ -52,7 +52,7 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
               className="w-24 h-24 rounded-full mb-4 flex items-center justify-center text-4xl"
               style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}15)`, border: `2px solid ${accentColor}50` }}
             >
-              ðŸ’‘
+              ’‘
             </div>
             <p className="text-white font-bold text-base">{titulo}</p>
             <p className="text-pink-300/80 text-[11px] mt-1 max-w-[180px]">{subtitulo}</p>
@@ -62,13 +62,13 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
               ))}
             </div>
             <div className="mt-4 flex gap-3 items-center">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm" style={{ background: `${accentColor}20` }}>ðŸŽµ</div>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm" style={{ background: `${accentColor}20` }}></div>
               <div className="text-left">
                 <div className="text-white text-[10px] font-medium">Tocando agora</div>
-                <div className="text-zinc-500 text-[9px]">â™ª â™« â™¬</div>
+                <div className="text-zinc-500 text-[9px]">  </div>
               </div>
             </div>
-            {['ðŸ’–', 'ðŸŽ¶', '✨'].map((e, i) => (
+            {['♥', '', '✨'].map((e, i) => (
               <motion.div
                 key={i}
                 className="absolute text-sm"
@@ -96,9 +96,9 @@ function StatBox({ value, label }: { value: string | number; label: string }) {
   )
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// =================================================================
 // â”€â”€â”€ SUCCESS CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// =================================================================
 function SucessoContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -198,7 +198,7 @@ function SucessoContent() {
     win.document.write(`
       <html>
         <head>
-          <title>QR Code â€” ${titulo}</title>
+          <title>QR Code  ${titulo}</title>
           <style>
             body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:system-ui,sans-serif; background:#fff; gap:16px; }
             img { width:260px; height:260px; border-radius:16px; }
@@ -221,7 +221,7 @@ function SucessoContent() {
 
   async function compartilhar() {
     if (navigator.share) {
-      await navigator.share({ title: titulo, text: 'ðŸŽ Tenho uma surpresa especial para vocàª!', url })
+      await navigator.share({ title: titulo, text: 'Tenho uma surpresa especial para voce!', url })
     } else {
       copiarLink()
     }
@@ -319,7 +319,7 @@ function SucessoContent() {
                     className="w-full py-2.5 rounded-xl border border-white/15 bg-white/[0.04] text-white font-semibold text-sm hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center gap-2"
                   >
                     {copiado ? (
-                      <><span className="text-green-400">âœ“</span> Link Copiado!</>
+                      <><span className="text-green-400">*</span> Link Copiado!</>
                     ) : (
                       <><Copy className="w-4 h-4" /> Copiar Link</>
                     )}
@@ -421,7 +421,7 @@ function SucessoContent() {
                   </svg>
                   <h3 className="text-lg font-bold">Capas para compartilhar</h3>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="flex flex-col items-center gap-8 sm:grid sm:grid-cols-2">
                   <div>
                     <p className="text-xs text-zinc-500 text-center mb-2">Story (1080×1920)</p>
                     <CapaInstagram titulo={titulo} subtitulo={subtitulo} corHex={corHex} tipo={tipo} fotoCapa={fotoCapa || undefined} />

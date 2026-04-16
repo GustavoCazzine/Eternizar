@@ -34,7 +34,7 @@ function GlowOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div
-        className="absolute w-[700px] h-[700px] rounded-full blur-[180px] opacity-15"
+        className="absolute w-[700px] h-[700px] rounded-full blur-[40px] md:blur-[80px] opacity-15"
         style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-15%', right: '-10%' }}
         animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.2, 0.12] }}
         transition={{ duration: 10, repeat: Infinity }}

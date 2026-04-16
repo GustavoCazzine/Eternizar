@@ -28,7 +28,7 @@ export default function GlobalError({
     <div className="min-h-screen bg-[#08080c] text-white flex items-center justify-center px-6 relative overflow-hidden">
       {/* Glow sutil */}
       <div
-        className="absolute w-[500px] h-[500px] rounded-full blur-[150px] opacity-10 pointer-events-none"
+        className="absolute w-[180px] h-[180px] md:w-[350px] md:h-[350px] rounded-full blur-[40px] md:blur-[80px] opacity-10 pointer-events-none"
         style={{
           background: 'radial-gradient(circle, #ff2d78, transparent 70%)',
           top: '20%',

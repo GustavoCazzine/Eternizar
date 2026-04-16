@@ -56,9 +56,9 @@ function LoginContent() {
   return (
     <div className="min-h-screen bg-[#08080c] text-white flex items-center justify-center px-4 relative overflow-hidden">
       {/* Glow orbs */}
-      <div className="absolute w-[600px] h-[600px] rounded-full blur-[180px] opacity-12 pointer-events-none"
+      <div className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-12 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-10%' }} />
-      <div className="absolute w-[400px] h-[400px] rounded-full blur-[150px] opacity-8 pointer-events-none"
+      <div className="absolute w-[400px] h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-8 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
 
       {/* Partículas */}

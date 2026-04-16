@@ -270,7 +270,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
       <div className="relative aspect-square overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.img src={dados.capa} alt={dados.album} className="w-full h-full object-cover"
-          animate={{ scale: tocando ? 1.05 : 1 }} transition={{ duration: 0.8 }} />
+           transition={{ duration: 0.8 }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
         {/* Ondas quando tocando */}
         {tocando && (
@@ -279,7 +279,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
               <motion.div key={i} className="absolute rounded-full"
                 style={{ border: `2px solid ${cor}40` }}
                 animate={{ scale: [1, 2 + i * 0.5], opacity: [0.6, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }} />
+                 />
             ))}
           </div>
         )}
@@ -293,7 +293,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
             <p className="text-gray-400 text-sm truncate mt-0.5">{dados.artista}</p>
             <p className="text-gray-600 text-xs truncate">{dados.album}</p>
           </div>
-          <motion.div animate={{ scale: tocando ? [1, 1.3, 1] : 1 }}
+          <motion.div className={tocando ? "animate-pulse" : ""}
             transition={{ duration: 0.6, repeat: tocando ? Infinity : 0, repeatDelay: 0.4 }}>
             <Heart className="w-6 h-6 fill-current ml-3 mt-1" style={{ color: cor }} />
           </motion.div>
@@ -566,8 +566,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <motion.div key={`particle-${i}`} className="absolute rounded-full"
             style={{ width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2, background: `${cor}${20 + i * 8}`,
               left: `${10 + i * 18}%`, top: `${25 + ((i * 23) % 50)}%` }}
-            animate={{ y: [-20, 20, -20], opacity: [0.15, 0.4, 0.15] }}
-            transition={{ duration: 5 + i, repeat: Infinity, delay: i * 0.8 }}
+            
+            
           />
         ))}
       </div>
@@ -594,14 +594,14 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <motion.div
             className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
             style={{ background: cor }}
-            animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
-            transition={{ duration: 8, repeat: Infinity }}
+            
+            
           />
           <motion.div
             className="absolute bottom-1/3 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-10"
             style={{ background: paleta.secundaria }}
-            animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.15, 0.08] }}
-            transition={{ duration: 6, repeat: Infinity, delay: 2 }}
+            
+            
           />
         </div>
 
@@ -615,8 +615,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
             className="mb-8 inline-flex items-center justify-center"
           >
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              
+              
             >
               <Heart className="w-16 h-16 fill-current drop-shadow-lg" style={{ color: cor, filter: `drop-shadow(0 0 30px ${cor}60)` }} />
             </motion.div>
@@ -657,7 +657,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           style={{ color: `${cor}80` }}
         >
           <span className="text-xs uppercase tracking-widest">Role para descobrir</span>
-          <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+          <motion.div  >
             <ArrowDown className="w-5 h-5" />
           </motion.div>
         </motion.div>
@@ -974,16 +974,16 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                 left: `${15 + i * 13}%`,
                 top: `${20 + (i % 3) * 25}%`,
               }}
-              animate={{ y: [-20, 20, -20], opacity: [0.3, 0.8, 0.3] }}
-              transition={{ duration: 3 + i, repeat: Infinity, delay: i * 0.5 }}
+              
+              
             />
           ))}
         </div>
 
         <Secao className="text-center max-w-2xl mx-auto relative z-10">
           <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
+            
+            
             className="text-6xl mb-10"
           >
             💌
@@ -1000,8 +1000,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
           {/* Coração pulsante */}
           <motion.div
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ repeat: Infinity, duration: 1.2 }}
+            
+            
           >
             <Heart className="w-10 h-10 mx-auto fill-current" style={{ color: cor }} />
           </motion.div>
@@ -1016,15 +1016,15 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
               key={i}
               className="absolute w-1 h-1 rounded-full"
               style={{ background: cor, left: `${20 + i * 20}%`, top: `${30 + (i % 2) * 30}%` }}
-              animate={{ opacity: [0, 0.6, 0], scale: [0, 1.5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, delay: i * 1.2 }}
+              
+              
             />
           ))}
         </div>
         <Secao className="text-center max-w-xl mx-auto relative z-10">
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
+            
+            
             className="mb-6"
           >
             <Heart className="w-8 h-8 mx-auto" style={{ color: `${cor}50` }} />

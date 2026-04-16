@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimitAsync, sanitize, sanitizeTexto } from '@/lib/security'
 import { getAuthUser } from '@/lib/auth'
@@ -10,17 +10,17 @@ export const maxDuration = 30
 // GET â€” busca mensagens (apenas aprovadas, exceto se for o dono)
 export async function GET(request: NextRequest) {
   if (!(await rateLimitAsync(request, 30, 60_000))) {
-    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
   }
 
   const slug = sanitize(request.nextUrl.searchParams.get('slug') || '')
   if (!slug || slug.length > 60) {
-    return NextResponse.json({ erro: 'Slug invÃ¡lido' }, { status: 400 })
+    return NextResponse.json({ erro: 'Slug inválido' }, { status: 400 })
   }
 
   const supabase = supabaseAdmin()
 
-  // Verifica se quem pede Ã© o dono
+  // Verifica se quem pede é o dono
   const user = await getAuthUser(request)
   let ehDono = false
   if (user) {
@@ -60,9 +60,9 @@ export async function POST(request: NextRequest) {
     const nome = sanitize(String(body.nome || '')).slice(0, 50)
     const mensagem = sanitizeTexto(String(body.mensagem || ''), 300)
 
-    if (!slug || slug.length > 60) return NextResponse.json({ erro: 'Slug invÃ¡lido' }, { status: 400 })
-    if (!nome || nome.length < 1) return NextResponse.json({ erro: 'Nome obrigatÃ³rio' }, { status: 400 })
-    if (!mensagem || mensagem.length < 1) return NextResponse.json({ erro: 'Mensagem obrigatÃ³ria' }, { status: 400 })
+    if (!slug || slug.length > 60) return NextResponse.json({ erro: 'Slug inválido' }, { status: 400 })
+    if (!nome || nome.length < 1) return NextResponse.json({ erro: 'Nome obrigatório' }, { status: 400 })
+    if (!mensagem || mensagem.length < 1) return NextResponse.json({ erro: 'Mensagem obrigatória' }, { status: 400 })
 
     const supabase = supabaseAdmin()
 
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       .eq('ativa', true)
       .maybeSingle()
 
-    if (!pagina) return NextResponse.json({ erro: 'PÃ¡gina nÃ£o encontrada' }, { status: 404 })
+    if (!pagina) return NextResponse.json({ erro: 'Página não encontrada' }, { status: 404 })
 
     const cincoMinAtras = new Date(Date.now() - 5 * 60 * 1000).toISOString()
     const { count } = await supabase
@@ -103,11 +103,11 @@ export async function POST(request: NextRequest) {
 // PATCH â€” aprovar/rejeitar (somente dono)
 export async function PATCH(request: NextRequest) {
   if (!(await rateLimitAsync(request, 30, 60_000))) {
-    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
   }
 
   const user = await getAuthUser(request)
-  if (!user) return NextResponse.json({ erro: 'NÃ£o autenticado' }, { status: 401 })
+  if (!user) return NextResponse.json({ erro: 'Não autenticado' }, { status: 401 })
 
   try {
     const body = await request.json()
@@ -115,7 +115,7 @@ export async function PATCH(request: NextRequest) {
     const aprovar = Boolean(body.aprovar)
 
     if (!id || !/^[0-9a-f-]{36}$/i.test(id)) {
-      return NextResponse.json({ erro: 'ID invÃ¡lido' }, { status: 400 })
+      return NextResponse.json({ erro: 'ID inválido' }, { status: 400 })
     }
 
     const supabase = supabaseAdmin()
@@ -127,7 +127,7 @@ export async function PATCH(request: NextRequest) {
       .eq('id', id)
       .maybeSingle()
 
-    if (!msg) return NextResponse.json({ erro: 'Mensagem nÃ£o encontrada' }, { status: 404 })
+    if (!msg) return NextResponse.json({ erro: 'Mensagem não encontrada' }, { status: 404 })
 
     const { data: pag } = await supabase
       .from('paginas')
@@ -136,7 +136,7 @@ export async function PATCH(request: NextRequest) {
       .maybeSingle()
 
     if (!pag || pag.user_id !== user.id) {
-      return NextResponse.json({ erro: 'Sem permissÃ£o' }, { status: 403 })
+      return NextResponse.json({ erro: 'Sem permissão' }, { status: 403 })
     }
 
     const { error } = await supabase
@@ -155,15 +155,15 @@ export async function PATCH(request: NextRequest) {
 // DELETE â€” remove mensagem (somente dono)
 export async function DELETE(request: NextRequest) {
   if (!(await rateLimitAsync(request, 30, 60_000))) {
-    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
   }
 
   const user = await getAuthUser(request)
-  if (!user) return NextResponse.json({ erro: 'NÃ£o autenticado' }, { status: 401 })
+  if (!user) return NextResponse.json({ erro: 'Não autenticado' }, { status: 401 })
 
   const id = request.nextUrl.searchParams.get('id') || ''
   if (!/^[0-9a-f-]{36}$/i.test(id)) {
-    return NextResponse.json({ erro: 'ID invÃ¡lido' }, { status: 400 })
+    return NextResponse.json({ erro: 'ID inválido' }, { status: 400 })
   }
 
   const supabase = supabaseAdmin()
@@ -174,7 +174,7 @@ export async function DELETE(request: NextRequest) {
     .eq('id', id)
     .maybeSingle()
 
-  if (!msg) return NextResponse.json({ erro: 'NÃ£o encontrada' }, { status: 404 })
+  if (!msg) return NextResponse.json({ erro: 'Não encontrada' }, { status: 404 })
 
   const { data: pag } = await supabase
     .from('paginas')
@@ -183,7 +183,7 @@ export async function DELETE(request: NextRequest) {
     .maybeSingle()
 
   if (!pag || pag.user_id !== user.id) {
-    return NextResponse.json({ erro: 'Sem permissÃ£o' }, { status: 403 })
+    return NextResponse.json({ erro: 'Sem permissão' }, { status: 403 })
   }
 
   const { error } = await supabase

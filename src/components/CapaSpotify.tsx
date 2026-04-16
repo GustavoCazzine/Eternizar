@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { Download } from 'lucide-react'
@@ -26,17 +26,24 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
     canvas.width = 1080
     canvas.height = 1080
 
+    // Background gradient
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height)
     grad.addColorStop(0, corHex)
-    grad.addColorStop(0.6, corHex + '80')
+    grad.addColorStop(0.4, corHex + '99')
     grad.addColorStop(1, '#121212')
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    const padding = 80
-    const imgSize = canvas.width - padding * 2
-    const imgY = 120
+    // Noise overlay
+    ctx.fillStyle = 'rgba(0,0,0,0.15)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+    const padding = 80
+    const imgSize = 580
+    const imgX = (canvas.width - imgSize) / 2
+    const imgY = 80
+
+    // Album art (centered, smaller to leave room for text)
     if (fotoCapa) {
       try {
         const img = new Image()
@@ -47,58 +54,80 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
           img.src = fotoCapa
         })
         if (loaded && img.width > 0) {
+          // Shadow behind image
+          ctx.shadowColor = 'rgba(0,0,0,0.5)'
+          ctx.shadowBlur = 40
+          ctx.shadowOffsetY = 10
           ctx.save()
-          roundRect(ctx, padding, imgY, imgSize, imgSize, 24)
+          roundRect(ctx, imgX, imgY, imgSize, imgSize, 16)
           ctx.clip()
           const ratio = Math.max(imgSize / img.width, imgSize / img.height)
           const w = img.width * ratio
           const h = img.height * ratio
-          ctx.drawImage(img, padding + (imgSize - w) / 2, imgY + (imgSize - h) / 2, w, h)
+          ctx.drawImage(img, imgX + (imgSize - w) / 2, imgY + (imgSize - h) / 2, w, h)
           ctx.restore()
-          ctx.strokeStyle = 'rgba(0,0,0,0.4)'
-          ctx.lineWidth = 2
-          roundRect(ctx, padding, imgY, imgSize, imgSize, 24)
-          ctx.stroke()
+          ctx.shadowBlur = 0
+          ctx.shadowOffsetY = 0
         }
       } catch {}
     } else {
-      ctx.fillStyle = 'rgba(255,255,255,0.1)'
-      roundRect(ctx, padding, imgY, imgSize, imgSize, 24)
+      ctx.fillStyle = 'rgba(255,255,255,0.08)'
+      roundRect(ctx, imgX, imgY, imgSize, imgSize, 16)
       ctx.fill()
+      ctx.fillStyle = 'rgba(255,255,255,0.15)'
+      ctx.font = '120px system-ui'
+      ctx.textAlign = 'center'
+      ctx.fillText('\u2665', canvas.width / 2, imgY + imgSize / 2 + 40)
     }
 
-    const textY = imgY + imgSize + 90
-    ctx.fillStyle = 'rgba(255,255,255,0.6)'
-    ctx.font = '600 28px system-ui, -apple-system, sans-serif'
-    ctx.textAlign = 'left'
-    ctx.fillText('ÃLBUM', padding, textY)
-
+    // Title
+    const textY = imgY + imgSize + 60
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 72px system-ui, -apple-system, sans-serif'
-    const tituloFinal = titulo.length > 24 ? titulo.slice(0, 22) + '...' : titulo
-    ctx.fillText(tituloFinal, padding, textY + 70)
+    ctx.font = 'bold 56px system-ui, -apple-system, sans-serif'
+    ctx.textAlign = 'left'
+    ctx.shadowColor = 'rgba(0,0,0,0.3)'
+    ctx.shadowBlur = 10
+    const tituloFinal = titulo.length > 28 ? titulo.slice(0, 26) + '...' : titulo
+    ctx.fillText(tituloFinal, padding, textY)
+    ctx.shadowBlur = 0
 
+    // Subtitle
     if (subtitulo) {
-      ctx.fillStyle = 'rgba(255,255,255,0.75)'
-      ctx.font = '36px system-ui, -apple-system, sans-serif'
-      const subFinal = subtitulo.length > 40 ? subtitulo.slice(0, 38) + '...' : subtitulo
-      ctx.fillText(subFinal, padding, textY + 125)
+      ctx.fillStyle = 'rgba(255,255,255,0.7)'
+      ctx.font = '34px system-ui, -apple-system, sans-serif'
+      const subFinal = subtitulo.length > 45 ? subtitulo.slice(0, 43) + '...' : subtitulo
+      ctx.fillText(subFinal, padding, textY + 50)
     }
 
-    const badgeY = canvas.height - 100
+    // Bottom bar - Spotify style
+    const bottomY = canvas.height - 120
+
+    // Green play button
     ctx.beginPath()
-    ctx.arc(padding + 24, badgeY, 24, 0, Math.PI * 2)
+    ctx.arc(padding + 32, bottomY, 32, 0, Math.PI * 2)
     ctx.fillStyle = '#1db954'
     ctx.fill()
-    ctx.fillStyle = '#000'
-    ctx.font = 'bold 24px system-ui'
-    ctx.textAlign = 'center'
-    ctx.fillText('â–¶', padding + 24, badgeY + 8)
 
-    ctx.fillStyle = 'rgba(255,255,255,0.7)'
-    ctx.font = '600 28px system-ui'
-    ctx.textAlign = 'left'
-    ctx.fillText('Eternizar âœ¨', padding + 60, badgeY + 10)
+    // Play triangle
+    ctx.fillStyle = '#000000'
+    ctx.beginPath()
+    ctx.moveTo(padding + 22, bottomY - 16)
+    ctx.lineTo(padding + 22, bottomY + 16)
+    ctx.lineTo(padding + 48, bottomY)
+    ctx.closePath()
+    ctx.fill()
+
+    // Heart icon
+    ctx.fillStyle = '#1db954'
+    ctx.font = '40px system-ui'
+    ctx.textAlign = 'center'
+    ctx.fillText('\u2665', padding + 100, bottomY + 14)
+
+    // Branding
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'
+    ctx.font = '500 26px system-ui'
+    ctx.textAlign = 'right'
+    ctx.fillText('Eternizar', canvas.width - padding, bottomY + 10)
 
     setGerado(true)
   }
@@ -116,8 +145,12 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
   function baixar() {
     const canvas = canvasRef.current
     if (!canvas) return
+    try { canvas.toDataURL('image/png') } catch {
+      alert('Erro de seguran\u00e7a ao baixar. Tente novamente.')
+      return
+    }
     const link = document.createElement('a')
-    link.download = `eternizar-spotify.png`
+    link.download = 'eternizar-spotify.png'
     link.href = canvas.toDataURL('image/png', 0.95)
     link.click()
   }
@@ -138,7 +171,7 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
         <Download className="w-4 h-4" />
         Baixar PNG
       </button>
-      <p className="text-xs text-gray-600 text-center">Estilo Spotify Album (1080Ã—1080)</p>
+      <p className="text-xs text-gray-600 text-center">Estilo Spotify (1080x1080)</p>
     </div>
   )
 }

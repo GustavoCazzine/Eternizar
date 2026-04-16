@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimitAsync, sanitize } from '@/lib/security'
 import { getAuthUser } from '@/lib/auth'
@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
   }
 
   const user = await getAuthUser(request)
-  if (!user) return NextResponse.json({ erro: 'NÃ£o autenticado' }, { status: 401 })
+  if (!user) return NextResponse.json({ erro: 'Não autenticado' }, { status: 401 })
 
   try {
     const body = await request.json()
     const slug = sanitize(String(body.slug || ''))
 
     if (!slug || slug.length > 60 || !/^[a-z0-9-]+$/i.test(slug)) {
-      return NextResponse.json({ erro: 'Slug invÃ¡lido' }, { status: 400 })
+      return NextResponse.json({ erro: 'Slug inválido' }, { status: 400 })
     }
 
     const supabase = supabaseAdmin()
@@ -32,15 +32,15 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (errBusca || !pagina) {
-      return NextResponse.json({ erro: 'PÃ¡gina nÃ£o encontrada' }, { status: 404 })
+      return NextResponse.json({ erro: 'Página não encontrada' }, { status: 404 })
     }
 
     if (pagina.user_id !== user.id) {
-      return NextResponse.json({ erro: 'Sem permissÃ£o' }, { status: 403 })
+      return NextResponse.json({ erro: 'Sem permissão' }, { status: 403 })
     }
 
     if (pagina.hospedagem_vitalicia) {
-      return NextResponse.json({ erro: 'JÃ¡ estÃ¡ ativa' }, { status: 400 })
+      return NextResponse.json({ erro: 'Já está ativa' }, { status: 400 })
     }
 
     const { error } = await supabase

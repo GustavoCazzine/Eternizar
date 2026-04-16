@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import {
   sanitize, sanitizeTexto, gerarSlug, validarEmail,
@@ -12,13 +12,13 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
 export async function POST(req: NextRequest) {
-  // â”€â”€â”€ Rate limiting: 5 criaÃ§Ãµes por minuto por IP â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€â”€ Rate limiting: 5 criações por minuto por IP â”€â”€â”€â”€â”€â”€â”€
   if (!(await rateLimitAsync(req, 5, 60_000))) {
     return NextResponse.json({ erro: 'Muitas tentativas. Aguarde um momento.' }, { status: 429 })
   }
 
 
-  // â”€â”€â”€ Verificar usuÃ¡rio autenticado (opcional por agora) â”€â”€â”€â”€â”€
+  // â”€â”€â”€ Verificar usuário autenticado (opcional por agora) â”€â”€â”€â”€â”€
   const user = await getAuthUser(req)
   const userId = user?.id || null
   try {
@@ -37,37 +37,37 @@ export async function POST(req: NextRequest) {
     const senhaDica = sanitize(fd.get('senhaDica') as string || '').slice(0, 100)
     const senhaProtegida = (fd.get('senhaProtegida') as string || '').slice(0, 100)
 
-    // â”€â”€â”€ 2. ValidaÃ§Ã£o obrigatÃ³ria â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â”€â”€â”€ 2. Validação obrigatória â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (!tipo || !validarTipo(tipo)) {
-      return NextResponse.json({ erro: 'Tipo de pÃ¡gina invÃ¡lido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Tipo de página inválido.' }, { status: 400 })
     }
     if (!titulo || titulo.length < 1 || titulo.length > 100) {
-      return NextResponse.json({ erro: 'TÃ­tulo invÃ¡lido (1-100 caracteres).' }, { status: 400 })
+      return NextResponse.json({ erro: 'Título inválido (1-100 caracteres).' }, { status: 400 })
     }
     if (!mensagem || mensagem.length < 5 || mensagem.length > 1000) {
-      return NextResponse.json({ erro: 'Mensagem invÃ¡lida (5-1000 caracteres).' }, { status: 400 })
+      return NextResponse.json({ erro: 'Mensagem inválida (5-1000 caracteres).' }, { status: 400 })
     }
     if (!emailCliente || !validarEmail(emailCliente)) {
-      return NextResponse.json({ erro: 'E-mail invÃ¡lido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'E-mail inválido.' }, { status: 400 })
     }
     if (emailDestinatario && !validarEmail(emailDestinatario)) {
-      return NextResponse.json({ erro: 'E-mail do destinatÃ¡rio invÃ¡lido.' }, { status: 400 })
+      return NextResponse.json({ erro: 'E-mail do destinatário inválido.' }, { status: 400 })
     }
     if (!validarCor(corTema)) {
-      return NextResponse.json({ erro: 'Cor invÃ¡lida.' }, { status: 400 })
+      return NextResponse.json({ erro: 'Cor inválida.' }, { status: 400 })
     }
 
-    // â”€â”€â”€ 3. Parse JSON com proteÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â”€â”€â”€ 3. Parse JSON com proteção â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const musica = parseJsonSeguro(fd.get('musica') as string, null)
     const eventos = parseJsonSeguro<Array<Record<string, unknown>>>(fd.get('eventos') as string, [])
     const dadosCasal = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosCasal') as string, null)
     const dadosFormatura = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosFormatura') as string, null)
     const fotosLegendas = parseJsonSeguro<string[]>(fd.get('fotosLegendas') as string, [])
 
-    // â”€â”€â”€ 4. Validar dados especÃ­ficos do tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â”€â”€â”€ 4. Validar dados específicos do tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (tipo === 'casal' && dadosCasal) {
       if (dadosCasal.dataInicio && !validarData(dadosCasal.dataInicio)) {
-        return NextResponse.json({ erro: 'Data de inÃ­cio invÃ¡lida.' }, { status: 400 })
+        return NextResponse.json({ erro: 'Data de início inválida.' }, { status: 400 })
       }
       // Sanitizar campos internos
       if (dadosCasal.nome1) dadosCasal.nome1 = sanitize(dadosCasal.nome1).slice(0, 50)
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       if (dadosFormatura.anoFormatura) {
         const ano = parseInt(dadosFormatura.anoFormatura)
         if (isNaN(ano) || ano < 1950 || ano > new Date().getFullYear() + 6) {
-          return NextResponse.json({ erro: 'Ano de formatura invÃ¡lido.' }, { status: 400 })
+          return NextResponse.json({ erro: 'Ano de formatura inválido.' }, { status: 400 })
         }
       }
     }
@@ -93,10 +93,10 @@ export async function POST(req: NextRequest) {
       data: sanitize(String(ev.data || '')).slice(0, 30),
       titulo: sanitize(String(ev.titulo || '')).slice(0, 80),
       descricao: sanitizeTexto(String(ev.descricao || ''), 300),
-      emoji: String(ev.emoji || 'â­').slice(0, 4),
+      emoji: String(ev.emoji || '⭐').slice(0, 4),
     })).filter(ev => ev.titulo) // Remove eventos vazios
 
-    // â”€â”€â”€ 6. Validar mÃºsica â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â”€â”€â”€ 6. Validar música â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let musicaLimpa = null
     if (musica && musica.nome) {
       musicaLimpa = {
@@ -210,7 +210,7 @@ export async function POST(req: NextRequest) {
 
     if (erroPagina) {
       console.error('[API/teste/criar] DB error:', erroPagina.message)
-      return NextResponse.json({ erro: 'Erro ao criar pÃ¡gina.' }, { status: 500 })
+      return NextResponse.json({ erro: 'Erro ao criar página.' }, { status: 500 })
     }
 
     return NextResponse.json({

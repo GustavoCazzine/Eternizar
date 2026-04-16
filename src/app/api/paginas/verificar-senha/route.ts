@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimitAsync, sanitize } from '@/lib/security'
 
@@ -18,10 +18,10 @@ export async function POST(request: NextRequest) {
     const senha = String(body.senha || '')
 
     if (!slug || !senha) {
-      return NextResponse.json({ erro: 'Slug e senha obrigatÃ³rios' }, { status: 400 })
+      return NextResponse.json({ erro: 'Slug e senha obrigatórios' }, { status: 400 })
     }
     if (slug.length > 60 || senha.length > 100) {
-      return NextResponse.json({ erro: 'Dados invÃ¡lidos' }, { status: 400 })
+      return NextResponse.json({ erro: 'Dados inválidos' }, { status: 400 })
     }
 
     const supabase = supabaseAdmin()
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error || !pagina) {
-      return NextResponse.json({ erro: 'PÃ¡gina nÃ£o encontrada' }, { status: 404 })
+      return NextResponse.json({ erro: 'Página não encontrada' }, { status: 404 })
     }
 
     if (!pagina.senha_hash) {

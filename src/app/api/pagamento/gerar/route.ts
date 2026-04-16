@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit } from '@/lib/security'
 
@@ -6,7 +6,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-// âš ï¸ DESATIVADO â€” fluxo de pagamento Mercado Pago nÃ£o estÃ¡ em uso.
+// âš ️ DESATIVADO â€” fluxo de pagamento Mercado Pago não está em uso.
 const FLUXO_PAGAMENTO_ATIVO = false
 
 export async function POST(req: NextRequest) {
@@ -18,12 +18,12 @@ export async function POST(req: NextRequest) {
   }
 
   if (!rateLimit(req, 10, 60_000)) {
-    return NextResponse.json({ erro: 'Muitas requisiÃ§Ãµes.' }, { status: 429 })
+    return NextResponse.json({ erro: 'Muitas requisições.' }, { status: 429 })
   }
 
   try {
     const { pedidoId } = await req.json()
-    if (!pedidoId) return NextResponse.json({ erro: 'pedidoId obrigatÃ³rio.' }, { status: 400 })
+    if (!pedidoId) return NextResponse.json({ erro: 'pedidoId obrigatório.' }, { status: 400 })
 
     const supabase = supabaseAdmin()
 
@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
       .eq('id', pedidoId)
       .single()
 
-    if (error || !pedido) return NextResponse.json({ erro: 'Pedido nÃ£o encontrado.' }, { status: 404 })
-    if (pedido.status === 'pago') return NextResponse.json({ erro: 'Pedido jÃ¡ pago.' }, { status: 400 })
+    if (error || !pedido) return NextResponse.json({ erro: 'Pedido não encontrado.' }, { status: 404 })
+    if (pedido.status === 'pago') return NextResponse.json({ erro: 'Pedido já pago.' }, { status: 400 })
 
     // Criar pagamento no Mercado Pago
     const mpRes = await fetch('https://api.mercadopago.com/v1/payments', {

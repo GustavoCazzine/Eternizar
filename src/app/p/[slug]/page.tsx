@@ -93,7 +93,7 @@ export default async function PaginaPage({ params }: { params: Promise<{ slug: s
     )
   }
 
-  // Incremento NÃO bloqueia render — roda após resposta enviada
+  // Incremento NàO bloqueia render — roda após resposta enviada
   after(() => incrementarVisualizacao(slug, pagina.visualizacoes))
 
   return <PaginaCliente pagina={pagina} />

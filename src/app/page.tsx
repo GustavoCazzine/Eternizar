@@ -40,13 +40,13 @@ function GlowOrbs() {
         transition={{ duration: 10, repeat: Infinity }}
       />
       <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full blur-[150px] opacity-10"
+        className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[50px] md:blur-[80px] opacity-10"
         style={{ background: 'radial-gradient(circle, #ff69b4, transparent 70%)', top: '40%', left: '-10%' }}
         animate={{ scale: [1, 1.1, 1], opacity: [0.08, 0.15, 0.08] }}
         transition={{ duration: 8, repeat: Infinity, delay: 3 }}
       />
       <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full blur-[120px] opacity-8"
+        className="absolute w-[180px] h-[180px] md:w-[350px] md:h-[350px] rounded-full blur-[60px] md:blur-[50px] md:blur-[80px] opacity-8"
         style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', right: '20%' }}
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 12, repeat: Infinity, delay: 5 }}
@@ -216,7 +216,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ═══ SEÇÃO EMOCIONAL — O que você pode criar ═══ */}
+      {/* ═══ SEÇàO EMOCIONAL — O que você pode criar ═══ */}
       <section className="relative py-32 overflow-hidden">
         <Particulas cor="#ff69b4" />
 
@@ -279,7 +279,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ SEÇÃO FEATURES — Visual, não lista ═══ */}
+      {/* ═══ SEÇàO FEATURES — Visual, não lista ═══ */}
       <section id="como-funciona" className="relative py-32 overflow-hidden">
         {/* Fundo gradiente marca registrada */}
         <div className="absolute inset-0" style={{
@@ -345,7 +345,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ SEÇÃO DEPOIMENTOS — Social proof emocional ═══ */}
+      {/* ═══ SEÇàO DEPOIMENTOS — Social proof emocional ═══ */}
       <section id="depoimentos" className="relative py-32 overflow-hidden">
         <Particulas cor="#c850c0" />
 

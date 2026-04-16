@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { Download } from 'lucide-react'
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const EMOJIS: Record<string, string> = {
-  casal: 'â¤ï¸', formatura: 'ðŸŽ“', homenagem: 'â­'
+  casal: '❤️', formatura: 'ðŸŽ“', homenagem: '⭐'
 }
 
 export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tipo }: Props) {
@@ -73,9 +73,9 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
     // Emoji do tipo
     ctx.font = '140px serif'
     ctx.textAlign = 'center'
-    ctx.fillText(EMOJIS[tipo] || 'âœ¨', canvas.width / 2, canvas.height * 0.62)
+    ctx.fillText(EMOJIS[tipo] || '✨', canvas.width / 2, canvas.height * 0.62)
 
-    // TÃ­tulo
+    // Título
     ctx.fillStyle = '#ffffff'
     ctx.font = 'bold 90px system-ui, -apple-system, sans-serif'
     ctx.textAlign = 'center'
@@ -92,7 +92,7 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
     ctx.lineTo(canvas.width / 2 + 60, canvas.height * 0.80)
     ctx.stroke()
 
-    // SubtÃ­tulo
+    // Subtítulo
     if (subtitulo) {
       ctx.fillStyle = 'rgba(255,255,255,0.7)'
       ctx.font = '46px system-ui, -apple-system, sans-serif'
@@ -107,7 +107,7 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
     ctx.fillStyle = corHex
     ctx.font = 'bold 32px system-ui'
     ctx.textAlign = 'center'
-    ctx.fillText('Criado com Eternizar âœ¨', canvas.width / 2, canvas.height * 0.91 + 40)
+    ctx.fillText('Criado com Eternizar ✨', canvas.width / 2, canvas.height * 0.91 + 40)
 
     setGerado(true)
   }
@@ -187,7 +187,7 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
       </div>
 
       <p className="text-xs text-gray-600 text-center">
-        Tamanho ideal para Instagram Stories (1080Ã—1920)
+        Tamanho ideal para Instagram Stories (1080×1920)
       </p>
     </div>
   )

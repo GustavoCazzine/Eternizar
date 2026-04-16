@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { motion } from 'framer-motion'
 import { Heart, Plus, Eye, Calendar, ExternalLink, LogOut, ChevronRight, Share2, Pencil, Download, X } from 'lucide-react'
@@ -26,7 +26,7 @@ const coresMap: Record<string, { primaria: string; secundaria: string; fundo: st
 }
 
 const tiposIcons: Record<string, string> = {
-  casal: 'â¤ï¸', formatura: 'ðŸŽ“', homenagem: 'â­',
+  casal: '❤️', formatura: 'ðŸŽ“', homenagem: '⭐',
 }
 
 function diasRestantes(expira_em: string | null, vitalicia: boolean): string {
@@ -79,11 +79,11 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute w-[600px] h-[600px] rounded-full blur-[180px] opacity-12"
           style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-10%' }} />
-        <div className="absolute w-[400px] h-[400px] rounded-full blur-[150px] opacity-8"
+        <div className="absolute w-[400px] h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[100px] opacity-8"
           style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
       </div>
 
-      {/* PartÃ­culas */}
+      {/* Partículas */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {[...Array(5)].map((_, i) => (
           <motion.div key={i} className="absolute rounded-full"
@@ -125,16 +125,16 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
 
       {/* Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
-        {/* TÃ­tulo */}
+        {/* Título */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10"
         >
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#ff2d78]">Sua coleÃ§Ã£o</p>
+            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#ff2d78]">Sua coleção</p>
             <h1 className="text-3xl sm:text-4xl font-black">Minhas Homenagens</h1>
-            <p className="text-zinc-500 text-sm mt-2">{paginas.length} pÃ¡gina{paginas.length !== 1 ? 's' : ''} criada{paginas.length !== 1 ? 's' : ''}</p>
+            <p className="text-zinc-500 text-sm mt-2">{paginas.length} página{paginas.length !== 1 ? 's' : ''} criada{paginas.length !== 1 ? 's' : ''}</p>
           </div>
           <Link href="/criar"
             className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] min-h-[44px] shrink-0"
@@ -156,8 +156,8 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
             >
               <Heart className="w-16 h-16 mx-auto fill-current" style={{ color: `${cor}40`, filter: `drop-shadow(0 0 30px ${cor}30)` }} />
             </motion.div>
-            <h2 className="text-xl sm:text-2xl font-bold text-zinc-300 mb-2">Sua primeira histÃ³ria espera</h2>
-            <p className="text-zinc-600 text-sm mb-8 max-w-sm mx-auto">Crie uma homenagem e surpreenda alguÃ©m especial com momentos eternizados.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-zinc-300 mb-2">Sua primeira história espera</h2>
+            <p className="text-zinc-600 text-sm mb-8 max-w-sm mx-auto">Crie uma homenagem e surpreenda alguém especial com momentos eternizados.</p>
             <Link href="/criar"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
               style={{ background: `linear-gradient(135deg, ${cor}, ${cor}aa)`, boxShadow: `0 8px 24px ${cor}25` }}>
@@ -223,14 +223,14 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
                       </span>
                     </div>
 
-                    {/* CoraÃ§Ã£o centralizado quando sem capa */}
+                    {/* Coração centralizado quando sem capa */}
                     {!capa && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Heart className="w-16 h-16 fill-current" style={{ color: corTema, filter: `drop-shadow(0 0 20px ${corTema}80)` }} />
                       </div>
                     )}
 
-                    {/* ConteÃºdo embaixo */}
+                    {/* Conteúdo embaixo */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                       <h3 className="font-black text-white text-xl leading-tight nome-capitalize line-clamp-2 mb-1"
                         style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimitAsync } from '@/lib/security'
 
@@ -6,7 +6,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-// âš ï¸ DESATIVADO â€” webhook do Mercado Pago nÃ£o processa mais pedidos.
+// âš ️ DESATIVADO â€” webhook do Mercado Pago não processa mais pedidos.
 // Se o MP ainda enviar callbacks (config antiga), respondemos 200 ok
 // vazio para evitar retry infinito da parte deles.
 const FLUXO_PAGAMENTO_ATIVO = false
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       status: 'pago',
     }).eq('id', pedidoId)
 
-    console.log(`[Webhook] PÃ¡gina criada: /p/${dados.slug}`)
+    console.log(`[Webhook] Página criada: /p/${dados.slug}`)
 
     return NextResponse.json({ ok: true })
   } catch (e) {

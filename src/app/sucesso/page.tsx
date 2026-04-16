@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -13,44 +13,16 @@ function GlowOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <div
-        className="absolute w-[600px] h-[600px] rounded-full blur-[150px] opacity-20"
+        className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] opacity-15"
         style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-5%' }}
-      />
-      <div
-        className="absolute w-[500px] h-[500px] rounded-full blur-[120px] opacity-15"
-        style={{ background: 'radial-gradient(circle, #ff69b4, transparent 70%)', top: '30%', left: '-10%' }}
-      />
-      <div
-        className="absolute w-[350px] h-[350px] rounded-full blur-[130px] opacity-10"
-        style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', right: '15%' }}
       />
     </div>
   )
 }
 
 // â”€â”€â”€ Floating Hearts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// â”€â”€â”€ PartÃ­culas premium â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function Particulas() {
-  return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: 3 + (i % 3) * 2,
-            height: 3 + (i % 3) * 2,
-            background: `rgba(255, 45, 120, ${0.1 + i * 0.04})`,
-            left: `${8 + i * 11}%`,
-            top: `${15 + ((i * 17) % 60)}%`,
-          }}
-          animate={{ y: [-20, 20, -20], opacity: [0.15, 0.5, 0.15], scale: [0.8, 1.3, 0.8] }}
-          transition={{ duration: 4 + i * 0.8, repeat: Infinity, delay: i * 0.6 }}
-        />
-      ))}
-    </div>
-  )
-}
+// â”€â”€â”€ Partículas premium â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function Particulas() { return null }
 
 // â”€â”€â”€ Phone Mockup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
@@ -96,7 +68,7 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
                 <div className="text-zinc-500 text-[9px]">â™ª â™« â™¬</div>
               </div>
             </div>
-            {['ðŸ’–', 'ðŸŽ¶', 'âœ¨'].map((e, i) => (
+            {['ðŸ’–', 'ðŸŽ¶', '✨'].map((e, i) => (
               <motion.div
                 key={i}
                 className="absolute text-sm"
@@ -133,7 +105,7 @@ function SucessoContent() {
 
   const slug = searchParams.get('slug') || ''
   const cor = searchParams.get('cor') || 'pink'
-  const titulo = searchParams.get('titulo') || 'Sua pÃ¡gina'
+  const titulo = searchParams.get('titulo') || 'Sua página'
   const subtitulo = searchParams.get('subtitulo') || ''
   const tipo = searchParams.get('tipo') || 'casal'
   const fotoCapa = searchParams.get('fotoCapa') || ''
@@ -239,7 +211,7 @@ function SucessoContent() {
           <img src="${dataUrl}" alt="QR Code" />
           <h2>${titulo}</h2>
           <p>${url}</p>
-          <span class="badge">Criado com Eternizar âœ¨</span>
+          <span class="badge">Criado com Eternizar ✨</span>
           <script>setTimeout(()=>window.print(),500)<\/script>
         </body>
       </html>
@@ -249,7 +221,7 @@ function SucessoContent() {
 
   async function compartilhar() {
     if (navigator.share) {
-      await navigator.share({ title: titulo, text: 'ðŸŽ Tenho uma surpresa especial para vocÃª!', url })
+      await navigator.share({ title: titulo, text: 'ðŸŽ Tenho uma surpresa especial para vocàª!', url })
     } else {
       copiarLink()
     }
@@ -282,9 +254,9 @@ function SucessoContent() {
                 transition={{ duration: 0.6 }}
                 className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight mb-4 text-center lg:text-left"
               >
-                ParabÃ©ns! Sua Homenagem{' '}
+                Parabéns! Sua Homenagem{' '}
                 <br className="hidden sm:block" />
-                EstÃ¡ Online âœ¨
+                Está Online ✨
               </motion.h1>
 
               <div className="flex justify-center lg:justify-start">
@@ -306,7 +278,7 @@ function SucessoContent() {
             >
               {/* Sharing Actions Card */}
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6">
-                <h2 className="text-lg font-bold mb-6 text-center">AÃ§Ãµes de Compartilhamento</h2>
+                <h2 className="text-lg font-bold mb-6 text-center">Ações de Compartilhamento</h2>
 
                 {/* QR Code */}
                 <div className="flex justify-center mb-4">
@@ -391,12 +363,12 @@ function SucessoContent() {
                 {/* Stats */}
                 <div className="border-t border-white/10 pt-5 mb-5">
                   <h3 className="text-zinc-400 text-xs font-semibold tracking-wider uppercase mb-4 text-center">
-                    Visitas e InteraÃ§Ãµes
+                    Visitas e Interações
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     <StatBox value={0} label="Visitas hoje" />
                     <StatBox value={0} label="Curtidas" />
-                    <StatBox value={0} label="InteraÃ§Ãµes" />
+                    <StatBox value={0} label="Interações" />
                   </div>
                 </div>
 
@@ -406,7 +378,7 @@ function SucessoContent() {
                   style={{ borderColor: `${corHex}30`, background: `${corHex}08` }}
                 >
                   <div>
-                    <p className="text-zinc-400 text-xs">Sua PÃ¡gina Expira em</p>
+                    <p className="text-zinc-400 text-xs">Sua Página Expira em</p>
                     <p className="text-white text-lg font-bold">{hospedagemAtiva ? "Para sempre" : "60 dias"}</p>
                   </div>
                   <button
@@ -415,7 +387,7 @@ function SucessoContent() {
                     className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all duration-200 hover:opacity-90 disabled:opacity-60"
                     style={{ background: hospedagemAtiva ? '#10b981' : `linear-gradient(135deg, ${corHex}, ${corHex}bb)` }}
                   >
-                    {hospedagemAtiva ? "Ativa para sempre!" : hospedagemLoading ? "Ativando..." : "Ativar Hospedagem VitalÃ­cia"}
+                    {hospedagemAtiva ? "Ativa para sempre!" : hospedagemLoading ? "Ativando..." : "Ativar Hospedagem Vitalícia"}
                   </button>
                 </div>
               </div>
@@ -427,7 +399,7 @@ function SucessoContent() {
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm"
                   style={{ background: `linear-gradient(135deg, ${corHex}, ${corHex}bb)`, boxShadow: `0 8px 32px ${corHex}40` }}
                 >
-                  Ver minha pÃ¡gina <ArrowRight className="w-5 h-5" />
+                  Ver minha página <ArrowRight className="w-5 h-5" />
                 </button>
               </motion.div>
             </motion.div>
@@ -469,7 +441,7 @@ function SucessoContent() {
       <footer className="relative z-10 border-t border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src="/logo.png" alt="Eternizar" className="h-7 opacity-40" />
-          <p className="text-zinc-600 text-xs">Criado com Eternizar âœ¨</p>
+          <p className="text-zinc-600 text-xs">Criado com Eternizar ✨</p>
         </div>
       </footer>
     </main>

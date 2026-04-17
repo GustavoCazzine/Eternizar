@@ -21,8 +21,6 @@ function Particulas({ cor = '#ff2d78' }: { cor?: string }) {
             left: `${8 + i * 11}%`,
             top: `${15 + ((i * 17) % 60)}%`,
           }}
-          animate={{ y: [-20, 20, -20], opacity: [0.2, 0.6, 0.2], scale: [0.8, 1.3, 0.8] }}
-          transition={{ duration: 4 + i * 0.8, repeat: Infinity, delay: i * 0.6 }}
         />
       ))}
     </div>
@@ -36,20 +34,14 @@ function GlowOrbs() {
       <motion.div
         className="absolute w-[700px] h-[700px] rounded-full blur-[40px] md:blur-[80px] opacity-15"
         style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-15%', right: '-10%' }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.2, 0.12] }}
-        transition={{ duration: 10, repeat: Infinity }}
       />
       <motion.div
         className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[50px] md:blur-[80px] opacity-10"
         style={{ background: 'radial-gradient(circle, #ff69b4, transparent 70%)', top: '40%', left: '-10%' }}
-        animate={{ scale: [1, 1.1, 1], opacity: [0.08, 0.15, 0.08] }}
-        transition={{ duration: 8, repeat: Infinity, delay: 3 }}
       />
       <motion.div
         className="absolute w-[180px] h-[180px] md:w-[350px] md:h-[350px] rounded-full blur-[60px] md:blur-[50px] md:blur-[80px] opacity-8"
         style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', right: '20%' }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 12, repeat: Infinity, delay: 5 }}
       />
     </div>
   )
@@ -150,8 +142,6 @@ export default function Home() {
             className="mb-8"
           >
             <motion.div
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
             >
               <Heart className="w-12 h-12 mx-auto fill-current" style={{ color: '#ff2d78', filter: 'drop-shadow(0 0 30px rgba(255,45,120,0.5))' }} />
             </motion.div>
@@ -210,7 +200,7 @@ export default function Home() {
           transition={{ delay: 2 }}
           className="absolute bottom-8 flex flex-col items-center gap-2"
         >
-          <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+          <motion.div>
             <ArrowDown className="w-5 h-5 text-[#ff2d78]/50" />
           </motion.div>
         </motion.div>
@@ -408,8 +398,6 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 3, repeat: Infinity }}
               className="mb-8"
             >
               <Heart className="w-10 h-10 mx-auto fill-current text-[#ff2d78]" style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.4))' }} />

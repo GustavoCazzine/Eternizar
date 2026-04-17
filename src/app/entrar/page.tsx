@@ -68,8 +68,6 @@ function LoginContent() {
             style={{ width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2,
               background: `rgba(255,45,120,${0.15 + i * 0.06})`,
               left: `${10 + i * 18}%`, top: `${20 + ((i * 23) % 50)}%` }}
-            animate={{ y: [-15, 15, -15], opacity: [0.15, 0.4, 0.15] }}
-            transition={{ duration: 4 + i, repeat: Infinity, delay: i * 0.6 }}
           />
         ))}
       </div>
@@ -82,7 +80,7 @@ function LoginContent() {
           <a href="/">
             <img src="/logo.png" alt="Eternizar" className="h-12 mx-auto mb-6" />
           </a>
-          <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+          <motion.div>
             <Heart className="w-10 h-10 mx-auto fill-current text-[#ff2d78] mb-4"
               style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.4))' }} />
           </motion.div>

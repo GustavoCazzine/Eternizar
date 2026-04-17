@@ -236,13 +236,15 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
   useEffect(() => {
     if (!dados.previewUrl) return
     const audio = new Audio(dados.previewUrl)
+    audio.setAttribute('playsinline', 'true')
     audio.volume = 0.5
     audioRef.current = audio
     audio.loop = true
     audio.ontimeupdate = () => setProgresso((audio.currentTime / audio.duration) * 100 || 0)
 
     const t = setTimeout(() => {
-      audio.play().then(() => setTocando(true)).catch(() => {})
+      // Audio ready, user must tap play
+      setTocando(false)
     }, 1500)
 
     return () => { clearTimeout(t); audio.pause(); audio.src = '' }
@@ -252,7 +254,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
     const audio = audioRef.current
     if (!audio) return
     if (tocando) { audio.pause(); setTocando(false) }
-    else { audio.play(); setTocando(true) }
+    else { audio.play().then(() => setTocando(true)).catch(() => {}) }
   }
 
   function handleBarra(e: React.MouseEvent<HTMLDivElement>) {
@@ -293,8 +295,8 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
             <p className="text-gray-400 text-sm truncate mt-0.5">{dados.artista}</p>
             <p className="text-gray-600 text-xs truncate">{dados.album}</p>
           </div>
-          <motion.div className={tocando ? "animate-pulse" : ""}
-            transition={{ duration: 0.6, repeat: tocando ? Infinity : 0, repeatDelay: 0.4 }}>
+          <div className={tocando ? "animate-pulse" : ""}
+            >
             <Heart className="w-6 h-6 fill-current ml-3 mt-1" style={{ color: cor }} />
           </motion.div>
         </div>

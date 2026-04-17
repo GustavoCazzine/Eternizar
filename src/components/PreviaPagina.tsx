@@ -114,7 +114,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full blur-2xl opacity-30 pointer-events-none"
             style={{ background: corHex }} />
 
-          <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2, repeat: Infinity }} className="relative z-10">
+          <motion.div className="relative z-10">
             <Heart className="w-8 h-8 fill-current mb-3" style={{ color: corHex, filter: `drop-shadow(0 0 12px ${corHex}80)` }} />
           </motion.div>
 

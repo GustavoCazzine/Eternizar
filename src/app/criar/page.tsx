@@ -172,8 +172,7 @@ function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
           <motion.div key={i} className="absolute rounded-full"
             style={{ width: 2 + i, height: 2 + i, background: `${corHex}${40 + i * 10}`,
               left: `${15 + i * 22}%`, top: `${25 + i * 12}%` }}
-            animate={{ y: [-8, 8, -8], opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 3 + i, repeat: Infinity, delay: i * 0.5 }}
+            
           />
         ))}
 
@@ -182,7 +181,7 @@ function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
           <p className="text-[8px] uppercase tracking-[0.25em] mb-2 font-medium" style={{ color: corHex }}>
             Uma surpresa especial
           </p>
-          <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+          <motion.div>
             <Heart className="w-7 h-7 fill-current mb-2" style={{ color: corHex, filter: `drop-shadow(0 0 10px ${corHex}80)` }} />
           </motion.div>
           <h1 className="text-xl font-black text-white leading-tight mb-1 nome-capitalize px-2 break-words"
@@ -864,7 +863,7 @@ function PassoEmail({ form, upd, tituloFinal, subtituloFinal, corHex, tipoSel, c
         className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
         style={{ background: `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
         {carregando ? (
-          <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" /> Criando sua homenagem...</>
+          <><motion.div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" /> Criando sua homenagem...</>
         ) : (
           <>Criar minha homenagem <ArrowRight className="w-4 h-4" /></>
         )}
@@ -1082,8 +1081,7 @@ function CriarPageContent() {
           <motion.div key={i} className="absolute rounded-full"
             style={{ width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2, background: `${corHex}${30 + i * 10}`,
               left: `${10 + i * 15}%`, top: `${20 + ((i * 17) % 50)}%` }}
-            animate={{ y: [-15, 15, -15], opacity: [0.2, 0.5, 0.2] }}
-            transition={{ duration: 4 + i, repeat: Infinity, delay: i * 0.5 }}
+            
           />
         ))}
       </div>
@@ -1173,7 +1171,7 @@ function CriarPageContent() {
                   onClick={handleSubmit} disabled={carregando}
                   className="flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 text-sm transition-all min-h-[44px] disabled:opacity-50"
                   style={{ background: erro ? "rgba(244,63,94,0.2)" : `linear-gradient(135deg, ${corHex}, ${corHex}88)` }}>
-                  {carregando ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
+                  {carregando ? <motion.div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
                     : erro ? <span className="text-red-300 text-sm">{erro}</span>
                     : !userEmail && authChecked ? <>Entrar para finalizar <ArrowRight className="w-4 h-4" /></>
                     : <>Criar homenagem <ArrowRight className="w-4 h-4" /></>}

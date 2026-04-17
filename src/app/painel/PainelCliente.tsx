@@ -89,8 +89,6 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
           <motion.div key={i} className="absolute rounded-full"
             style={{ width: 3 + i, height: 3 + i, background: `rgba(255,45,120,${0.15 + i * 0.05})`,
               left: `${10 + i * 18}%`, top: `${15 + i * 16}%` }}
-            animate={{ y: [-15, 15, -15], opacity: [0.15, 0.4, 0.15] }}
-            transition={{ duration: 5 + i, repeat: Infinity, delay: i * 0.8 }}
           />
         ))}
       </div>
@@ -150,8 +148,6 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
             className="text-center py-20 sm:py-32"
           >
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
               className="inline-block mb-6"
             >
               <Heart className="w-16 h-16 mx-auto fill-current" style={{ color: `${cor}40`, filter: `drop-shadow(0 0 30px ${cor}30)` }} />

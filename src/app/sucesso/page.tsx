@@ -73,8 +73,6 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
                 key={i}
                 className="absolute text-sm"
                 style={{ bottom: `${20 + i * 15}%`, left: `${10 + i * 25}%`, opacity: 0.5 }}
-                animate={{ y: [0, -6, 0], opacity: [0.5, 0.7, 0.5] }}
-                transition={{ duration: 3, repeat: Infinity, delay: i * 0.8 }}
               >
                 {e}
               </motion.div>
@@ -96,9 +94,9 @@ function StatBox({ value, label }: { value: string | number; label: string }) {
   )
 }
 
-// =================================================================
+// =====
 // â”€â”€â”€ SUCCESS CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// =================================================================
+// =====
 function SucessoContent() {
   const searchParams = useSearchParams()
   const router = useRouter()

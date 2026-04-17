@@ -466,7 +466,7 @@ function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: stri
   if (!aberta) {
     return (
       <motion.button onClick={() => setAberta(true)} whileTap={{ scale: 0.97 }}
-        className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 py-10 px-6 rounded-3xl border-2 border-dashed cursor-pointer"
+        className="w-full max-w-sm mx-auto flex flex-col items-center gap-3 py-6 px-5 rounded-2xl border border-dashed cursor-pointer"
         style={{ borderColor: `${cor}40`, background: `${cor}08` }}>
         <div className="w-16 h-12 relative">
           <div className="absolute inset-0 rounded-lg" style={{ background: `${cor}20`, border: `2px solid ${cor}40` }} />
@@ -953,10 +953,10 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                     whileInView={{ scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
                     transition={{ type: 'spring', duration: 0.8, bounce: 0.4, delay: 0.15 }}
-                    className="absolute left-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden text-2xl shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 8px 40px ${cor}50` }}
+                    className="absolute left-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 4px 20px ${cor}30` }}
                   >
-                    <EmojiAnimado emoji={ev.emoji || '⭐'} tamanho={36} />
+                    <div className="w-3 h-3 rounded-full bg-white" />
                   </motion.div>
 
                   <div className="flex-1 pt-1">

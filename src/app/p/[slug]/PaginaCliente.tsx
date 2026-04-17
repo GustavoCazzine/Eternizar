@@ -104,6 +104,18 @@ function Secao({ children, className = '', delay = 0 }: {
   )
 }
 
+// Timeline line scroll-driven
+function TimelineLine({ cor }: { cor: string }) {
+  const lineRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: lineRef, offset: ['start center', 'end center'] })
+  const scaleY = useSpring(scrollYProgress, { stiffness: 60, damping: 20 })
+  return (
+    <div ref={lineRef} className="absolute left-7 top-0 bottom-0 w-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
+      <motion.div className="w-full origin-top" style={{ scaleY, height: '100%', background: `linear-gradient(to bottom, ${cor}, ${cor}80)` }} />
+    </div>
+  )
+}
+
 // Contador com efeito odometro
 function ContadorTempo({ dataInicio, cor, paleta }: { dataInicio: string; cor: string; paleta: typeof paletas[string] }) {
   const [tempo, setTempo] = useState({ anos: 0, meses: 0, dias: 0, horas: 0, minutos: 0, segundos: 0 })
@@ -800,7 +812,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
           <Secao className="text-center mb-10">
             <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Uma conquista coletiva</p>
-            <h2 className="text-3xl sm:text-4xl font-black">{pagina.dados_formatura.curso}</h2>
+            <h2 className="text-3xl sm:text-4xl font-black glint-effect">{pagina.dados_formatura.curso}</h2>
             {pagina.dados_formatura.instituicao && <p className="text-gray-400 mt-2">{pagina.dados_formatura.instituicao} · {pagina.dados_formatura.anoFormatura}</p>}
           </Secao>
           <Secao delay={0.2} className="max-w-sm mx-auto space-y-3">
@@ -915,14 +927,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           </Secao>
 
           <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
-            <motion.div
-              initial={{ scaleY: 0 }}
-              whileInView={{ scaleY: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5, ease: 'easeInOut' }}
-              className="absolute left-7 top-0 bottom-0 w-0.5 origin-top"
-              style={{ background: `linear-gradient(to bottom, transparent, ${cor}80 10%, ${cor}80 90%, transparent)` }}
-            />
+            <TimelineLine cor={cor} />
 
             <div className="space-y-0">
               {pagina.linha_do_tempo.map((ev, i) => (

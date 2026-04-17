@@ -74,3 +74,24 @@ body {
 .text-xs {
   font-weight: 500;
 }
+
+/* Glint metallic effect */
+@keyframes glint {
+  0%, 100% { transform: translateX(-100%) rotate(45deg); }
+  50% { transform: translateX(200%) rotate(45deg); }
+}
+.glint-effect {
+  position: relative;
+  overflow: hidden;
+}
+.glint-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%) rotate(45deg);
+  animation: glint 5s ease-in-out infinite;
+}

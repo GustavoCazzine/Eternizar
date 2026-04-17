@@ -385,6 +385,45 @@ function SlideMemoria({
 }
 
 
+// Botao de reacao afetiva com confetti
+function BotaoReacao({ cor }: { cor: string }) {
+  const [curtidas, setCurtidas] = useState(0)
+  const [particles, setParticles] = useState<Array<{id: number; x: number; y: number; r: number}>>([])
+
+  function handleCurtir() {
+    setCurtidas(prev => prev + 1)
+    const novas = Array.from({ length: 12 }, (_, i) => ({
+      id: Date.now() + i,
+      x: (Math.random() - 0.5) * 120,
+      y: -(Math.random() * 80 + 30),
+      r: Math.random() * 360,
+    }))
+    setParticles(novas)
+    setTimeout(() => setParticles([]), 1500)
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-2 relative">
+      <motion.button onClick={handleCurtir} whileTap={{ scale: 0.85 }}
+        className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+        style={{ background: `linear-gradient(135deg, ${cor}, ${cor}aa)` }}>
+        <Heart className="w-6 h-6 text-white fill-white" />
+        {particles.map(p => (
+          <motion.div key={p.id} className="absolute w-2 h-2 rounded-full"
+            style={{ background: cor }}
+            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+            animate={{ x: p.x, y: p.y, opacity: 0, scale: 0, rotate: p.r }}
+            transition={{ duration: 1, ease: 'easeOut' }} />
+        ))}
+      </motion.button>
+      {curtidas > 0 && (
+        <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+          className="text-xs text-gray-500">{curtidas} {curtidas === 1 ? 'curtida' : 'curtidas'}</motion.span>
+      )}
+    </div>
+  )
+}
+
 // Carta selada com typing effect
 function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: string; fontCorpo: string }) {
   const [aberta, setAberta] = useState(false)
@@ -1031,6 +1070,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
             {pagina.tipo === 'casal' ? '' : pagina.mensagem}
           </p>
             {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={fontes.corpo} />}
+            <div className="flex justify-center mt-8"><BotaoReacao cor={cor} /></div>
 
           <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
 

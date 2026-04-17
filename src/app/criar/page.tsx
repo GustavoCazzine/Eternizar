@@ -6,6 +6,7 @@ import { Heart, GraduationCap, Star, ArrowRight, ArrowLeft, Upload, X, Plus, Cam
 import BuscaMusica from '@/components/BuscaMusica'
 import AuthButton from '@/components/AuthButton'
 import { useBlobUrl, useBlobUrls } from '@/lib/useBlobUrl'
+import { comprimirImagem } from '@/lib/comprimirImagem'
 import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
@@ -1039,9 +1040,11 @@ function CriarPageContent() {
       fd.append('dadosCasal', JSON.stringify(form.dadosCasal))
       fd.append('dadosFormatura', JSON.stringify(form.dadosFormatura))
       fd.append('fotosLegendas', JSON.stringify(form.fotos.map(f => f.legenda)))
-      form.fotos.forEach(f => fd.append('fotos', f.file))
-      if (form.fotoCapa) fd.append('fotoCapa', form.fotoCapa)
-      form.eventos.forEach((ev, i) => { if (ev.foto) fd.append(`eventoFoto_${i}`, ev.foto) })
+      // Comprimir fotos antes de enviar
+      const fotosComprimidas = await Promise.all(form.fotos.map(f => comprimirImagem(f.file)))
+      fotosComprimidas.forEach(f => fd.append('fotos', f))
+      if (form.fotoCapa) { const capaComprimida = await comprimirImagem(form.fotoCapa); fd.append('fotoCapa', capaComprimida) }
+      for (let i = 0; i < form.eventos.length; i++) { if (form.eventos[i].foto) { const evComp = await comprimirImagem(form.eventos[i].foto!); fd.append(`eventoFoto_${i}`, evComp) } }
 
 
       const res = await fetch('/api/criar', { method: 'POST', body: fd })

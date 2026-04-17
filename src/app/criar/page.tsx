@@ -343,6 +343,10 @@ function PassoNomes({ form, upd, updCasal, updFormatura }: PassoProps) {
             </p>
           )}
         </div>
+          {form.dadosCasal.dataInicio && (() => {
+            const d = Math.floor((Date.now() - new Date(form.dadosCasal.dataInicio).getTime()) / 86400000)
+            return d > 0 ? <p className="text-sm mt-2 font-medium" style={{ color: corHex || '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
+          })()}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <p className="text-xs text-gray-400 mb-1.5">Seu apelido carinhoso</p>
@@ -749,7 +753,23 @@ function PassoMensagem({ form, upd }: PassoProps) {
     <div className="space-y-5">
       <div>
         <Label sub="Aparece no fechamento emocional da página">Mensagem do coração *</Label>
-        <textarea value={form.mensagem} onChange={e => upd('mensagem', e.target.value.slice(0, 600))}
+        
+          {/* Varinha mágica */}
+          <div className="flex gap-2 mb-3 flex-wrap">
+            <span className="text-xs text-zinc-600 self-center">Precisa de inspiração?</span>
+            {[
+              { label: 'Romântico', text: 'Cada dia ao seu lado é uma página nova da história mais bonita que eu já vivi. Você transformou meu mundo em algo que eu nem sabia que podia existir. Obrigado(a) por ser meu porto seguro, meu riso fácil e meu amor mais verdadeiro.' },
+              { label: 'Divertido', text: 'Se alguém me dissesse que eu ia encontrar uma pessoa que aguenta minhas piadas ruins, come a última fatia de pizza comigo e ainda me faz rir todo dia... eu diria que essa pessoa merece um trófeu. Esse é você. Te amo, criatura!' },
+              { label: 'Direto', text: 'Não sou de muitas palavras, mas preciso dizer: você é a melhor coisa que aconteceu na minha vida. Simples assim.' },
+            ].map(opt => (
+              <button key={opt.label} type="button"
+                onClick={() => upd('mensagem', opt.text)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/10 hover:border-white/25 text-zinc-400 hover:text-white transition">
+                ✨ {opt.label}
+              </button>
+            ))}
+          </div>
+<textarea value={form.mensagem} onChange={e => upd('mensagem', e.target.value.slice(0, 600))}
           rows={6} placeholder="Escreva aqui do coração... Esta mensagem aparece no final, como o grande fechamento emocional da página."
           maxLength={600}
           className={`${inputClass} resize-none`} />
@@ -759,10 +779,10 @@ function PassoMensagem({ form, upd }: PassoProps) {
       <div className="p-4 rounded-2xl border border-white/10 bg-white/5 space-y-3">
         <Label sub="Só quem sabe a resposta pode abrir a página (opcional)"><span className="inline-flex items-center gap-2"><Lock className="w-4 h-4" /> Senha secreta</span></Label>
         <input value={form.senhaProtegida} onChange={e => upd('senhaProtegida', e.target.value)}
-          placeholder="Ex: nome do pet, música favorita..." className={inputClass} />
+          placeholder="Ex: Onde foi nosso primeiro beijo?" className={inputClass} />
         {form.senhaProtegida && (
           <input value={form.senhaDica} onChange={e => upd('senhaDica', e.target.value)}
-            placeholder='Dica para quem vai receber... Ex: "Nossa música favorita"'
+            placeholder='Ex: O nome do nosso pet, o lugar do primeiro encontro...'
             className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-pink-500" />
         )}
       </div>
@@ -1020,7 +1040,7 @@ function CriarPageContent() {
       router.push(`/entrar?redirect=${redirect}`)
       return
     }
-    if (!form.mensagem) { setErro('Preencha a mensagem.'); return }
+    if (!form.mensagem) { setErro('Ops! Faltou escrever a mensagem do coração.'); return }
     setCarregando(true)
     try {
       const fd = new FormData()
@@ -1049,10 +1069,10 @@ function CriarPageContent() {
 
       const res = await fetch('/api/criar', { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.erro || 'Erro ao criar')
+      if (!res.ok) throw new Error(data.erro || 'Não conseguimos criar a página. Tente de novo?')
       router.push(data.sucesso || `/p/${data.slug}`)
     } catch (e: unknown) {
-      setErro(e instanceof Error ? e.message : 'Erro inesperado')
+      setErro(e instanceof Error ? e.message : 'Algo deu errado, mas não se preocupe. Tente novamente!')
     } finally {
       setCarregando(false)
     }
@@ -1126,7 +1146,7 @@ function CriarPageContent() {
                 className="mb-8"
               >
                 <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium" style={{ color: corHex }}>
-                  Passo {passo + 1} de {totalPassos}
+                  {['Escolha o tipo...', 'Começo da mágica...', 'Capturando momentos...', 'Relembrando a história...', 'A trilha sonora...', 'Detalhes especiais...', 'Quase pronto para emocionar!', 'Últimos toques...'][Math.min(passo, 7)]}
                 </p>
               </motion.div>
             )}

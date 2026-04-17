@@ -104,9 +104,12 @@ function Secao({ children, className = '', delay = 0 }: {
   )
 }
 
-// Contador de tempo de namoro
+// Contador com efeito odometro
 function ContadorTempo({ dataInicio, cor, paleta }: { dataInicio: string; cor: string; paleta: typeof paletas[string] }) {
   const [tempo, setTempo] = useState({ anos: 0, meses: 0, dias: 0, horas: 0, minutos: 0, segundos: 0 })
+  const [animado, setAnimado] = useState(false)
+  const [display, setDisplay] = useState({ anos: 0, meses: 0, dias: 0, horas: 0, minutos: 0, segundos: 0 })
+  const contadorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function calcular() {
@@ -114,95 +117,81 @@ function ContadorTempo({ dataInicio, cor, paleta }: { dataInicio: string; cor: s
       const agora = new Date()
       const diff = agora.getTime() - inicio.getTime()
       if (diff < 0) return
-
-      const segundosTotal = Math.floor(diff / 1000)
-      const minutosTotal = Math.floor(segundosTotal / 60)
-      const horasTotal = Math.floor(minutosTotal / 60)
-      const diasTotal = Math.floor(horasTotal / 24)
-
-      const anos = Math.floor(diasTotal / 365)
-      const meses = Math.floor((diasTotal % 365) / 30)
-      const dias = diasTotal % 30
-      const horas = horasTotal % 24
-      const minutos = minutosTotal % 60
-      const segundos = segundosTotal % 60
-
-      setTempo({ anos, meses, dias, horas, minutos, segundos })
+      const seg = Math.floor(diff / 1000)
+      const min = Math.floor(seg / 60)
+      const hrs = Math.floor(min / 60)
+      const diasT = Math.floor(hrs / 24)
+      setTempo({
+        anos: Math.floor(diasT / 365), meses: Math.floor((diasT % 365) / 30),
+        dias: diasT % 30, horas: hrs % 24, minutos: min % 60, segundos: seg % 60,
+      })
     }
     calcular()
     const interval = setInterval(calcular, 1000)
     return () => clearInterval(interval)
   }, [dataInicio])
 
+  useEffect(() => {
+    if (animado) { setDisplay(tempo); return }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !animado) {
+        setAnimado(true)
+        const target = { ...tempo }
+        const t0 = performance.now()
+        function tick(now: number) {
+          const p = Math.min((now - t0) / 1800, 1)
+          const ease = 1 - Math.pow(1 - p, 3)
+          setDisplay({
+            anos: Math.round(target.anos * ease), meses: Math.round(target.meses * ease),
+            dias: Math.round(target.dias * ease), horas: Math.round(target.horas * ease),
+            minutos: Math.round(target.minutos * ease), segundos: target.segundos,
+          })
+          if (p < 1) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }
+    }, { threshold: 0.3 })
+    if (contadorRef.current) observer.observe(contadorRef.current)
+    return () => observer.disconnect()
+  }, [tempo, animado])
+
+  useEffect(() => {
+    if (animado) setDisplay(prev => ({ ...prev, segundos: tempo.segundos }))
+  }, [tempo.segundos, animado])
+
   const itens = [
-    { label: 'Anos', valor: tempo.anos },
-    { label: 'Meses', valor: tempo.meses },
-    { label: 'Dias', valor: tempo.dias },
-    { label: 'Horas', valor: tempo.horas },
-    { label: 'Minutos', valor: tempo.minutos },
-    { label: 'Segundos', valor: tempo.segundos },
+    { label: 'Anos', valor: display.anos, dest: false },
+    { label: 'Meses', valor: display.meses, dest: false },
+    { label: 'Dias', valor: display.dias, dest: false },
+    { label: 'Horas', valor: display.horas, dest: false },
+    { label: 'Min', valor: display.minutos, dest: false },
+    { label: 'Seg', valor: display.segundos, dest: true },
   ]
 
   return (
-    <div className="max-w-sm mx-auto space-y-3">
-      {/* Linha 1: Anos, Meses, Dias */}
+    <div ref={contadorRef} className="max-w-sm mx-auto space-y-3">
       <div className="grid grid-cols-3 gap-3">
-        {itens.slice(0, 3).map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center py-5 px-2 rounded-2xl backdrop-blur-sm"
-            style={{
-              background: `linear-gradient(135deg, ${cor}18, ${cor}08)`,
-              border: `1px solid ${cor}25`,
-              boxShadow: `0 8px 32px ${cor}10`
-            }}
-          >
-            <motion.p
-              key={item.valor}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-4xl font-black leading-none tracking-tight"
-              style={{ color: 'white' }}
-            >
-              {String(item.valor).padStart(2, '0')}
-            </motion.p>
+        {itens.slice(0, 3).map((item) => (
+          <div key={item.label} className="text-center py-5 px-2 rounded-2xl"
+            style={{ background: `linear-gradient(135deg, ${cor}18, ${cor}08)`, border: `1px solid ${cor}25` }}>
+            <p className="text-4xl font-black leading-none text-white tabular-nums">{String(item.valor).padStart(2, '0')}</p>
             <p className="text-xs text-gray-500 mt-2 uppercase tracking-widest">{item.label}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
-      {/* Linha 2: Horas, Minutos, Segundos */}
       <div className="grid grid-cols-3 gap-3">
-        {itens.slice(3).map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center py-4 px-2 rounded-2xl backdrop-blur-sm"
+        {itens.slice(3).map((item) => (
+          <div key={item.label} className="text-center py-4 px-2 rounded-2xl"
             style={{
-              background: item.label === 'Segundos'
-                ? `linear-gradient(135deg, ${cor}30, ${cor}15)`
-                : `linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))`,
-              border: item.label === 'Segundos' ? `1px solid ${cor}50` : '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
-            <motion.p
-              key={item.valor}
-              initial={{ y: -8, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.15 }}
-              className="text-3xl font-black leading-none tracking-tight"
-              style={{ color: item.label === 'Segundos' ? cor : 'white' }}
-            >
+              background: item.dest ? `linear-gradient(135deg, ${cor}30, ${cor}15)` : 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
+              border: item.dest ? `1px solid ${cor}50` : '1px solid rgba(255,255,255,0.08)',
+              transform: item.dest ? 'scale(1.02)' : 'none',
+            }}>
+            <p className="text-3xl font-black leading-none tabular-nums" style={{ color: item.dest ? cor : 'white' }}>
               {String(item.valor).padStart(2, '0')}
-            </motion.p>
+            </p>
             <p className="text-xs text-gray-500 mt-1.5 uppercase tracking-widest">{item.label}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
@@ -254,7 +243,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
     const audio = audioRef.current
     if (!audio) return
     if (tocando) { audio.pause(); setTocando(false) }
-    else { audio.play().then(() => setTocando(true)).catch(() => {}) }
+    else { setTocando(false) }
   }
 
   function handleBarra(e: React.MouseEvent<HTMLDivElement>) {
@@ -391,6 +380,50 @@ function SlideMemoria({
           <div className="w-10 h-0.5 mt-3" style={{ backgroundColor: cor }} />
         </motion.div>
       </div>
+    </motion.div>
+  )
+}
+
+
+// Carta selada com typing effect
+function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: string; fontCorpo: string }) {
+  const [aberta, setAberta] = useState(false)
+  const [textoVisivel, setTextoVisivel] = useState('')
+  const digitandoRef = useRef(false)
+
+  useEffect(() => {
+    if (!aberta || digitandoRef.current) return
+    digitandoRef.current = true
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setTextoVisivel(mensagem.slice(0, i))
+      if (i >= mensagem.length) { clearInterval(interval); digitandoRef.current = false }
+    }, 35)
+    return () => clearInterval(interval)
+  }, [aberta, mensagem])
+
+  if (!aberta) {
+    return (
+      <motion.button onClick={() => setAberta(true)} whileTap={{ scale: 0.97 }}
+        className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 py-10 px-6 rounded-3xl border-2 border-dashed cursor-pointer"
+        style={{ borderColor: `${cor}40`, background: `${cor}08` }}>
+        <div className="w-16 h-12 relative">
+          <div className="absolute inset-0 rounded-lg" style={{ background: `${cor}20`, border: `2px solid ${cor}40` }} />
+          <div className="absolute top-0 left-0 right-0 h-6" style={{ background: `${cor}15`, clipPath: 'polygon(0 0, 50% 100%, 100% 0)' }} />
+        </div>
+        <p className="text-sm font-medium" style={{ color: cor }}>Toque para abrir a carta</p>
+      </motion.button>
+    )
+  }
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+      className="max-w-lg mx-auto rounded-3xl p-8 border" style={{ background: `${cor}08`, borderColor: `${cor}20` }}>
+      <p className="text-lg leading-relaxed whitespace-pre-wrap" style={{ fontFamily: fontCorpo, color: 'rgba(255,255,255,0.85)' }}>
+        {textoVisivel}
+        {digitandoRef.current && <span className="inline-block w-0.5 h-5 ml-0.5 animate-pulse" style={{ background: cor }} />}
+      </p>
     </motion.div>
   )
 }
@@ -995,8 +1028,9 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-4 sm:mb-6 select-none" style={{ color: `${cor}20` }}>"</div>
 
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-6 sm:mb-8 px-2 sm:px-8 break-words">
-            {pagina.mensagem}
+            {pagina.tipo === 'casal' ? '' : pagina.mensagem}
           </p>
+            {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={fontes.corpo} />}
 
           <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
 

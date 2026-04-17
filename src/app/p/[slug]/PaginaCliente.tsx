@@ -298,7 +298,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
           <div className={tocando ? "animate-pulse" : ""}
             >
             <Heart className="w-6 h-6 fill-current ml-3 mt-1" style={{ color: cor }} />
-          </motion.div>
+          </div>
         </div>
 
         {/* Barra de progresso */}

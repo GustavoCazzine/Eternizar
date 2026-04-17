@@ -256,7 +256,15 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
   const youtubeUrl = `https://music.youtube.com/search?q=${encodeURIComponent(`${dados.nome} ${dados.artista}`)}`
 
   return (
-    <div className="rounded-3xl overflow-hidden shadow-2xl max-w-sm mx-auto border border-white/8" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)' }}>
+    <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-sm mx-auto border border-white/8">
+      {dados.capa && (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={dados.capa} alt="" className="w-full h-full object-cover blur-[30px] scale-150 opacity-25" />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+      )}
+      <div className="relative z-10" style={{ background: 'rgba(0,0,0,0.2)' }}>
       {/* Capa do álbum */}
       <div className="relative aspect-square overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -326,6 +334,7 @@ function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
           🎵 Ouvir a música completa ↗
         </a>
         <p className="text-center text-xs text-gray-600 mt-2">Preview de 30s · Abre no YouTube Music</p>
+      </div>
       </div>
     </div>
   )

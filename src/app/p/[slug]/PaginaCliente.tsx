@@ -520,6 +520,7 @@ function CapsulaAudio({ audioUrl, mensagem, cor, fontes, audioRef: musicRef }: {
 
 export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const containerRef = useRef<HTMLDivElement>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
  const { scrollYProgress } = useScroll()
  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
  const [senhaInput, setSenhaInput] = useState('')

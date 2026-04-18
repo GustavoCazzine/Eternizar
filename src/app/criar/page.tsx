@@ -345,7 +345,7 @@ function PassoNomes({ form, upd, updCasal, updFormatura }: PassoProps) {
         </div>
           {form.dadosCasal.dataInicio && (() => {
             const d = Math.floor((Date.now() - new Date(form.dadosCasal.dataInicio).getTime()) / 86400000)
-            return d > 0 ? <p className="text-sm mt-2 font-medium" style={{ color: corHex || '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
+            return d > 0 ? <p className="text-sm mt-2 font-medium" style={{ color: '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
           })()}
         <div className="grid grid-cols-2 gap-3">
           <div>

@@ -228,128 +228,53 @@ function ParallaxLayer({ children, speed = 0.3, className = '' }: {
  )
 }
 
-// Player de música — preview de áudio + card estilo Spotify
+// Mini player inline
 function PlayerMusica({ dados, cor }: { dados: MusicaDados; cor: string }) {
- const [tocando, setTocando] = useState(false)
- const [progresso, setProgresso] = useState(0)
- const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [tocando, setTocando] = useState(false)
+  const [progresso, setProgresso] = useState(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
- useEffect(() => {
- if (!dados.previewUrl) return
- const audio = new Audio(dados.previewUrl)
- audio.setAttribute('playsinline', 'true')
- audio.volume = 0.5
- audioRef.current = audio
- audio.loop = true
- audio.ontimeupdate = () => setProgresso((audio.currentTime / audio.duration) * 100 || 0)
+  useEffect(() => {
+    if (!dados.previewUrl) return
+    const audio = new Audio(dados.previewUrl)
+    audio.setAttribute('playsinline', 'true')
+    audio.volume = 0.5
+    audioRef.current = audio
+    audio.loop = true
+    audio.ontimeupdate = () => setProgresso((audio.currentTime / audio.duration) * 100 || 0)
+    return () => { audio.pause(); audio.src = '' }
+  }, [dados.previewUrl])
 
- const t = setTimeout(() => {
- // Audio ready, user must tap play
- setTocando(false)
- }, 1500)
+  function togglePlay() {
+    const audio = audioRef.current
+    if (!audio) return
+    if (tocando) { audio.pause(); setTocando(false) }
+    else { audio.play().then(() => setTocando(true)).catch(() => {}) }
+  }
 
- return () => { clearTimeout(t); audio.pause(); audio.src = '' }
- }, [dados.previewUrl])
-
- function togglePlay() {
- const audio = audioRef.current
- if (!audio) return
- if (tocando) { audio.pause(); setTocando(false) }
- else { setTocando(false) }
- }
-
- function handleBarra(e: React.MouseEvent<HTMLDivElement>) {
- const audio = audioRef.current
- if (!audio || !audio.duration) return
- const rect = e.currentTarget.getBoundingClientRect()
- audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration
- }
-
- const youtubeUrl = `https://music.youtube.com/search?q=${encodeURIComponent(`${dados.nome} ${dados.artista}`)}`
-
- return (
- <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-sm mx-auto border border-white/8">
- {dados.capa && (
- <div className="absolute inset-0 z-0 overflow-hidden">
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={dados.capa} alt="" className="w-full h-full object-cover blur-[30px] scale-150 opacity-25" />
- <div className="absolute inset-0 bg-black/50" />
- </div>
- )}
- <div className="relative z-10" style={{ background: 'rgba(0,0,0,0.2)' }}>
- {/* Capa do álbum */}
- <div className="relative aspect-square overflow-hidden">
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <motion.img src={dados.capa} alt={dados.album} className="w-full h-full object-cover"
- transition={{ duration: 0.8 }} />
- <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
- {/* Ondas quando tocando */}
- {tocando && (
- <div className="absolute inset-0 flex items-center justify-center">
- {[...Array(3)].map((_, i) => (
- <motion.div key={i} className="absolute rounded-full"
- style={{ border: `2px solid ${cor}40` }}
- animate={{ scale: [1, 2 + i * 0.5], opacity: [0.6, 0] }}
- />
- ))}
- </div>
- )}
- </div>
-
- {/* Info + controles */}
- <div className="p-6">
- <div className="flex items-start justify-between mb-1">
- <div className="flex-1 min-w-0">
- <h3 className="text-white font-bold text-xl truncate">{dados.nome}</h3>
- <p className="text-gray-400 text-sm truncate mt-0.5">{dados.artista}</p>
- <p className="text-gray-600 text-xs truncate">{dados.album}</p>
- </div>
- <div className={tocando ? "animate-pulse" : ""}
- >
- <Heart className="w-6 h-6 fill-current ml-3 mt-1" style={{ color: cor }} />
- </div>
- </div>
-
- {/* Barra de progresso */}
- <div className="mt-5 mb-1">
- <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden cursor-pointer" onClick={handleBarra}>
- <motion.div className="h-full rounded-full" style={{ width: `${progresso}%`, backgroundColor: cor }} />
- </div>
- <div className="flex justify-between text-xs text-gray-500 mt-1.5">
- <span>Preview</span>
- <span>0:30</span>
- </div>
- </div>
-
- {/* Controles */}
- <div className="flex items-center justify-between mt-4">
- <Volume2 className="w-4 h-4 text-gray-600" />
- <div className="flex items-center gap-6">
- <button className="text-gray-500" onClick={() => { if (audioRef.current) { audioRef.current.currentTime = 0; setProgresso(0) } }}>
- <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" /></svg>
- </button>
- <motion.button onClick={togglePlay} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
- className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: cor }}>
- {tocando ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white ml-0.5" />}
- </motion.button>
- <button className="text-gray-500">
- <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.5 3.14L8 16.14V9.86zM16 6h2v12h-2z" /></svg>
- </button>
- </div>
- <div className="w-4" />
- </div>
-
- {/* Botão música completa */}
- <a href={youtubeUrl} target="_blank" rel="noopener noreferrer"
- className="flex items-center justify-center gap-2 mt-5 py-3 rounded-xl text-sm font-semibold text-white transition"
- style={{ background: cor }}>
- Ouvir a música completa ↗
- </a>
- <p className="text-center text-xs text-gray-600 mt-2">Preview de 30s · Abre no YouTube Music</p>
- </div>
- </div>
- </div>
- )
+  return (
+    <div className="flex items-center gap-4 max-w-md mx-auto p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      {/* Album cover — spinning */}
+      <motion.button onClick={togglePlay} className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-lg"
+        animate={{ rotate: tocando ? 360 : 0 }}
+        transition={tocando ? { duration: 8, repeat: Infinity, ease: 'linear' } : { duration: 0 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={dados.capa} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          {tocando ? <Pause className="w-4 h-4 text-white" /> : <Play className="w-4 h-4 text-white ml-0.5" />}
+        </div>
+      </motion.button>
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-white font-medium truncate">{dados.nome}</p>
+        <p className="text-xs text-gray-500 truncate">{dados.artista}</p>
+        {/* Progress bar */}
+        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+          <div className="h-full rounded-full transition-all" style={{ width: `${progresso}%`, backgroundColor: cor }} />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // Slide de foto com parallax, legenda e texto
@@ -593,7 +518,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  if (!liberada) {
  return (
  <div className="min-h-screen text-white flex items-center justify-center px-4"
- style={{ background: `radial-gradient(ellipse at center, ${paleta.fundoAlt}, #08080c)` }}>
+ style={{ background: `radial-gradient(ellipse at center, ${paleta.fundoAlt}, #121212)` }}>
  <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full">
  <motion.div
  animate={{ rotate: [0, -10, 10, -10, 0] }}
@@ -647,7 +572,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  return (
  <div ref={containerRef} className="text-white overflow-x-hidden relative"
- style={{ background: '#08080c', fontFamily: fontes.corpo }}>
+ style={{ background: '#121212', fontFamily: fontes.corpo }}>
 
  {/* Barra de progresso */}
  <div className="fixed top-0 left-0 right-0 h-0.5 z-50" style={{ background: 'rgba(255,255,255,0.05)' }}>
@@ -680,8 +605,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  {/* Gradiente overlay sobre a foto */}
  <div className="absolute inset-0 z-[1]" style={{
  background: fotoCapa
- ? `linear-gradient(to bottom, ${paleta.fundoAlt}99 0%, ${paleta.fundo}dd 50%, #08080c 100%)`
- : `radial-gradient(ellipse at 50% 30%, ${paleta.fundoAlt}, #08080c)`
+ ? `linear-gradient(to bottom, ${paleta.fundoAlt}99 0%, ${paleta.fundo}dd 50%, #121212 100%)`
+ : `radial-gradient(ellipse at 50% 30%, ${paleta.fundoAlt}, #121212)`
  }} />
 
  {/* Glow orbs animados */}
@@ -760,7 +685,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* ===== SLIDE 2 — CONTADOR (apenas casal) ===== */}
  {pagina.tipo === 'casal' && pagina.dados_casal?.dataInicio && (
- <section className="py-16 sm:py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
+ <section className="py-16 sm:py-24 px-4" style={{ background: `linear-gradient(180deg, #121212, ${paleta.fundo}, #121212)` }}>
  <Secao className="text-center mb-10">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Juntos há exatamente</p>
  <h2 className="text-3xl sm:text-4xl font-black mb-2">Contando cada segundo</h2>
@@ -769,6 +694,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <Secao delay={0.2}>
  <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
  </Secao>
+        {pagina.musica_dados && <Secao delay={0.3}><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
 
  {/* Cards de dados do casal */}
  {(pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
@@ -809,7 +735,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* ===== DADOS DE FORMATURA ===== */}
  {pagina.tipo === 'formatura' && pagina.dados_formatura?.curso && (
- <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
+ <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #121212, ${paleta.fundo}, #121212)` }}>
  <Secao className="text-center mb-10">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Uma conquista coletiva</p>
  <h2 className="text-3xl sm:text-4xl font-black glint-effect">{pagina.dados_formatura.curso}</h2>
@@ -845,7 +771,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <section className="py-24 px-4">
  <Secao className="text-center mb-10">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Memórias que ficam</p>
- <h2 className="text-3xl sm:text-4xl font-black">Nossos momentos</h2>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Nossos momentos</h2>
  <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
  </Secao>
 
@@ -865,7 +791,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  >
  {/* Anel colorido estilo story não visto */}
  <div className="p-0.5 rounded-full" style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}>
- <div className="p-0.5 rounded-full bg-[#08080c]">
+ <div className="p-0.5 rounded-full bg-[#121212]">
  <div className="w-20 h-20 rounded-full overflow-hidden">
  {/* eslint-disable-next-line @next/next/no-img-element */}
  <img src={foto.url} alt={foto.legenda || `Foto ${i + 1}`}
@@ -920,10 +846,10 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* ===== LINHA DO TEMPO ===== */}
  {pagina.linha_do_tempo?.length > 0 && (
- <section className="py-16 sm:py-24 overflow-hidden" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo} 50%, #08080c)` }}>
+ <section className="py-16 sm:py-24 overflow-hidden" style={{ background: `linear-gradient(180deg, #121212, ${paleta.fundo} 50%, #121212)` }}>
  <Secao className="text-center mb-20 px-4">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa história</p>
- <h2 className="text-3xl sm:text-4xl font-black">Linha do tempo</h2>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Linha do tempo</h2>
  </Secao>
 
  <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
@@ -1022,32 +948,18 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </section>
  )}
 
- {/* ===== SLIDE 4 — PLAYER DE MÚSICA ===== */}
- {(pagina.musica_dados || pagina.musica_nome) && (
- <section className="py-20 sm:py-32 px-4" style={{ background: `linear-gradient(180deg, #08080c 0%, ${paleta.fundo} 50%, #08080c 100%)` }}>
- <Secao className="text-center mb-12">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa música</p>
- <h2 className="text-3xl sm:text-4xl font-black px-4 break-words">
- {pagina.musica_dados ? pagina.musica_dados.nome : pagina.musica_nome}
- </h2>
- </Secao>
+ {/* Player moved to counter section */}
 
- {pagina.musica_dados ? (
- <Secao delay={0.2}>
- <PlayerMusica dados={pagina.musica_dados} cor={cor} />
- </Secao>
- ) : (
- // Fallback se não tiver dados completos
- <Secao className="text-center">
- <p className="text-gray-400">{pagina.musica_nome}</p>
- </Secao>
- )}
- </section>
- )}
+ {/* Player for non-casal */}
+        {pagina.tipo !== 'casal' && pagina.musica_dados && (
+          <section className="py-12 px-4" style={{ background: '#000' }}>
+            <Secao><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>
+          </section>
+        )}
 
- {/* ===== SLIDE 5 — MENSAGEM FINAL ===== */}
+        {/* ===== SLIDE 5 — MENSAGEM FINAL ===== */}
  <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden"
- style={{ background: `radial-gradient(ellipse at center bottom, ${paleta.fundoAlt}, #08080c)` }}>
+ style={{ background: `radial-gradient(ellipse at center bottom, ${paleta.fundoAlt}, #121212)` }}>
 
  {/* Partículas de fundo */}
  <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -1102,7 +1014,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* ===== LIVRO DE VISITAS ===== */}
  {pagina.compartilhavel !== false && (
- <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #08080c, ${paleta.fundo}, #08080c)` }}>
+ <section className="py-24 px-4" style={{ background: `linear-gradient(180deg, #121212, ${paleta.fundo}, #121212)` }}>
  <Secao className="text-center mb-12">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Deixe sua marca</p>
  <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center gap-3">
@@ -1115,7 +1027,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <div className="max-w-lg mx-auto">
  {/* Formulário */}
  <Secao delay={0.1}>
- <div className="rounded-2xl p-6 mb-8" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+ <div className="rounded-2xl p-6 mb-8" style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.08)' }}>
  <input
  type="text"
  value={guestNome}

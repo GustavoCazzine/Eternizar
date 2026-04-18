@@ -1238,6 +1238,7 @@ function CriarPageContent() {
  fd.append('dadosFormatura', JSON.stringify(form.dadosFormatura))
       fd.append('bucketList', JSON.stringify(form.bucketList))
       fd.append('locais', JSON.stringify(form.locais))
+      if (form.audioMensagem) fd.append('audioMensagem', form.audioMensagem)
  fd.append('fotosLegendas', JSON.stringify(form.fotos.map(f => f.legenda)))
  // Comprimir fotos antes de enviar
  const fotosComprimidas = await Promise.all(form.fotos.map(f => comprimirImagem(f.file)))

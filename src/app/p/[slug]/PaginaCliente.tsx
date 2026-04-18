@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle, Send } from 'lucide-react'
 import StoriesViewer from '@/components/StoriesViewer'
+import MapaAmor from '@/components/MapaAmor'
 import EmojiAnimado from '@/components/EmojiAnimado'
 
 interface MusicaDados {
@@ -948,7 +949,21 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </section>
  )}
 
- {/* ===== LINHA DO TEMPO ===== */}
+ 
+        {/* ===== MAPA DO AMOR ===== */}
+        {pagina.locais && pagina.locais.length > 0 && (
+          <section className="py-20 px-4">
+            <Secao className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Mapa do Amor</h2>
+              <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
+            </Secao>
+            <Secao delay={0.2}>
+              <MapaAmor locais={pagina.locais} cor={cor} />
+            </Secao>
+          </section>
+        )}
+
+{/* ===== LINHA DO TEMPO ===== */}
  {pagina.linha_do_tempo?.length > 0 && (
  <section className="py-16 sm:py-24 overflow-hidden" style={{ background: `linear-gradient(180deg, #121212, ${paleta.fundo} 50%, #121212)` }}>
  <Secao className="text-center mb-20 px-4">

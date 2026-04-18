@@ -183,7 +183,28 @@ export async function POST(req: NextRequest) {
  }
 
  // â”€â”€â”€ 11. Inserir no banco â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
- const expiraEm = new Date()
+ 
+    // --- Upload audio mensagem ---
+    let audioMensagemUrl = ''
+    const audioFile = fd.get('audioMensagem') as File | null
+    if (audioFile instanceof File && audioFile.size > 0) {
+      if (audioFile.size > 10 * 1024 * 1024) {
+        return NextResponse.json({ erro: 'Audio deve ter no maximo 10MB.' }, { status: 400 })
+      }
+      const audioExt = audioFile.name.split('.').pop()?.toLowerCase() || 'mp3'
+      const allowedAudio = ['mp3', 'm4a', 'wav', 'ogg', 'webm', 'aac']
+      if (allowedAudio.includes(audioExt)) {
+        const audioNome = `${slug}/audio-${Date.now()}.${audioExt}`
+        const audioBuffer = await audioFile.arrayBuffer()
+        const { error: audioErr } = await supabase.storage.from('fotos').upload(audioNome, audioBuffer, { contentType: audioFile.type })
+        if (!audioErr) {
+          const { data: audioData } = supabase.storage.from('fotos').getPublicUrl(audioNome)
+          audioMensagemUrl = audioData.publicUrl
+        }
+      }
+    }
+
+const expiraEm = new Date()
  expiraEm.setDate(expiraEm.getDate() + 60)
 
  const { error: erroPagina } = await supabase.from('paginas').insert({
@@ -208,6 +229,7 @@ export async function POST(req: NextRequest) {
  visualizacoes: 0,
  locais: locais.slice(0, 10).map(l => ({ titulo: sanitize(String(l.titulo||'')).slice(0,100), descricao: sanitizeTexto(String(l.descricao||''),200), endereco: sanitize(String(l.endereco||'')).slice(0,100) })),
       bucket_list: bucketList.slice(0, 20).map(b => ({ texto: sanitize(String(b.texto || '')).slice(0, 100), feito: Boolean(b.feito) })),
+      audio_mensagem: audioMensagemUrl || null,
       email_cliente: emailCliente,
  user_id: userId,
  })

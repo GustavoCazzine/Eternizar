@@ -95,3 +95,7 @@ body {
   transform: translateX(-100%) rotate(45deg);
   animation: glint 5s ease-in-out infinite;
 }
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

@@ -1250,7 +1250,16 @@ function CriarPageContent() {
         {form.tipo && (
         <div className="hidden lg:flex w-80 xl:w-96 border-l border-white/5 p-6 flex-col gap-4 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
           <p className="text-xs text-zinc-600 uppercase tracking-[0.2em]">Prévia ao vivo</p>
-          <Previa form={form} tituloFinal={tituloFinal} subtituloFinal={subtituloFinal} corHex={corHex} />
+          <div className="phone-mockup relative mx-auto" style={{ maxWidth: 280 }}>
+              {/* Moldura */}
+              <div className="relative rounded-[2.5rem] border-[3px] border-zinc-700 bg-black p-1 shadow-2xl shadow-black/50">
+                {/* Notch */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-2xl z-20" />
+                <div className="rounded-[2.2rem] overflow-hidden overflow-y-auto max-h-[520px] scrollbar-hide">
+                  <Previa form={form} tituloFinal={tituloFinal} subtituloFinal={subtituloFinal} corHex={corHex} />
+                </div>
+              </div>
+            </div>
         </div>
         )}
       </div>

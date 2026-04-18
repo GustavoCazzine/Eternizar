@@ -26,24 +26,7 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
     canvas.width = 1080
     canvas.height = 1080
 
-    // Background gradient
-    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height)
-    grad.addColorStop(0, corHex)
-    grad.addColorStop(0.4, corHex + '99')
-    grad.addColorStop(1, '#121212')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Noise overlay
-    ctx.fillStyle = 'rgba(0,0,0,0.15)'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    const padding = 80
-    const imgSize = 580
-    const imgX = (canvas.width - imgSize) / 2
-    const imgY = 80
-
-    // Album art (centered, smaller to leave room for text)
+    let fotoImg: HTMLImageElement | null = null
     if (fotoCapa) {
       try {
         const img = new Image()
@@ -53,81 +36,134 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
           img.onerror = () => res(false)
           img.src = fotoCapa
         })
-        if (loaded && img.width > 0) {
-          // Shadow behind image
-          ctx.shadowColor = 'rgba(0,0,0,0.5)'
-          ctx.shadowBlur = 40
-          ctx.shadowOffsetY = 10
-          ctx.save()
-          roundRect(ctx, imgX, imgY, imgSize, imgSize, 16)
-          ctx.clip()
-          const ratio = Math.max(imgSize / img.width, imgSize / img.height)
-          const w = img.width * ratio
-          const h = img.height * ratio
-          ctx.drawImage(img, imgX + (imgSize - w) / 2, imgY + (imgSize - h) / 2, w, h)
-          ctx.restore()
-          ctx.shadowBlur = 0
-          ctx.shadowOffsetY = 0
-        }
+        if (loaded && img.width > 0) fotoImg = img
       } catch {}
+    }
+
+    // Background: blurred photo or gradient
+    if (fotoImg) {
+      const ratio = Math.max(canvas.width / fotoImg.width, canvas.height / fotoImg.height) * 1.3
+      const w = fotoImg.width * ratio
+      const h = fotoImg.height * ratio
+      ctx.filter = 'blur(60px) brightness(0.4) saturate(1.4)'
+      ctx.drawImage(fotoImg, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h)
+      ctx.filter = 'none'
     } else {
-      ctx.fillStyle = 'rgba(255,255,255,0.08)'
-      roundRect(ctx, imgX, imgY, imgSize, imgSize, 16)
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height)
+      grad.addColorStop(0, '#282828')
+      grad.addColorStop(1, '#121212')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
+
+    // Dark overlay for readability
+    ctx.fillStyle = 'rgba(0,0,0,0.35)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Album art - centered square
+    const imgSize = 560
+    const imgX = (canvas.width - imgSize) / 2
+    const imgY = 100
+
+    if (fotoImg) {
+      ctx.save()
+      ctx.shadowColor = 'rgba(0,0,0,0.6)'
+      ctx.shadowBlur = 50
+      ctx.shadowOffsetY = 15
+      roundRect(ctx, imgX, imgY, imgSize, imgSize, 12)
+      ctx.clip()
+      const ratio = Math.max(imgSize / fotoImg.width, imgSize / fotoImg.height)
+      const w = fotoImg.width * ratio
+      const h = fotoImg.height * ratio
+      ctx.drawImage(fotoImg, imgX + (imgSize - w) / 2, imgY + (imgSize - h) / 2, w, h)
+      ctx.restore()
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.06)'
+      roundRect(ctx, imgX, imgY, imgSize, imgSize, 12)
       ctx.fill()
-      ctx.fillStyle = 'rgba(255,255,255,0.15)'
-      ctx.font = '120px system-ui'
+      ctx.fillStyle = 'rgba(255,255,255,0.12)'
+      ctx.font = '160px system-ui'
       ctx.textAlign = 'center'
-      ctx.fillText('\u2665', canvas.width / 2, imgY + imgSize / 2 + 40)
+      ctx.fillText('\u2665', canvas.width / 2, imgY + imgSize / 2 + 55)
     }
 
     // Title
-    const textY = imgY + imgSize + 60
+    const textY = imgY + imgSize + 70
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 56px system-ui, -apple-system, sans-serif'
+    ctx.font = 'bold 52px system-ui, -apple-system, sans-serif'
     ctx.textAlign = 'left'
-    ctx.shadowColor = 'rgba(0,0,0,0.3)'
-    ctx.shadowBlur = 10
-    const tituloFinal = titulo.length > 28 ? titulo.slice(0, 26) + '...' : titulo
-    ctx.fillText(tituloFinal, padding, textY)
-    ctx.shadowBlur = 0
+    const pad = 90
+    const tituloFinal = titulo.length > 30 ? titulo.slice(0, 28) + '...' : titulo
+    ctx.fillText(tituloFinal, pad, textY)
 
     // Subtitle
     if (subtitulo) {
-      ctx.fillStyle = 'rgba(255,255,255,0.7)'
-      ctx.font = '34px system-ui, -apple-system, sans-serif'
-      const subFinal = subtitulo.length > 45 ? subtitulo.slice(0, 43) + '...' : subtitulo
-      ctx.fillText(subFinal, padding, textY + 50)
+      ctx.fillStyle = 'rgba(255,255,255,0.65)'
+      ctx.font = '32px system-ui, -apple-system, sans-serif'
+      const subFinal = subtitulo.length > 50 ? subtitulo.slice(0, 48) + '...' : subtitulo
+      ctx.fillText(subFinal, pad, textY + 48)
     }
 
-    // Bottom bar - Spotify style
-    const bottomY = canvas.height - 120
-
-    // Green play button
-    ctx.beginPath()
-    ctx.arc(padding + 32, bottomY, 32, 0, Math.PI * 2)
-    ctx.fillStyle = '#1db954'
+    // Progress bar
+    const barY = textY + 80
+    ctx.fillStyle = 'rgba(255,255,255,0.15)'
+    roundRect(ctx, pad, barY, canvas.width - pad * 2, 6, 3)
+    ctx.fill()
+    ctx.fillStyle = '#ffffff'
+    roundRect(ctx, pad, barY, (canvas.width - pad * 2) * 0.35, 6, 3)
     ctx.fill()
 
-    // Play triangle
+    // Time stamps
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'
+    ctx.font = '22px system-ui'
+    ctx.textAlign = 'left'
+    ctx.fillText('0:30', pad, barY + 30)
+    ctx.textAlign = 'right'
+    ctx.fillText('0:30', canvas.width - pad, barY + 30)
+
+    // Controls row
+    const ctrlY = barY + 70
+    const cx = canvas.width / 2
+
+    // Shuffle
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'
+    ctx.font = '28px system-ui'
+    ctx.textAlign = 'center'
+    ctx.fillText('\u21C4', cx - 180, ctrlY)
+
+    // Prev
+    ctx.fillStyle = 'rgba(255,255,255,0.7)'
+    ctx.fillText('\u23EE', cx - 90, ctrlY)
+
+    // Play button (big green circle)
+    ctx.beginPath()
+    ctx.arc(cx, ctrlY - 8, 36, 0, Math.PI * 2)
+    ctx.fillStyle = '#1db954'
+    ctx.fill()
     ctx.fillStyle = '#000000'
     ctx.beginPath()
-    ctx.moveTo(padding + 22, bottomY - 16)
-    ctx.lineTo(padding + 22, bottomY + 16)
-    ctx.lineTo(padding + 48, bottomY)
+    ctx.moveTo(cx - 12, ctrlY - 26)
+    ctx.lineTo(cx - 12, ctrlY + 10)
+    ctx.lineTo(cx + 16, ctrlY - 8)
     ctx.closePath()
     ctx.fill()
 
-    // Heart icon
-    ctx.fillStyle = '#1db954'
-    ctx.font = '40px system-ui'
-    ctx.textAlign = 'center'
-    ctx.fillText('\u2665', padding + 100, bottomY + 14)
+    // Next
+    ctx.fillStyle = 'rgba(255,255,255,0.7)'
+    ctx.font = '28px system-ui'
+    ctx.fillText('\u23ED', cx + 90, ctrlY)
 
-    // Branding
-    ctx.fillStyle = 'rgba(255,255,255,0.5)'
-    ctx.font = '500 26px system-ui'
-    ctx.textAlign = 'right'
-    ctx.fillText('Eternizar', canvas.width - padding, bottomY + 10)
+    // Repeat
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'
+    ctx.fillText('\u21BB', cx + 180, ctrlY)
+
+    // Bottom branding
+    ctx.fillStyle = 'rgba(255,255,255,0.3)'
+    ctx.font = '24px system-ui'
+    ctx.textAlign = 'center'
+    ctx.fillText('eternizar', canvas.width / 2, canvas.height - 40)
 
     setGerado(true)
   }
@@ -146,7 +182,7 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
     const canvas = canvasRef.current
     if (!canvas) return
     try { canvas.toDataURL('image/png') } catch {
-      alert('Erro de seguran\u00e7a ao baixar. Tente novamente.')
+      alert('Erro ao baixar. Tente novamente.')
       return
     }
     const link = document.createElement('a')
@@ -157,7 +193,7 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
 
   return (
     <div className="space-y-4">
-      <div className="relative mx-auto overflow-hidden rounded-2xl shadow-2xl" style={{ maxWidth: 200 }}>
+      <div className="relative mx-auto overflow-hidden rounded-2xl shadow-2xl" style={{ maxWidth: 220 }}>
         <canvas ref={canvasRef} className="w-full" style={{ display: 'block' }} />
         {!gerado && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60">
@@ -169,9 +205,8 @@ export default function CapaSpotify({ titulo, subtitulo, corHex, fotoCapa }: Pro
         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition disabled:opacity-40"
         style={{ background: `${corHex}20`, color: corHex, border: `1px solid ${corHex}40` }}>
         <Download className="w-4 h-4" />
-        Baixar PNG
+        Baixar Spotify
       </button>
-      <p className="text-xs text-gray-600 text-center">Estilo Spotify (1080x1080)</p>
     </div>
   )
 }

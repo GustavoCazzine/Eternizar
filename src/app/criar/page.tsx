@@ -81,7 +81,7 @@ const paresFonte = [
   { id: 'divertido', nome: 'Divertido', desc: 'Casual e descontraído', titulo: 'var(--font-caveat)', corpo: 'var(--font-inter)', preview: 'Caveat + Inter' },
 ]
 
-const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
+const inputClass = "w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -636,13 +636,13 @@ function PassoTimeline({ form, upd, addEvento, addEventoComDados, removeEvento, 
                             const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
                             updEvento(i, 'data', `${meses[parseInt(mes)-1]} ${ano}`)
                           }}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-pink-500 text-sm"
+                          className="w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-pink-500 text-sm"
                         />
                         {ev.data && <p className="text-xs text-gray-600 mt-0.5 truncate">{ev.data}</p>}
                       </div>
                       <input value={ev.titulo} onChange={e => updEvento(i, 'titulo', e.target.value)}
                         placeholder="Título do momento"
-                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 text-sm" />
+                        className="flex-1 bg-white/[0.08] border border-white/[0.15] rounded-xl px-3 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 text-sm" />
                     </div>
 
                     {/* Descrição com placeholder inteligente e limite */}
@@ -651,7 +651,7 @@ function PassoTimeline({ form, upd, addEvento, addEventoComDados, removeEvento, 
                       placeholder={sugestoes.find(s => s.titulo === ev.titulo)?.placeholder || 'Conte o que aconteceu nesse momento... (máx. 300 caracteres)'}
                       rows={3}
                       maxLength={300}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 text-sm resize-none" />
+                      className="w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-3 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 text-sm resize-none" />
                     <p className="text-xs text-gray-600 text-right">{ev.descricao.length}/300</p>
 
                     {/* Foto do momento */}
@@ -683,7 +683,7 @@ function PassoMusica({ form, upd }: PassoProps) {
       <Label sub="Vai tocar automaticamente quando a página abrir">Música especial</Label>
       <BuscaMusica valor={form.musica} onChange={v => upd('musica', v)} />
       {form.musica && (
-        <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400">
+        <div className="p-3 rounded-xl bg-white/[0.08] border border-white/[0.15] text-xs text-gray-400">
           ✓ Preview de 30s inicia automaticamente · Botão para ouvir a música completa
         </div>
       )}
@@ -818,7 +818,7 @@ function PassoMensagem({ form, upd }: PassoProps) {
         {form.senhaProtegida && (
           <input value={form.senhaDica} onChange={e => upd('senhaDica', e.target.value)}
             placeholder='Ex: O nome do nosso pet, o lugar do primeiro encontro...'
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-pink-500" />
+            className="w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-pink-500" />
         )}
       </div>
 
@@ -1152,8 +1152,8 @@ function CriarPageContent() {
           </a>
           <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full rounded-full"
-              style={{ background: `linear-gradient(90deg, ${corHex}, ${corHex}88)` }}
+              className="h-full rounded-full shadow-sm"
+              style={{ background: `linear-gradient(90deg, ${corHex}, ${corHex}cc)` }}
               animate={{ width: `${((passo + 1) / totalPassos) * 100}%` }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             />

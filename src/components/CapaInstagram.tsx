@@ -11,19 +11,13 @@ interface Props {
   tipo: string
 }
 
-const EMOJIS: Record<string, string> = {
-  casal: '♥', formatura: '★', homenagem: '★'
-}
-
 export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tipo }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [gerado, setGerado] = useState(false)
 
-  useEffect(() => {
-    gerarCapa()
-  }, [titulo, subtitulo, corHex, fotoCapa])
+  useEffect(() => { gerar() }, [titulo, subtitulo, corHex, fotoCapa])
 
-  async function gerarCapa() {
+  async function gerar() {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -32,6 +26,7 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
     canvas.width = 1080
     canvas.height = 1920
 
+    let fotoImg: HTMLImageElement | null = null
     if (fotoCapa) {
       try {
         const img = new Image()
@@ -41,84 +36,81 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
           img.onerror = () => res(false)
           img.src = fotoCapa
         })
-
-        if (loaded && img.width > 0) {
-          const ratio = Math.max(canvas.width / img.width, canvas.height / img.height)
-          const w = img.width * ratio
-          const h = img.height * ratio
-          ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h)
-        } else {
-          desenharFundo(ctx, canvas, corHex)
-        }
-      } catch {
-        desenharFundo(ctx, canvas, corHex)
-      }
-    } else {
-      desenharFundo(ctx, canvas, corHex)
+        if (loaded && img.width > 0) fotoImg = img
+      } catch {}
     }
 
-    // Overlay escuro
+    // Full-bleed photo or gradient background
+    if (fotoImg) {
+      const ratio = Math.max(canvas.width / fotoImg.width, canvas.height / fotoImg.height)
+      const w = fotoImg.width * ratio
+      const h = fotoImg.height * ratio
+      ctx.drawImage(fotoImg, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h)
+    } else {
+      const grad = ctx.createRadialGradient(canvas.width / 2, canvas.height * 0.35, 0, canvas.width / 2, canvas.height / 2, canvas.height)
+      grad.addColorStop(0, corHex + '50')
+      grad.addColorStop(0.5, '#0a0a0f')
+      grad.addColorStop(1, '#000000')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
+
+    // Strong gradient overlay — dark bottom for text
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height)
-    grad.addColorStop(0, 'rgba(0,0,0,0.3)')
-    grad.addColorStop(0.4, 'rgba(0,0,0,0.2)')
-    grad.addColorStop(0.7, 'rgba(0,0,0,0.7)')
-    grad.addColorStop(1, 'rgba(0,0,0,0.92)')
+    grad.addColorStop(0, 'rgba(0,0,0,0.1)')
+    grad.addColorStop(0.35, 'rgba(0,0,0,0.05)')
+    grad.addColorStop(0.55, 'rgba(0,0,0,0.3)')
+    grad.addColorStop(0.75, 'rgba(0,0,0,0.75)')
+    grad.addColorStop(1, 'rgba(0,0,0,0.95)')
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Linha colorida no topo
+    // Top accent line
     ctx.fillStyle = corHex
-    ctx.fillRect(0, 0, canvas.width, 6)
+    ctx.fillRect(0, 0, canvas.width, 5)
 
-    // Emoji do tipo
-    ctx.font = '140px serif'
-    ctx.textAlign = 'center'
-    ctx.fillText(EMOJIS[tipo] || '✨', canvas.width / 2, canvas.height * 0.62)
-
-    // Título
-    ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 90px system-ui, -apple-system, sans-serif'
-    ctx.textAlign = 'center'
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'
-    ctx.shadowBlur = 20
-    wrapText(ctx, titulo, canvas.width / 2, canvas.height * 0.72, canvas.width - 120, 110)
-
-    // Linha decorativa
-    ctx.shadowBlur = 0
+    // Thin line above title
     ctx.strokeStyle = corHex
-    ctx.lineWidth = 4
+    ctx.lineWidth = 2
     ctx.beginPath()
-    ctx.moveTo(canvas.width / 2 - 60, canvas.height * 0.80)
-    ctx.lineTo(canvas.width / 2 + 60, canvas.height * 0.80)
+    ctx.moveTo(canvas.width / 2 - 40, canvas.height * 0.66)
+    ctx.lineTo(canvas.width / 2 + 40, canvas.height * 0.66)
     ctx.stroke()
 
-    // Subtítulo
+    // Title — big, bold, centered
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold 96px system-ui, -apple-system, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.shadowColor = 'rgba(0,0,0,0.7)'
+    ctx.shadowBlur = 30
+    wrapText(ctx, titulo, canvas.width / 2, canvas.height * 0.72, canvas.width - 140, 115)
+
+    // Subtitle
+    ctx.shadowBlur = 0
     if (subtitulo) {
-      ctx.fillStyle = 'rgba(255,255,255,0.7)'
-      ctx.font = '46px system-ui, -apple-system, sans-serif'
+      ctx.fillStyle = 'rgba(255,255,255,0.75)'
+      ctx.font = '44px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'center'
-      wrapText(ctx, subtitulo, canvas.width / 2, canvas.height * 0.84, canvas.width - 160, 56)
+      wrapText(ctx, subtitulo, canvas.width / 2, canvas.height * 0.82, canvas.width - 180, 55)
     }
 
-    // Badge Eternizar
-    ctx.fillStyle = 'rgba(255,255,255,0.12)'
-    roundRect(ctx, canvas.width / 2 - 140, canvas.height * 0.91, 280, 60, 30)
+    // Bottom branding — minimal pill
+    const brandY = canvas.height - 110
+    const brandText = 'eternizar'
+    ctx.font = '500 28px system-ui'
+    const tw = ctx.measureText(brandText).width
+    const pillW = tw + 48
+    const pillX = (canvas.width - pillW) / 2
+
+    ctx.fillStyle = 'rgba(255,255,255,0.08)'
+    roundRect(ctx, pillX, brandY - 18, pillW, 44, 22)
     ctx.fill()
-    ctx.fillStyle = corHex
-    ctx.font = 'bold 32px system-ui'
+
+    ctx.fillStyle = 'rgba(255,255,255,0.45)'
     ctx.textAlign = 'center'
-    ctx.fillText('Criado com Eternizar ✨', canvas.width / 2, canvas.height * 0.91 + 40)
+    ctx.fillText(brandText, canvas.width / 2, brandY + 12)
 
     setGerado(true)
-  }
-
-  function desenharFundo(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, cor: string) {
-    const grad = ctx.createRadialGradient(canvas.width / 2, canvas.height * 0.3, 0, canvas.width / 2, canvas.height / 2, canvas.height)
-    grad.addColorStop(0, cor + '40')
-    grad.addColorStop(0.5, '#08080c')
-    grad.addColorStop(1, '#000000')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
   }
 
   function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
@@ -151,15 +143,19 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
   function baixar() {
     const canvas = canvasRef.current
     if (!canvas) return
+    try { canvas.toDataURL('image/png') } catch {
+      alert('Erro ao baixar. Tente novamente.')
+      return
+    }
     const link = document.createElement('a')
-    link.download = `eternizar-capa.png`
+    link.download = 'eternizar-story.png'
     link.href = canvas.toDataURL('image/png', 0.95)
     link.click()
   }
 
   return (
     <div className="space-y-4">
-      <div className="relative mx-auto overflow-hidden rounded-2xl shadow-2xl" style={{ maxWidth: 200 }}>
+      <div className="relative mx-auto overflow-hidden rounded-2xl shadow-2xl" style={{ maxWidth: 180 }}>
         <canvas ref={canvasRef} className="w-full" style={{ display: 'block' }} />
         {!gerado && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60">
@@ -167,28 +163,12 @@ export default function CapaInstagram({ titulo, subtitulo, corHex, fotoCapa, tip
           </div>
         )}
       </div>
-
-      <div className="flex gap-2">
-        <button onClick={baixar} disabled={!gerado}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition disabled:opacity-40"
-          style={{ background: `${corHex}20`, color: corHex, border: `1px solid ${corHex}40` }}>
-          <Download className="w-4 h-4" />
-          Baixar PNG
-        </button>
-        <a href="https://www.instagram.com/stories/create" target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-white/10 text-gray-400 hover:text-white transition">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <circle cx="12" cy="12" r="4"/>
-            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-          </svg>
-          Postar
-        </a>
-      </div>
-
-      <p className="text-xs text-gray-600 text-center">
-        Tamanho ideal para Instagram Stories (1080×1920)
-      </p>
+      <button onClick={baixar} disabled={!gerado}
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition disabled:opacity-40"
+        style={{ background: `${corHex}20`, color: corHex, border: `1px solid ${corHex}40` }}>
+        <Download className="w-4 h-4" />
+        Baixar Story
+      </button>
     </div>
   )
 }

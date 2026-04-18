@@ -186,7 +186,7 @@ export default function Home() {
             </Link>
             <Link
               href="/demo"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-zinc-300 font-semibold text-base border border-white/10 hover:bg-white/5 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-zinc-300 font-semibold text-base border border-white/10 hover:bg-white/5 transition-all border border-white/20 hover:border-white/40"
             >
               Ver exemplo
             </Link>

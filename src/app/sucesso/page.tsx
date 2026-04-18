@@ -32,8 +32,8 @@ function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -40, rotate: -8 }}
-      animate={{ opacity: 1, x: 0, rotate: -6 }}
+      initial={{ opacity: 0, x: -40, rotate: 0 }}
+      animate={{ opacity: 1, x: 0, rotate: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="relative"
     >
@@ -142,8 +142,8 @@ function SucessoContent() {
       width: 200,
       margin: 2,
       color: {
-        dark: corHex,
-        light: '#00000000', // transparent background
+        dark: '#1a1a2e',
+        light: '#ffffff', // transparent background
       },
     })
 
@@ -358,17 +358,7 @@ function SucessoContent() {
                   </div>
                 </div>
 
-                {/* Stats */}
-                <div className="border-t border-white/10 pt-5 mb-5">
-                  <h3 className="text-zinc-400 text-xs font-semibold tracking-wider uppercase mb-4 text-center">
-                    Visitas e Interações
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <StatBox value={0} label="Visitas hoje" />
-                    <StatBox value={0} label="Curtidas" />
-                    <StatBox value={0} label="Interações" />
-                  </div>
-                </div>
+                {/* Stats hidden until visits > 0 */}
 
                 {/* Expiry */}
                 <div

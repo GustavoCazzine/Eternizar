@@ -72,12 +72,12 @@ interface Pagina {
 
 // Paletas de cor completas
 const paletas: Record<string, { primaria: string; secundaria: string; brilho: string; fundo: string; fundoAlt: string; texto: string }> = {
-  pink:    { primaria: '#ec4899', secundaria: '#f43f5e', brilho: '#fda4af', fundo: '#1a0010', fundoAlt: '#2d0018', texto: '#fce7f3' },
+  pink:    { primaria: '#9B1B30', secundaria: '#B91C3C', brilho: '#e8a0b0', fundo: '#12000a', fundoAlt: '#1e0012', texto: '#f5e0e8' },
   violet:  { primaria: '#8b5cf6', secundaria: '#7c3aed', brilho: '#c4b5fd', fundo: '#0d0020', fundoAlt: '#1e1040', texto: '#ede9fe' },
   amber:   { primaria: '#f59e0b', secundaria: '#f97316', brilho: '#fcd34d', fundo: '#1a1000', fundoAlt: '#2d1800', texto: '#fef3c7' },
   blue:    { primaria: '#3b82f6', secundaria: '#06b6d4', brilho: '#93c5fd', fundo: '#000d1a', fundoAlt: '#001830', texto: '#dbeafe' },
   emerald: { primaria: '#10b981', secundaria: '#14b8a6', brilho: '#6ee7b7', fundo: '#001a0d', fundoAlt: '#002d18', texto: '#d1fae5' },
-  rose:    { primaria: '#f43f5e', secundaria: '#ec4899', brilho: '#fda4af', fundo: '#1a0008', fundoAlt: '#2d0010', texto: '#ffe4e6' },
+  rose:    { primaria: '#C2185B', secundaria: '#9B1B30', brilho: '#fda4af', fundo: '#1a0008', fundoAlt: '#2d0010', texto: '#ffe4e6' },
 }
 
 const paresFonte: Record<string, { titulo: string; corpo: string }> = {
@@ -1247,7 +1247,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
       {/* Rodapé */}
       <div className="py-8 text-center border-t border-white/5">
         <a href="/" className="inline-flex items-center justify-center gap-2 text-xs text-gray-700 hover:text-gray-500 transition">
-          Criado com <img src="/logo.png" alt="Eternizar" className="h-7 inline-block opacity-80" />
+          Criado com <img src="/logo.svg" alt="Eternizar" className="h-7 inline-block opacity-80" />
         </a>
       </div>
     </div>

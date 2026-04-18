@@ -40,7 +40,7 @@ export default function GlobalError({
             style={{
               fontSize: '48px',
               marginBottom: '16px',
-              color: '#ff2d78',
+              color: '#9B1B30',
             }}
           >
             ♥
@@ -84,7 +84,7 @@ export default function GlobalError({
               fontSize: '14px',
               fontWeight: 600,
               color: '#fff',
-              background: 'linear-gradient(135deg, #ff2d78, #ff2d78aa)',
+              background: 'linear-gradient(135deg, #9B1B30, #9B1B30aa)',
               border: 'none',
               cursor: 'pointer',
             }}

@@ -17,12 +17,12 @@ interface Pagina {
 interface User { id: string; email: string; nome: string; avatar: string }
 
 const coresMap: Record<string, { primaria: string; secundaria: string; fundo: string }> = {
-  pink:    { primaria: '#ec4899', secundaria: '#f43f5e', fundo: '#1a0010' },
+  pink:    { primaria: '#B91C3C', secundaria: '#f43f5e', fundo: '#1a0010' },
   violet:  { primaria: '#8b5cf6', secundaria: '#7c3aed', fundo: '#0d0020' },
   amber:   { primaria: '#f59e0b', secundaria: '#f97316', fundo: '#1a1000' },
   blue:    { primaria: '#3b82f6', secundaria: '#06b6d4', fundo: '#000d1a' },
   emerald: { primaria: '#10b981', secundaria: '#14b8a6', fundo: '#001a0d' },
-  rose:    { primaria: '#f43f5e', secundaria: '#ec4899', fundo: '#1a0008' },
+  rose:    { primaria: '#f43f5e', secundaria: '#B91C3C', fundo: '#1a0008' },
 }
 
 const tiposIcons: Record<string, string> = {
@@ -46,7 +46,7 @@ function mascararEmail(email: string): string {
 }
 
 export default function PainelCliente({ user, paginas }: { user: User; paginas: Pagina[] }) {
-  const cor = '#ff2d78'
+  const cor = '#9B1B30'
   const [copiado, setCopiado] = useState<string | null>(null)
   const [modalCapa, setModalCapa] = useState<Pagina | null>(null)
 
@@ -60,7 +60,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
       window.removeEventListener('keydown', onKey)
     }
   }, [modalCapa])
-  const coresMap: Record<string, string> = { pink:'#ff2d78', violet:'#8b5cf6', amber:'#f59e0b', blue:'#3b82f6', emerald:'#10b981', rose:'#f43f5e' }
+  const coresMap: Record<string, string> = { pink:'#9B1B30', violet:'#8b5cf6', amber:'#f59e0b', blue:'#3b82f6', emerald:'#10b981', rose:'#f43f5e' }
 
   async function compartilhar(slug: string) {
     const url = `${window.location.origin}/p/${slug}`
@@ -78,7 +78,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
       {/* Glow */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-12"
-          style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-10%' }} />
+          style={{ background: 'radial-gradient(circle, #9B1B30, transparent 70%)', top: '-10%', right: '-10%' }} />
         <div className="absolute w-[400px] h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[30px] md:blur-[60px] opacity-8"
           style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
       </div>
@@ -87,7 +87,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
       <div className="fixed inset-0 pointer-events-none z-0">
         {[...Array(5)].map((_, i) => (
           <motion.div key={i} className="absolute rounded-full"
-            style={{ width: 3 + i, height: 3 + i, background: `rgba(255,45,120,${0.15 + i * 0.05})`,
+            style={{ width: 3 + i, height: 3 + i, background: `rgba(155,27,48,${0.15 + i * 0.05})`,
               left: `${10 + i * 18}%`, top: `${15 + i * 16}%` }}
           />
         ))}
@@ -97,7 +97,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
       <header className="sticky top-0 z-40 bg-[#08080c]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/">
-            <img src="/logo.png" alt="Eternizar" className="h-11 sm:h-12" />
+            <img src="/logo.svg" alt="Eternizar" className="h-11 sm:h-12" />
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="text-right hidden sm:block">
@@ -108,7 +108,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
               // eslint-disable-next-line @next/next/no-img-element
               <img src={user.avatar} alt="" className="w-9 h-9 rounded-full border border-white/10" referrerPolicy="no-referrer" />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-[#ff2d78]/20 flex items-center justify-center text-sm font-bold text-[#ff2d78]">
+              <div className="w-9 h-9 rounded-full bg-[#9B1B30]/20 flex items-center justify-center text-sm font-bold text-[#9B1B30]">
                 {(user.nome || user.email)[0].toUpperCase()}
               </div>
             )}
@@ -130,7 +130,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10"
         >
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#ff2d78]">Sua coleção</p>
+            <p className="text-xs uppercase tracking-[0.25em] mb-2 font-medium text-[#9B1B30]">Sua coleção</p>
             <h1 className="text-3xl sm:text-4xl font-black">Minhas Homenagens</h1>
             <p className="text-zinc-500 text-sm mt-2">{paginas.length} página{paginas.length !== 1 ? 's' : ''} criada{paginas.length !== 1 ? 's' : ''}</p>
           </div>
@@ -294,7 +294,7 @@ export default function PainelCliente({ user, paginas }: { user: User; paginas: 
         )}
 
         {modalCapa && (() => {
-          const corHex = coresMap[modalCapa.cor_tema] || (modalCapa.cor_tema?.startsWith('#') ? modalCapa.cor_tema : '#ff2d78')
+          const corHex = coresMap[modalCapa.cor_tema] || (modalCapa.cor_tema?.startsWith('#') ? modalCapa.cor_tema : '#9B1B30')
           const fotoCapa = modalCapa.fotos?.find(f => f.isCapa)?.url || modalCapa.fotos?.[0]?.url
           return (
             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setModalCapa(null)}>

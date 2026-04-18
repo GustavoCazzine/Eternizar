@@ -7,7 +7,7 @@ import { Heart, ArrowDown, Sparkles, Music, Camera, QrCode, ChevronRight } from 
 import AuthButton from '@/components/AuthButton'
 
 // ─── Partículas de fundo (marca registrada) ──────────────────────
-function Particulas({ cor = '#ff2d78' }: { cor?: string }) {
+function Particulas({ cor = '#9B1B30' }: { cor?: string }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {[...Array(8)].map((_, i) => (
@@ -33,7 +33,7 @@ function GlowOrbs() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div
         className="absolute w-[700px] h-[700px] rounded-full blur-[40px] md:blur-[80px] opacity-15"
-        style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-15%', right: '-10%' }}
+        style={{ background: 'radial-gradient(circle, #9B1B30, transparent 70%)', top: '-15%', right: '-10%' }}
       />
       <motion.div
         className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[80px] md:blur-[60px] md:blur-[50px] md:blur-[80px] opacity-10"
@@ -48,7 +48,7 @@ function GlowOrbs() {
 }
 
 // ─── Aspas SVG decorativas (marca registrada) ────────────────────
-function AspasSVG({ className = '', cor = '#ff2d78' }: { className?: string; cor?: string }) {
+function AspasSVG({ className = '', cor = '#9B1B30' }: { className?: string; cor?: string }) {
   return (
     <svg viewBox="0 0 40 30" className={className} fill="none">
       <path d="M0 20 Q0 10 8 5 L10 8 Q5 12 5 18 H12 V28 H0 Z" fill={`${cor}25`} />
@@ -78,7 +78,7 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/">
-          <img src="/logo.png" alt="Eternizar" className="h-14" />
+          <img src="/logo.svg" alt="Eternizar" className="h-14" />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -87,7 +87,7 @@ function Navbar() {
           <AuthButton variant="navbar" />
           <Link
             href="/criar"
-            className="px-5 py-2 rounded-full text-sm font-semibold text-white border border-[#ff2d78] hover:bg-[#ff2d78] transition-all duration-300"
+            className="px-5 py-2 rounded-full text-sm font-semibold text-white border border-[#9B1B30] hover:bg-[#9B1B30] transition-all duration-300"
           >
             Criar Homenagem
           </Link>
@@ -97,7 +97,7 @@ function Navbar() {
           <AuthButton variant="navbar" />
           <Link
             href="/criar"
-            className="px-4 py-2 rounded-full text-xs font-semibold text-white bg-[#ff2d78] transition-all"
+            className="px-4 py-2 rounded-full text-xs font-semibold text-white bg-[#9B1B30] transition-all"
           >
             Criar
           </Link>
@@ -131,7 +131,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="mb-12"
           >
-            <img src="/logo.png" alt="Eternizar" className="h-14 sm:h-16 md:h-20 mx-auto" />
+            <img src="/logo.svg" alt="Eternizar" className="h-14 sm:h-16 md:h-20 mx-auto" />
           </motion.div>
 
           {/* Ícone coração animado */}
@@ -143,7 +143,7 @@ export default function Home() {
           >
             <motion.div
             >
-              <Heart className="w-12 h-12 mx-auto fill-current" style={{ color: '#ff2d78', filter: 'drop-shadow(0 0 30px rgba(255,45,120,0.5))' }} />
+              <Heart className="w-12 h-12 mx-auto fill-current" style={{ color: '#9B1B30', filter: 'drop-shadow(0 0 30px rgba(155,27,48,0.5))' }} />
             </motion.div>
           </motion.div>
 
@@ -156,7 +156,7 @@ export default function Home() {
           >
             Algumas histórias merecem{' '}
             <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-[#ff6b9d] to-[#ff2d78] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#ff6b9d] to-[#9B1B30] bg-clip-text text-transparent">
               ser eternizadas.
             </span>
           </motion.h1>
@@ -179,9 +179,9 @@ export default function Home() {
           >
             <Link
               href="/criar"
-              className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base shadow-lg shadow-[#ff2d78]/25 hover:shadow-[#ff2d78]/40 hover:scale-105 transition-transform duration-300"
+              className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base shadow-lg shadow-[#9B1B30]/25 hover:shadow-[#9B1B30]/40 hover:scale-105 transition-transform duration-300"
             >
-              Criar minha homenagem
+              Eternizar agora
               <ChevronRight className="w-5 h-5" />
             </Link>
             <Link
@@ -201,7 +201,7 @@ export default function Home() {
           className="absolute bottom-8 flex flex-col items-center gap-2"
         >
           <motion.div>
-            <ArrowDown className="w-5 h-5 text-[#ff2d78]/50" />
+            <ArrowDown className="w-5 h-5 text-[#9B1B30]/50" />
           </motion.div>
         </motion.div>
       </section>
@@ -217,7 +217,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <p className="text-[#ff2d78] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Para quem você ama</p>
+            <p className="text-[#9B1B30] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Para quem você ama</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
               Uma página feita com amor.
               <br />
@@ -259,7 +259,7 @@ export default function Home() {
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-b ${card.gradiente} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
                 <div className="relative z-10">
-                  <card.icone className="w-8 h-8 mb-6 text-[#ff2d78]" />
+                  <card.icone className="w-8 h-8 mb-6 text-[#9B1B30]" />
                   <h3 className="text-xl font-bold mb-3 text-white">{card.titulo}</h3>
                   <p className="text-zinc-500 text-sm leading-relaxed">{card.desc}</p>
                 </div>
@@ -284,7 +284,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <p className="text-[#ff2d78] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Simples e mágico</p>
+            <p className="text-[#9B1B30] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Simples e mágico</p>
             <h2 className="text-3xl sm:text-4xl font-bold">
               Em minutos, uma surpresa <br className="hidden sm:block" /> que dura para sempre.
             </h2>
@@ -321,11 +321,11 @@ export default function Home() {
               >
                 <div className="shrink-0">
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center border border-white/10 bg-white/[0.03]">
-                    <item.icone className="w-7 h-7 text-[#ff2d78]" />
+                    <item.icone className="w-7 h-7 text-[#9B1B30]" />
                   </div>
                 </div>
                 <div>
-                  <span className="text-[#ff2d78]/40 text-xs font-bold tracking-widest">{item.num}</span>
+                  <span className="text-[#9B1B30]/40 text-xs font-bold tracking-widest">{item.num}</span>
                   <h3 className="text-2xl font-bold mb-2 mt-1">{item.titulo}</h3>
                   <p className="text-zinc-500 leading-relaxed max-w-md">{item.desc}</p>
                 </div>
@@ -346,7 +346,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-[#ff2d78] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Quem já criou</p>
+            <p className="text-[#9B1B30] text-xs uppercase tracking-[0.3em] mb-4 font-medium">Quem já criou</p>
             <h2 className="text-3xl sm:text-4xl font-bold">
               A reação deles é a melhor parte.
             </h2>
@@ -369,7 +369,7 @@ export default function Home() {
                 <AspasSVG className="w-10 mb-4 opacity-60" />
                 <p className="text-zinc-300 text-sm leading-relaxed mb-4">{dep.texto}</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-[#ff2d78]/20 flex items-center justify-center text-xs font-bold text-[#ff2d78]">
+                  <div className="w-8 h-8 rounded-full bg-[#9B1B30]/20 flex items-center justify-center text-xs font-bold text-[#9B1B30]">
                     {dep.autor[0]}
                   </div>
                   <div>
@@ -400,13 +400,13 @@ export default function Home() {
             <motion.div
               className="mb-8"
             >
-              <Heart className="w-10 h-10 mx-auto fill-current text-[#ff2d78]" style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.4))' }} />
+              <Heart className="w-10 h-10 mx-auto fill-current text-[#9B1B30]" style={{ filter: 'drop-shadow(0 0 20px rgba(155,27,48,0.4))' }} />
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
               Alguém especial merece{' '}
               <br className="hidden sm:block" />
-              <span className="bg-gradient-to-r from-[#ff6b9d] to-[#ff2d78] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#ff6b9d] to-[#9B1B30] bg-clip-text text-transparent">
                 saber o quanto importa.
               </span>
             </h2>
@@ -415,7 +415,7 @@ export default function Home() {
             </p>
             <Link
               href="/criar"
-              className="btn-shimmer inline-flex items-center gap-2 px-10 py-4 rounded-full text-white font-bold text-base shadow-lg shadow-[#ff2d78]/25 hover:shadow-[#ff2d78]/40 hover:scale-105 transition-transform duration-300"
+              className="btn-shimmer inline-flex items-center gap-2 px-10 py-4 rounded-full text-white font-bold text-base shadow-lg shadow-[#9B1B30]/25 hover:shadow-[#9B1B30]/40 hover:scale-105 transition-transform duration-300"
             >
               Criar agora
               <ChevronRight className="w-5 h-5" />
@@ -427,7 +427,7 @@ export default function Home() {
       {/* ═══ FOOTER ═══ */}
       <footer className="relative z-10 border-t border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo.png" alt="Eternizar" className="h-10 opacity-70" />
+          <img src="/logo.svg" alt="Eternizar" className="h-10 opacity-70" />
           <p className="text-zinc-700 text-xs">
             © {new Date().getFullYear()} Eternizar. Todos os direitos reservados.
           </p>

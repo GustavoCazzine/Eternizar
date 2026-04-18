@@ -14,7 +14,7 @@ function GlowOrbs() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <div
         className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-[80px] md:blur-[40px] md:blur-[70px] opacity-15"
-        style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-5%' }}
+        style={{ background: 'radial-gradient(circle, #9B1B30, transparent 70%)', top: '-10%', right: '-5%' }}
       />
     </div>
   )
@@ -28,7 +28,7 @@ function Particulas() { return null }
 function PhoneMockup({ titulo, subtitulo, corTema, fotoCapa }: {
   titulo: string; subtitulo: string; corTema: string; fotoCapa?: string
 }) {
-  const accentColor = corTema || '#ff2d78'
+  const accentColor = corTema || '#9B1B30'
 
   return (
     <motion.div
@@ -122,10 +122,10 @@ function SucessoContent() {
 
   // Map old color names to hex
   const coresMap: Record<string, string> = {
-    pink: '#ff2d78', violet: '#8b5cf6', amber: '#f59e0b',
+    pink: '#9B1B30', violet: '#8b5cf6', amber: '#f59e0b',
     blue: '#3b82f6', emerald: '#10b981', rose: '#f43f5e',
   }
-  const corHex = coresMap[cor] || (cor.startsWith('#') ? cor : '#ff2d78')
+  const corHex = coresMap[cor] || (cor.startsWith('#') ? cor : '#9B1B30')
   const displayUrl = `eternizar.io/homenagem/${slug}`
 
   useEffect(() => {
@@ -233,7 +233,7 @@ function SucessoContent() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/"><img src="/logo.png" alt="Eternizar" className="h-11" /></a>
+          <a href="/"><img src="/logo.svg" alt="Eternizar" className="h-11" /></a>
           <div className="flex items-center gap-6">
             <a href="/#como-funciona" className="text-zinc-400 hover:text-white text-sm transition-colors hidden md:inline">Como Funciona</a>
             <AuthButton variant="header" />
@@ -438,7 +438,7 @@ function SucessoContent() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo.png" alt="Eternizar" className="h-7 opacity-40" />
+          <img src="/logo.svg" alt="Eternizar" className="h-7 opacity-40" />
           <p className="text-zinc-600 text-xs">Criado com Eternizar ✨</p>
         </div>
       </footer>

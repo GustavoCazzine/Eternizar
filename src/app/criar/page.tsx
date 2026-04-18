@@ -58,13 +58,13 @@ interface FormData {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const tipos = [
-  { id: 'casal', label: 'Página do Casal', icon: '❤️', cor: '#ec4899', desc: 'Aniversário de namoro, Dia dos Namorados, surpresa romântica' },
+  { id: 'casal', label: 'Página do Casal', icon: '❤️', cor: '#B91C3C', desc: 'Aniversário de namoro, Dia dos Namorados, surpresa romântica' },
   { id: 'formatura', label: 'Álbum de Formatura', icon: '🎓', cor: '#8b5cf6', desc: 'Álbum digital interativo com fotos e memórias da turma' },
   { id: 'homenagem', label: 'Homenagem Especial', icon: '⭐', cor: '#f59e0b', desc: 'Aniversários, conquistas, agradecimentos' },
 ]
 
 const cores = [
-  { nome: 'Rosa', valor: 'pink', hex: '#ec4899', classe: 'bg-pink-500' },
+  { nome: 'Rosa', valor: 'pink', hex: '#B91C3C', classe: 'bg-pink-500' },
   { nome: 'Violeta', valor: 'violet', hex: '#8b5cf6', classe: 'bg-violet-500' },
   { nome: 'Âmbar', valor: 'amber', hex: '#f59e0b', classe: 'bg-amber-500' },
   { nome: 'Azul', valor: 'blue', hex: '#3b82f6', classe: 'bg-blue-500' },
@@ -295,7 +295,7 @@ function PassoTipo({ form, onNext }: PassoProps & { onNext: (tipoId: string) => 
   return (
     <div className="max-w-lg mx-auto pt-8">
       <div className="text-center mb-10">
-        <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium text-[#ff2d78]">Vamos começar</p>
+        <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium text-[#9B1B30]">Vamos começar</p>
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">Para quem é essa homenagem?</h1>
         <p className="text-zinc-500 text-sm">Escolha o tipo e nós guiamos você</p>
       </div>
@@ -352,14 +352,14 @@ function PassoNomes({ form, upd, updCasal, updFormatura }: PassoProps) {
           <input type="date" value={form.dadosCasal.dataInicio} onChange={e => updCasal('dataInicio', e.target.value)}
             className={inputClass} />
           {form.dadosCasal.dataInicio && (
-            <p className="text-xs mt-1.5" style={{ color: '#ec4899' }}>
+            <p className="text-xs mt-1.5" style={{ color: '#B91C3C' }}>
               ⏱ {calcTempoJuntos(form.dadosCasal.dataInicio)} juntos
             </p>
           )}
         </div>
           {form.dadosCasal.dataInicio && form.dadosCasal.dataInicio.length === 10 && (() => {
             const dt = new Date(form.dadosCasal.dataInicio); if (isNaN(dt.getTime())) return null; const d = Math.floor((Date.now() - dt.getTime()) / 86400000)
-            return d > 0 ? <p className="text-sm mt-2 font-medium animate-pulse" style={{ color: '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
+            return d > 0 ? <p className="text-sm mt-2 font-medium animate-pulse" style={{ color: '#B91C3C' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
           })()}
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -693,7 +693,7 @@ function PassoMusica({ form, upd }: PassoProps) {
 
 // Passo 6: Detalhes extras (casal)
 function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
-  const corHex = cores.find(c => c.valor === form.corTema)?.hex || '#ec4899'
+  const corHex = cores.find(c => c.valor === form.corTema)?.hex || '#B91C3C'
 
   return (
     <div className="space-y-5">
@@ -982,7 +982,7 @@ function CriarPageContent() {
   const tituloFinal = gerarTitulo(form)
   const subtituloFinal = gerarSubtitulo(form)
   const tipoSel = tipos.find(t => t.id === form.tipo)
-  const corHex = cores.find(c => c.valor === form.corTema)?.hex || '#ec4899'
+  const corHex = cores.find(c => c.valor === form.corTema)?.hex || '#B91C3C'
   const passosVisiveis = PASSOS.filter(p => p.visivel(form))
   const totalPassos = passosVisiveis.length
 
@@ -1128,7 +1128,7 @@ function CriarPageContent() {
       {/* Glow orbs de fundo */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-12"
-          style={{ background: "radial-gradient(circle, #ff2d78, transparent 70%)", top: "-10%", right: "-10%" }} />
+          style={{ background: "radial-gradient(circle, #9B1B30, transparent 70%)", top: "-10%", right: "-10%" }} />
         <div className="absolute w-[400px] h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-8"
           style={{ background: "radial-gradient(circle, #c850c0, transparent 70%)", bottom: "10%", left: "-5%" }} />
       </div>
@@ -1148,7 +1148,7 @@ function CriarPageContent() {
       <div className="sticky top-0 z-40 bg-[#08080c]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-3xl mx-auto px-3 sm:px-6 h-14 flex items-center gap-3 sm:gap-4">
           <a href="/" className="shrink-0">
-            <img src="/logo.png" alt="Eternizar" className="h-9 sm:h-11" />
+            <img src="/logo.svg" alt="Eternizar" className="h-9 sm:h-11" />
           </a>
           <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
             <motion.div

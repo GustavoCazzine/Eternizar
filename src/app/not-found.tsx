@@ -12,7 +12,7 @@ export default function NotFound() {
       <div
         className="absolute w-[180px] h-[180px] md:w-[350px] md:h-[350px] rounded-full blur-[40px] md:blur-[80px] opacity-10 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, #ff2d78, transparent 70%)',
+          background: 'radial-gradient(circle, #9B1B30, transparent 70%)',
           top: '15%',
           left: '30%',
         }}
@@ -21,12 +21,12 @@ export default function NotFound() {
       <div className="relative z-10 max-w-md text-center">
         <div className="mb-6">
           <Heart
-            className="w-12 h-12 mx-auto fill-current text-[#ff2d78]/70"
-            style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.3))' }}
+            className="w-12 h-12 mx-auto fill-current text-[#9B1B30]/70"
+            style={{ filter: 'drop-shadow(0 0 20px rgba(155,27,48,0.3))' }}
           />
         </div>
 
-        <p className="text-[11px] text-[#ff2d78] uppercase tracking-[0.3em] mb-3 font-medium">
+        <p className="text-[11px] text-[#9B1B30] uppercase tracking-[0.3em] mb-3 font-medium">
           Erro 404
         </p>
         <h1 className="text-2xl sm:text-3xl font-bold mb-3">
@@ -49,8 +49,8 @@ export default function NotFound() {
             href="/criar"
             className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.02]"
             style={{
-              background: 'linear-gradient(135deg, #ff2d78, #ff2d78aa)',
-              boxShadow: '0 8px 24px rgba(255,45,120,0.25)',
+              background: 'linear-gradient(135deg, #9B1B30, #9B1B30aa)',
+              boxShadow: '0 8px 24px rgba(155,27,48,0.25)',
             }}
           >
             <Plus className="w-4 h-4" />

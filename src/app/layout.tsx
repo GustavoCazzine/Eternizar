@@ -60,13 +60,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://eternizar.io"),
   title: {
-    default: "Eternizar — Homenagens digitais que emocionam",
+    default: "Eternizar — Onde o seu amor vive para sempre.",
     template: "%s | Eternizar",
   },
-  description: "Transforme memórias em páginas inesquecíveis. Crie homenagens digitais com música, fotos e sua história. Para casais, formaturas e todas as celebrações.",
+  description: "Transforme seus melhores momentos em uma experiência inesquecível. Com música, fotos e a história de vocês.",
   openGraph: {
-    title: "Eternizar — Homenagens digitais que emocionam",
-    description: "Transforme memórias em páginas inesquecíveis com música, fotos e sua história.",
+    title: "Eternizar — Onde o seu amor vive para sempre.",
+    description: "Transforme seus melhores momentos em uma experiência inesquecível.",
     type: "website",
     locale: "pt_BR",
   },

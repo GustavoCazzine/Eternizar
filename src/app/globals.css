@@ -3,13 +3,13 @@
 @theme {
   --font-sans: var(--font-outfit), system-ui, sans-serif;
   --font-serif: var(--font-cormorant), 'Times New Roman', serif;
-  --color-pink: #ff2d78;
+  --color-pink: #9B1B30;
   --color-pink-light: #ff6bae;
   --color-pink-dark: #cc1a5e;
 }
 
 :root {
-  --pink: #ff2d78;
+  --pink: #9B1B30;
   --pink-light: #ff6bae;
   --pink-dark: #cc1a5e;
 }
@@ -48,11 +48,11 @@ body {
 .btn-shimmer {
   background: linear-gradient(
     110deg,
-    #ff2d78 0%,
-    #ff2d78 40%,
+    #9B1B30 0%,
+    #9B1B30 40%,
     #ff6bae 50%,
-    #ff2d78 60%,
-    #ff2d78 100%
+    #9B1B30 60%,
+    #9B1B30 100%
   );
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;

@@ -57,7 +57,7 @@ function LoginContent() {
     <div className="min-h-screen bg-[#08080c] text-white flex items-center justify-center px-4 relative overflow-hidden">
       {/* Glow orbs */}
       <div className="absolute w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-12 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #ff2d78, transparent 70%)', top: '-10%', right: '-10%' }} />
+        style={{ background: 'radial-gradient(circle, #9B1B30, transparent 70%)', top: '-10%', right: '-10%' }} />
       <div className="absolute w-[400px] h-[400px] rounded-full blur-[40px] md:blur-[80px] opacity-8 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #c850c0, transparent 70%)', bottom: '10%', left: '-5%' }} />
 
@@ -66,7 +66,7 @@ function LoginContent() {
         {[...Array(5)].map((_, i) => (
           <motion.div key={i} className="absolute rounded-full"
             style={{ width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2,
-              background: `rgba(255,45,120,${0.15 + i * 0.06})`,
+              background: `rgba(155,27,48,${0.15 + i * 0.06})`,
               left: `${10 + i * 18}%`, top: `${20 + ((i * 23) % 50)}%` }}
           />
         ))}
@@ -78,11 +78,11 @@ function LoginContent() {
         {/* Logo */}
         <div className="text-center mb-8">
           <a href="/">
-            <img src="/logo.png" alt="Eternizar" className="h-12 mx-auto mb-6" />
+            <img src="/logo.svg" alt="Eternizar" className="h-12 mx-auto mb-6" />
           </a>
           <motion.div>
-            <Heart className="w-10 h-10 mx-auto fill-current text-[#ff2d78] mb-4"
-              style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.4))' }} />
+            <Heart className="w-10 h-10 mx-auto fill-current text-[#9B1B30] mb-4"
+              style={{ filter: 'drop-shadow(0 0 20px rgba(155,27,48,0.4))' }} />
           </motion.div>
           <h1 className="text-2xl font-bold mb-1">Entre na sua conta</h1>
           <p className="text-zinc-500 text-sm">Acesse suas homenagens e crie novas</p>
@@ -91,7 +91,7 @@ function LoginContent() {
         {enviado ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="text-center p-6 rounded-2xl border border-white/8 bg-white/[0.02]">
-            <Mail className="w-12 h-12 mx-auto text-[#ff2d78] mb-4" />
+            <Mail className="w-12 h-12 mx-auto text-[#9B1B30] mb-4" />
             <h2 className="text-lg font-bold mb-2">Link enviado!</h2>
             <p className="text-zinc-500 text-sm mb-4">
               Enviamos um link mágico para <span className="text-white">{email}</span>.
@@ -127,11 +127,11 @@ function LoginContent() {
             <form onSubmit={loginEmail} className="space-y-3">
               <input type="email" value={email} onChange={e => { setEmail(e.target.value); if (erro) setErro('') }}
                 placeholder="seu@email.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-[#ff2d78]/50 transition text-sm"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-[#9B1B30]/50 transition text-sm"
               />
               <button type="submit" disabled={carregando}
                 className="w-full py-3.5 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
-                style={{ background: 'linear-gradient(135deg, #ff2d78, #ff2d78aa)' }}>
+                style={{ background: 'linear-gradient(135deg, #9B1B30, #9B1B30aa)' }}>
                 {carregando ? 'Enviando...' : <>Enviar link mágico <ArrowRight className="w-4 h-4" /></>}
               </button>
             </form>

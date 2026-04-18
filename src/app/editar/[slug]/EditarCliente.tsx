@@ -21,7 +21,7 @@ interface Pagina {
 }
 
 const cores = [
-  { valor: 'pink', hex: '#ec4899', classe: 'bg-pink-500' },
+  { valor: 'pink', hex: '#B91C3C', classe: 'bg-pink-500' },
   { valor: 'violet', hex: '#8b5cf6', classe: 'bg-violet-500' },
   { valor: 'amber', hex: '#f59e0b', classe: 'bg-amber-500' },
   { valor: 'blue', hex: '#3b82f6', classe: 'bg-blue-500' },
@@ -175,7 +175,7 @@ export default function EditarCliente({ pagina }: { pagina: Pagina }) {
             Ver
           </Link>
           <button onClick={salvar} disabled={salvando}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-[#ff2d78] hover:opacity-90 transition disabled:opacity-50 min-h-[44px]">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-[#9B1B30] hover:opacity-90 transition disabled:opacity-50 min-h-[44px]">
             <Save className="w-4 h-4" />
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>

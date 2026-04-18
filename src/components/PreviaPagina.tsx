@@ -40,12 +40,12 @@ export interface PreviaPaginaProps {
 }
 
 const paletas: Record<string, { primaria: string; secundaria: string; fundo: string; fundoAlt: string }> = {
-  pink:    { primaria: '#ec4899', secundaria: '#f43f5e', fundo: '#1a0010', fundoAlt: '#2d0018' },
+  pink:    { primaria: '#B91C3C', secundaria: '#f43f5e', fundo: '#1a0010', fundoAlt: '#2d0018' },
   violet:  { primaria: '#8b5cf6', secundaria: '#7c3aed', fundo: '#0d0020', fundoAlt: '#1e1040' },
   amber:   { primaria: '#f59e0b', secundaria: '#f97316', fundo: '#1a1000', fundoAlt: '#2d1800' },
   blue:    { primaria: '#3b82f6', secundaria: '#06b6d4', fundo: '#000d1a', fundoAlt: '#001830' },
   emerald: { primaria: '#10b981', secundaria: '#14b8a6', fundo: '#001a0d', fundoAlt: '#002d18' },
-  rose:    { primaria: '#f43f5e', secundaria: '#ec4899', fundo: '#1a0008', fundoAlt: '#2d0010' },
+  rose:    { primaria: '#f43f5e', secundaria: '#B91C3C', fundo: '#1a0008', fundoAlt: '#2d0010' },
 }
 
 export function getPaleta(cor: string) {

@@ -25,8 +25,8 @@ export default function PaginaError({
     <div className="min-h-screen bg-[#08080c] text-white flex items-center justify-center px-6 text-center">
       <div className="max-w-sm">
         <Heart
-          className="w-10 h-10 mx-auto fill-current text-[#ff2d78]/60 mb-5"
-          style={{ filter: 'drop-shadow(0 0 20px rgba(255,45,120,0.3))' }}
+          className="w-10 h-10 mx-auto fill-current text-[#9B1B30]/60 mb-5"
+          style={{ filter: 'drop-shadow(0 0 20px rgba(155,27,48,0.3))' }}
         />
         <h1 className="text-xl font-bold mb-2">
           Não conseguimos abrir essa homenagem
@@ -38,7 +38,7 @@ export default function PaginaError({
           <button
             onClick={reset}
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
-            style={{ background: 'linear-gradient(135deg, #ff2d78, #ff2d78aa)' }}
+            style={{ background: 'linear-gradient(135deg, #9B1B30, #9B1B30aa)' }}
           >
             <RefreshCw className="w-4 h-4" />
             Recarregar

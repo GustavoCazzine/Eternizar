@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80" fill="none">
+  <defs>
+    <linearGradient id="logo-grad" x1="0" y1="0" x2="400" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9B1B30"/>
+      <stop offset="100%" stop-color="#C2185B"/>
+    </linearGradient>
+  </defs>
+  <text x="200" y="58" text-anchor="middle" font-family="'Playfair Display', 'Georgia', serif" font-weight="700" font-size="52" fill="url(#logo-grad)" letter-spacing="3">
+    Eternizar
+  </text>
+  <line x1="80" y1="70" x2="320" y2="70" stroke="#9B1B30" stroke-width="0.5" opacity="0.4"/>
+</svg>

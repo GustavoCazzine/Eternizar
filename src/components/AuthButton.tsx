@@ -122,7 +122,7 @@ export default function AuthButton({ variant = 'navbar', iconOnlyMobile = true }
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full bg-[#ff2d78]/20 flex items-center justify-center text-[11px] font-bold text-[#ff2d78]">
+          <div className="w-6 h-6 rounded-full bg-[#9B1B30]/20 flex items-center justify-center text-[11px] font-bold text-[#9B1B30]">
             {inicial}
           </div>
         )}
@@ -147,7 +147,7 @@ export default function AuthButton({ variant = 'navbar', iconOnlyMobile = true }
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="w-7 h-7 rounded-full bg-[#ff2d78]/20 flex items-center justify-center text-[11px] font-bold text-[#ff2d78]">
+        <div className="w-7 h-7 rounded-full bg-[#9B1B30]/20 flex items-center justify-center text-[11px] font-bold text-[#9B1B30]">
           {inicial}
         </div>
       )}

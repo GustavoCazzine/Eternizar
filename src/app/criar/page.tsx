@@ -53,6 +53,9 @@ interface FormData {
  musica: MusicaObj | null; fotos: FotoComLegenda[]; eventos: Evento[]
  senhaProtegida: string; senhaDica: string
  dadosCasal: DadosCasal; dadosFormatura: DadosFormatura
+  bucketList: Array<{texto: string; feito: boolean}>
+  locais: Array<{titulo: string; descricao: string; endereco: string}>
+  audioMensagem: File | null
 }
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
@@ -950,6 +953,31 @@ function PassoMensagem({ form, upd }: PassoProps) {
  maxLength={600}
  className={`${inputClass} resize-none`} />
  <p className="text-xs text-gray-600 mt-1">{form.mensagem.length}/600 caracteres</p>
+
+          {/* Upload de audio */}
+          <div className="mt-6 p-4 rounded-2xl border border-white/[0.15]" style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <p className="text-sm font-medium text-white mb-1">Mensagem de voz</p>
+            <p className="text-xs text-zinc-500 mb-4">Envie um audio com sua voz. Ele sera revelado com efeito especial.</p>
+            {form.audioMensagem ? (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.05] border border-white/[0.15]">
+                  <span className="text-sm text-zinc-300 truncate">{form.audioMensagem.name}</span>
+                  <span className="text-xs text-zinc-600">{(form.audioMensagem.size / 1024 / 1024).toFixed(1)}MB</span>
+                </div>
+                <button type="button" onClick={() => upd('audioMensagem', null)} className="text-zinc-500 hover:text-red-400 transition p-2">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-white/10 hover:border-white/25 cursor-pointer transition text-zinc-500 hover:text-white">
+                <Upload className="w-4 h-4" />
+                <span className="text-sm">Enviar arquivo de audio</span>
+                <input type="file" accept="audio/*" className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f && f.size <= 10*1024*1024) upd('audioMensagem', f); }} />
+              </label>
+            )}
+            <p className="text-xs text-zinc-600 mt-2">MP3, M4A, WAV (max 10MB)</p>
+          </div>
  </div>
 
  <div className="p-4 rounded-2xl border border-white/10 bg-white/5 space-y-3">
@@ -1085,7 +1113,9 @@ const PASSOS: Passo[] = [
  { id: 'timeline', titulo: 'Momentos', visivel: () => true, opcional: true },
  { id: 'musica', titulo: 'Música', visivel: () => true, opcional: true },
  { id: 'detalhes', titulo: 'Detalhes', visivel: () => true },
- { id: 'mensagem', titulo: 'Mensagem', visivel: () => true },
+  { id: 'bucketlist', titulo: 'Sonhos', visivel: (f) => f.tipo === 'casal', opcional: true },
+  { id: 'locais', titulo: 'Locais', visivel: (f) => f.tipo === 'casal', opcional: true },
+  { id: 'mensagem', titulo: 'Mensagem', visivel: () => true },
 ]
 
 // ─── Componente principal ────────────────────────────────────────────────────
@@ -1117,6 +1147,8 @@ function CriarPageContent() {
  fotos: [], eventos: [{ data: '', titulo: '', descricao: '', emoji: '♥', foto: null }],
  senhaProtegida: '', senhaDica: '',
  bucketList: [],
+      locais: [],
+      audioMensagem: null,
       dadosCasal: { nome1: '', nome2: '', dataInicio: '', apelido1: '', apelido2: '', cidadePrimeiroEncontro: '', comeFavorita: '', filmeFavorito: '', musicaFavorita: '', comoSeConheceram: '' },
  dadosFormatura: { curso: '', instituicao: '', anoFormatura: '', nomeTurma: '', quantidadeAlunos: '', casaisFormados: '' },
  })

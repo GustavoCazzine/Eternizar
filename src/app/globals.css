@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-outfit), system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), 'Times New Roman', serif;
-  --color-pink: #9B1B30;
-  --color-pink-light: #ff6bae;
-  --color-pink-dark: #cc1a5e;
+ --font-sans: var(--font-outfit), system-ui, sans-serif;
+ --font-serif: var(--font-cormorant), 'Times New Roman', serif;
+ --color-pink: #9B1B30;
+ --color-pink-light: #ff6bae;
+ --color-pink-dark: #cc1a5e;
 }
 
 :root {
-  --pink: #9B1B30;
-  --pink-light: #ff6bae;
-  --pink-dark: #cc1a5e;
+ --pink: #9B1B30;
+ --pink-light: #ff6bae;
+ --pink-dark: #cc1a5e;
 }
 
 body {
-  background: #08080c;
-  color: white;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
+ background: #08080c;
+ color: white;
+ font-family: var(--font-outfit), system-ui, sans-serif;
+ -webkit-font-smoothing: antialiased;
 }
 
 /* ── Scrollbar personalizada ─────────────────────────────── */
@@ -28,72 +28,72 @@ body {
 
 /* ── Animações em uso ────────────────────────────────────── */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+ 0% { background-position: -200% center; }
+ 100% { background-position: 200% center; }
 }
 
 @keyframes float-gentle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+ 0%, 100% { transform: translateY(0px); }
+ 50% { transform: translateY(-12px); }
 }
 
 /* Animação do emoji usada em EmojiAnimado.tsx (centralizada aqui
-   pra não ser injetada via <style> a cada render) */
+ pra não ser injetada via <style> a cada render) */
 @keyframes emojiPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+ 0%, 100% { transform: scale(1); }
+ 50% { transform: scale(1.15); }
 }
 
 /* ── Botão CTA principal (marca registrada) ─────────────── */
 .btn-shimmer {
-  background: linear-gradient(
-    110deg,
-    #9B1B30 0%,
-    #9B1B30 40%,
-    #ff6bae 50%,
-    #9B1B30 60%,
-    #9B1B30 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
+ background: linear-gradient(
+ 110deg,
+ #9B1B30 0%,
+ #9B1B30 40%,
+ #ff6bae 50%,
+ #9B1B30 60%,
+ #9B1B30 100%
+ );
+ background-size: 200% 100%;
+ animation: shimmer 3s ease-in-out infinite;
 }
 
 /* ── Logo ───────────────────────────────────────────────── */
 .font-logo {
-  font-family: var(--font-cormorant), 'Cormorant Garamond', 'Times New Roman', serif;
-  letter-spacing: 0.35em;
-  font-weight: 300;
+ font-family: var(--font-cormorant), 'Cormorant Garamond', 'Times New Roman', serif;
+ letter-spacing: 0.35em;
+ font-weight: 300;
 }
 
 /* ── Nomes sempre com primeira letra maiúscula ──────────── */
 .nome-capitalize {
-  text-transform: capitalize;
+ text-transform: capitalize;
 }
 
 /* ── Textos pequenos com mais peso para legibilidade ────── */
 .text-xs {
-  font-weight: 500;
+ font-weight: 500;
 }
 
 /* Glint metallic effect */
 @keyframes glint {
-  0%, 100% { transform: translateX(-100%) rotate(45deg); }
-  50% { transform: translateX(200%) rotate(45deg); }
+ 0%, 100% { transform: translateX(-100%) rotate(45deg); }
+ 50% { transform: translateX(200%) rotate(45deg); }
 }
 .glint-effect {
-  position: relative;
-  overflow: hidden;
+ position: relative;
+ overflow: hidden;
 }
 .glint-effect::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 30%;
-  height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  transform: translateX(-100%) rotate(45deg);
-  animation: glint 5s ease-in-out infinite;
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 30%;
+ height: 200%;
+ background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+ transform: translateX(-100%) rotate(45deg);
+ animation: glint 5s ease-in-out infinite;
 }
 
 /* Hide scrollbar */
@@ -102,6 +102,6 @@ body {
 
 /* Premium input overrides */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5) sepia(1) saturate(3) hue-rotate(-10deg);
-  cursor: pointer;
+ filter: invert(0.5) sepia(1) saturate(3) hue-rotate(-10deg);
+ cursor: pointer;
 }

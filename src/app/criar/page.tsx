@@ -13,6 +13,20 @@ import { Suspense } from 'react'
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
+// Efeito typewriter para titulos
+function Typewriter({ text, className = '', style = {} }: { text: string; className?: string; style?: React.CSSProperties }) {
+  const [display, setDisplay] = useState('')
+  const [done, setDone] = useState(false)
+  useEffect(() => {
+    setDisplay(''); setDone(false)
+    let i = 0
+    const iv = setInterval(() => { i++; setDisplay(text.slice(0,i)); if (i >= text.length) { clearInterval(iv); setDone(true) } }, 30)
+    return () => clearInterval(iv)
+  }, [text])
+  return <h2 className={className} style={style}>{display}{!done && <span className="inline-block w-0.5 h-6 ml-0.5 animate-pulse bg-current opacity-50" />}</h2>
+}
+
+
 interface Evento {
   data: string; titulo: string; descricao: string; emoji: string; foto: File | null
 }
@@ -58,7 +72,7 @@ const cores = [
   { nome: 'Rose', valor: 'rose', hex: '#f43f5e', classe: 'bg-rose-500' },
 ]
 
-const emojisRapidos = ['❤️', '🌹', '✈️', '🎉', '💍', '🏠', '🐾', '🎓', '⭐', '🌙', '🌊', '🎵']
+const emojisRapidos = ['♥', '★', '✈', '♫', '✦', '⌂', '•', '●', '✶', '❀', '☀', '☺']
 
 const paresFonte = [
   { id: 'classico', nome: 'Clássico', desc: 'Elegante e atemporal', titulo: 'var(--font-cormorant)', corpo: 'var(--font-outfit)', preview: 'Cormorant + Outfit' },
@@ -345,7 +359,7 @@ function PassoNomes({ form, upd, updCasal, updFormatura }: PassoProps) {
         </div>
           {form.dadosCasal.dataInicio && form.dadosCasal.dataInicio.length === 10 && (() => {
             const dt = new Date(form.dadosCasal.dataInicio); if (isNaN(dt.getTime())) return null; const d = Math.floor((Date.now() - dt.getTime()) / 86400000)
-            return d > 0 ? <p className="text-sm mt-2 font-medium" style={{ color: '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
+            return d > 0 ? <p className="text-sm mt-2 font-medium animate-pulse" style={{ color: '#ec4899' }}>Uau! Isso dá {d.toLocaleString('pt-BR')} dias juntos ♥</p> : null
           })()}
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -687,7 +701,23 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
         <>
           <div>
             <Label sub="Aparece como citação poética na página">Como vocês se conheceram?</Label>
-            <textarea value={form.dadosCasal.comoSeConheceram} onChange={e => updCasal('comoSeConheceram', e.target.value)}
+            
+          {/* Inspiracao */}
+          <div className="flex gap-2 mb-2 flex-wrap">
+            <span className="text-xs text-zinc-600">Inspiração:</span>
+            {[
+              { label: 'Romântico', text: 'Nos conhecemos em um dia que parecia comum, mas que mudou tudo. Foi um olhar, um sorriso, e de repente o mundo fez sentido.' },
+              { label: 'Divertido', text: 'Tudo começou com uma mensagem no Instagram que eu jurava que ia ser ignorada. Plot twist: não foi. E cá estamos!' },
+              { label: 'Direto', text: 'Nos conhecemos através de amigos em comum. Começamos a conversar e nunca mais paramos.' },
+            ].map(opt => (
+              <button key={opt.label} type="button"
+                onClick={() => updCasal('comoSeConheceram', opt.text)}
+                className="px-2 py-1 rounded-lg text-xs border border-white/10 hover:border-white/25 text-zinc-400 hover:text-white transition">
+                ✨ {opt.label}
+              </button>
+            ))}
+          </div>
+<textarea value={form.dadosCasal.comoSeConheceram} onChange={e => updCasal('comoSeConheceram', e.target.value)}
               placeholder="Ex: Nos conhecemos na faculdade, em uma tarde que mudou tudo..." rows={3}
               className={`${inputClass} resize-none`} />
           </div>
@@ -695,7 +725,12 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
             <div>
               <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> Cidade do 1º encontro</p>
               <input value={form.dadosCasal.cidadePrimeiroEncontro} onChange={e => updCasal('cidadePrimeiroEncontro', e.target.value)}
-                placeholder="Ex: São Paulo, Rio de Janeiro..." className={inputClass} />
+                placeholder="Ex: São Paulo, Rio de Janeiro..." className={inputClass}  list="cidades" autoComplete="off" />
+          <datalist id="cidades">
+            {['São Paulo, SP','Rio de Janeiro, RJ','Belo Horizonte, MG','Brasília, DF','Curitiba, PR','Salvador, BA','Fortaleza, CE','Recife, PE','Porto Alegre, RS','Goiânia, GO','Manaus, AM','Campinas, SP','São Luís, MA','Florianópolis, SC','Vitória, ES','Natal, RN','Santos, SP','Ribeirão Preto, SP','Sorocaba, SP','Joinville, SC','Londrina, PR','Niterói, RJ','Aracaju, SE','Maceió, AL','Campo Grande, MS'].map(c => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
             </div>
             <div>
               <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><Utensils className="w-3 h-3" /> Comida favorita</p>
@@ -1185,7 +1220,7 @@ function CriarPageContent() {
               </button>
               {passoAtual?.opcional && (
                 <button onClick={() => { setErro(""); setPasso(p => p + 1) }}
-                  className="px-4 sm:px-5 py-3 text-sm text-zinc-500 hover:text-zinc-300 transition min-h-[44px]">
+                  className="px-4 sm:px-5 py-3 text-sm text-zinc-400 hover:text-white border border-white/10 hover:border-white/20 rounded-xl transition min-h-[44px]">
                   Pular
                 </button>
               )}

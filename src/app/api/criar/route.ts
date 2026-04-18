@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
  const eventos = parseJsonSeguro<Array<Record<string, unknown>>>(fd.get('eventos') as string, [])
  const dadosCasal = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosCasal') as string, null)
  const dadosFormatura = parseJsonSeguro<Record<string, string> | null>(fd.get('dadosFormatura') as string, null)
- const fotosLegendas = parseJsonSeguro<string[]>(fd.get('fotosLegendas') as string, [])
+ const bucketList = parseJsonSeguro<Array<{texto: string; feito: boolean}>>(fd.get('bucketList') as string, [])
+    const fotosLegendas = parseJsonSeguro<string[]>(fd.get('fotosLegendas') as string, [])
 
  // â”€â”€â”€ 4. Validar dados específicos do tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  if (tipo === 'casal' && dadosCasal) {
@@ -204,7 +205,8 @@ export async function POST(req: NextRequest) {
  ativa: true,
  expira_em: expiraEm.toISOString(),
  visualizacoes: 0,
- email_cliente: emailCliente,
+ bucket_list: bucketList.slice(0, 20).map(b => ({ texto: sanitize(String(b.texto || '')).slice(0, 100), feito: Boolean(b.feito) })),
+      email_cliente: emailCliente,
  user_id: userId,
  })
 

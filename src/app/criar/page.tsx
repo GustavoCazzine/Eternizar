@@ -975,7 +975,8 @@ function CriarPageContent() {
  corTema: 'pink', fontePar: 'classico', compartilhavel: true, fotoCapa: null, musica: null,
  fotos: [], eventos: [{ data: '', titulo: '', descricao: '', emoji: '♥', foto: null }],
  senhaProtegida: '', senhaDica: '',
- dadosCasal: { nome1: '', nome2: '', dataInicio: '', apelido1: '', apelido2: '', cidadePrimeiroEncontro: '', comeFavorita: '', filmeFavorito: '', musicaFavorita: '', comoSeConheceram: '' },
+ bucketList: [],
+      dadosCasal: { nome1: '', nome2: '', dataInicio: '', apelido1: '', apelido2: '', cidadePrimeiroEncontro: '', comeFavorita: '', filmeFavorito: '', musicaFavorita: '', comoSeConheceram: '' },
  dadosFormatura: { curso: '', instituicao: '', anoFormatura: '', nomeTurma: '', quantidadeAlunos: '', casaisFormados: '' },
  })
 
@@ -1094,6 +1095,7 @@ function CriarPageContent() {
  fd.append('senhaDica', form.senhaDica)
  fd.append('dadosCasal', JSON.stringify(form.dadosCasal))
  fd.append('dadosFormatura', JSON.stringify(form.dadosFormatura))
+      fd.append('bucketList', JSON.stringify(form.bucketList))
  fd.append('fotosLegendas', JSON.stringify(form.fotos.map(f => f.legenda)))
  // Comprimir fotos antes de enviar
  const fotosComprimidas = await Promise.all(form.fotos.map(f => comprimirImagem(f.file)))

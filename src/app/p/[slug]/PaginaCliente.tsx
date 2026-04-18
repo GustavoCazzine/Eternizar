@@ -840,7 +840,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </section>
  )}
 
- {/* ===== SLIDE 3 — FOTOS ESTILO STORIES ===== */}
+ {/* ===== STORIES — NOSSOS MOMENTOS ===== — FOTOS ESTILO STORIES ===== */}
  {fotosNormalizadas.length > 0 && (
  <section className="py-24 px-4">
  <Secao className="text-center mb-10">
@@ -927,7 +927,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </Secao>
 
  <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
- <TimelineLine cor={cor} />
+ <div className="lg:left-1/2 lg:-translate-x-px"><TimelineLine cor={cor} /></div>
 
  <div className="space-y-0">
  {pagina.linha_do_tempo.map((ev, i) => (
@@ -937,7 +937,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ opacity: 1, x: 0 }}
  viewport={{ once: true, margin: '-60px' }}
  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
- className="flex gap-4 sm:gap-6 pl-16 sm:pl-20 relative pb-14 sm:pb-20 last:pb-0"
+ className={`relative pb-14 sm:pb-20 last:pb-0 flex gap-4 sm:gap-6 pl-16 sm:pl-20 lg:pl-0 ${i % 2 === 0 ? "lg:flex-row lg:pr-[calc(50%+2rem)] lg:pl-8 lg:text-right" : "lg:flex-row-reverse lg:pl-[calc(50%+2rem)] lg:pr-8"}`}
  >
  <motion.div
  initial={{ scaleX: 0 }}
@@ -953,7 +953,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ scale: 1, rotate: 0 }}
  viewport={{ once: true }}
  transition={{ type: 'spring', duration: 0.8, bounce: 0.4, delay: 0.15 }}
- className="absolute left-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0"
+ className={`absolute w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 left-0 ${i % 2 === 0 ? "lg:left-auto lg:right-[-1.5rem] lg:translate-x-1/2" : "lg:left-[-1.5rem] lg:-translate-x-1/2"}`}
  style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 4px 20px ${cor}30` }}
  >
  <div className="w-3 h-3 rounded-full bg-white" />
@@ -1098,36 +1098,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </Secao>
  </section>
 
- {/* ===== ENCERRAMENTO ===== */}
- <section className="py-32 px-4 relative overflow-hidden">
- <div className="absolute inset-0 pointer-events-none">
- {[...Array(4)].map((_, i) => (
- <motion.div
- key={i}
- className="absolute w-1 h-1 rounded-full"
- style={{ background: cor, left: `${20 + i * 20}%`, top: `${30 + (i % 2) * 30}%` }}
  
- 
- />
- ))}
- </div>
- <Secao className="text-center max-w-xl mx-auto relative z-10">
- <motion.div
- 
- 
- className="mb-6"
- >
- <Heart className="w-8 h-8 mx-auto" style={{ color: `${cor}50` }} />
- </motion.div>
- <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-200">
- Este não é o fim.
- </h2>
- <p className="text-gray-500 leading-relaxed text-base">
- É apenas mais um capítulo de uma história que continua sendo escrita a cada dia.
- </p>
- <div className="mt-8 w-16 h-px mx-auto" style={{ background: `linear-gradient(to right, transparent, ${cor}60, transparent)` }} />
- </Secao>
- </section>
 
  {/* ===== LIVRO DE VISITAS ===== */}
  {pagina.compartilhavel !== false && (
@@ -1245,11 +1216,15 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  )}
 
  {/* Rodapé */}
- <div className="py-8 text-center border-t border-white/5">
- <a href="/" className="inline-flex items-center justify-center gap-2 text-xs text-gray-700 hover:text-gray-500 transition">
- Criado com <img src="/logo.svg" alt="Eternizar" className="h-7 inline-block opacity-80" />
- </a>
- </div>
+        <footer className="py-20 text-center border-t border-white/5">
+          <p className="text-2xl sm:text-3xl font-light text-white/30 italic" style={{ fontFamily: fontes.titulo }}>
+            A história continua...
+          </p>
+          <a href="/criar" className="inline-block mt-6 px-6 py-3 rounded-xl text-sm font-medium transition border border-white/10 hover:border-white/25 text-zinc-500 hover:text-white">
+            Criar sua homenagem
+          </a>
+          <p className="text-xs text-zinc-700 mt-8">eternizar</p>
+        </footer>
  </div>
  )
 }

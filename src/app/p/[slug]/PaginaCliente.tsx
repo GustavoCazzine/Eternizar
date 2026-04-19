@@ -198,7 +198,7 @@ function ContadorTempo({ dataInicio, cor, paleta }: { dataInicio: string; cor: s
  style={{
  background: item.dest ? `linear-gradient(135deg, ${cor}30, ${cor}15)` : 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
  border: item.dest ? `1px solid ${cor}50` : '1px solid rgba(255,255,255,0.08)',
- transform: item.dest ? 'scale(1.02)' : 'none',
+ animation: item.dest ? 'pulse-second 1s ease-in-out infinite' : 'none',
  }}>
  <p className="text-3xl font-black leading-none tabular-nums" style={{ color: item.dest ? cor : 'white' }}>
  {String(item.valor).padStart(2, '0')}
@@ -300,7 +300,7 @@ function SlideMemoria({
  {/* eslint-disable-next-line @next/next/no-img-element */}
  <img src={foto} alt={legenda || `Memória ${index + 1}`}
  className="w-full h-full object-cover" style={{ transform: 'scale(1.15)' }} />
- </ParallaxLayer>
+ </div>
  {/* Gradiente */}
  <div className="absolute inset-0" style={{
  background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)'
@@ -702,29 +702,29 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* Foto de capa como fundo com parallax */}
  {fotoCapa && (
- <ParallaxLayer speed={0.15} className="absolute inset-0 pointer-events-none">
+ <div className="absolute inset-0 pointer-events-none" style={{ backgroundAttachment: "fixed" }}>
  {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={fotoCapa} alt="" className="w-full h-full object-cover scale-110 opacity-40" />
+ <img src={fotoCapa} alt="" className="w-full h-full object-cover scale-110 opacity-60" style={{ objectPosition: "center 30%" }} />
  </ParallaxLayer>
  )}
 
  {/* Gradiente overlay sobre a foto */}
  <div className="absolute inset-0 z-[1]" style={{
  background: fotoCapa
- ? `linear-gradient(to bottom, ${paleta.fundoAlt}99 0%, ${paleta.fundo}dd 50%, #121212 100%)`
+ ? `linear-gradient(to bottom, transparent 0%, ${paleta.fundo}40 30%, ${paleta.fundo}bb 60%, #121212 100%)`
  : `radial-gradient(ellipse at 50% 30%, ${paleta.fundoAlt}, #121212)`
  }} />
 
  {/* Glow orbs animados */}
  <div className="absolute inset-0 pointer-events-none z-[2]">
  <motion.div
- className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
+ className="absolute top-1/4 left-1/4 w-48 h-48 rounded-full blur-2xl opacity-20"
  style={{ background: cor }}
  
  
  />
  <motion.div
- className="absolute bottom-1/3 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-10"
+ className="absolute bottom-1/3 right-1/4 w-32 h-32 rounded-full blur-2xl opacity-10"
  style={{ background: paleta.secundaria }}
  
  
@@ -765,7 +765,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
  transition={{ delay: 0.8 }}
- className="text-lg md:text-xl text-gray-300 mt-6 nome-capitalize"
+ className="text-lg md:text-xl mt-6 nome-capitalize" style={{ color: "rgba(255,255,255,0.7)" }}
  style={{ textShadow: fotoCapa ? "0 2px 20px rgba(0,0,0,0.6)" : "none" }}
  >
  {pagina.subtitulo}
@@ -800,11 +800,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <Secao delay={0.2}>
  <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
  </Secao>
-        {pagina.musica_dados && <Secao delay={0.3}><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
+        {pagina.musica_dados && <Secao delay={0.3} className="mt-10"><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
 
- {/* Cards de dados do casal */}
+ {/* Cards de dados do casal — below scroll area */}
  {(pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
- <Secao delay={0.3} className="mt-12 max-w-sm mx-auto">
+ <Secao delay={0.3} className="mt-16 max-w-sm mx-auto">
  <div className="grid grid-cols-1 gap-3">
  {[
  { emoji: '●', label: 'Onde tudo começou', valor: pagina.dados_casal.cidadePrimeiroEncontro },

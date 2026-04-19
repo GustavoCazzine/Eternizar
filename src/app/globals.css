@@ -105,3 +105,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
  filter: invert(0.5) sepia(1) saturate(3) hue-rotate(-10deg);
  cursor: pointer;
 }
+
+/* Seconds pulse */
+@keyframes pulse-second {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+.pulse-second {
+  animation: pulse-second 1s ease-in-out infinite;
+}

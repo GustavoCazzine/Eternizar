@@ -1,39 +1,30 @@
 const fs = require('fs');
 let c = fs.readFileSync('src/app/p/[slug]/PaginaCliente.tsx', 'utf8');
 
-const parallax = `
-// Efeito de parallax
-function ParallaxLayer({ children, speed = 0.3, className = '' }: {
-  children: React.ReactNode; speed?: number; className?: string
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const rawY = useTransform(scrollYProgress, [0, 1], [\`\${speed * -50}%\`, \`\${speed * 50}%\`])
-  const y = useSpring(rawY, { stiffness: 100, damping: 30 })
-  return (
-    <div ref={ref} className={\`overflow-hidden \${className}\`}>
-      <motion.div style={{ y }} className="w-full h-full">{children}</motion.div>
-    </div>
-  )
+// Find all remaining ParallaxLayer references
+const matches = [];
+let pos = 0;
+while ((pos = c.indexOf('ParallaxLayer', pos)) !== -1) {
+  const line = c.slice(c.lastIndexOf('\n', pos) + 1, c.indexOf('\n', pos)).trim();
+  matches.push({ pos, line: line.slice(0, 100) });
+  pos++;
 }
+console.log('ParallaxLayer occurrences:', matches.length);
+matches.forEach(m => console.log('  ', m.line));
 
-`;
+// Replace ALL remaining <ParallaxLayer ...> with <div ...>
+c = c.replace(/<ParallaxLayer[^>]*>/g, (match) => {
+  return match.replace('ParallaxLayer', 'div').replace(/speed=\{[^}]*\}\s*/g, '');
+});
+// Replace </ParallaxLayer> with </div> — but it was already done, check for </div> issues
+// The problem: opening was ParallaxLayer, closing became </div> — mismatch at line 303
 
-// Insert right before first usage
-const usageIdx = c.indexOf('<ParallaxLayer');
-if (usageIdx === -1) { console.log('No usage found'); process.exit(1); }
-
-// Find the function that contains this usage - go backwards to find "function "
-let insertPoint = c.lastIndexOf('\nfunction ', usageIdx);
-if (insertPoint === -1) insertPoint = c.lastIndexOf('\n// ', usageIdx);
-
-// Actually simpler: insert after the CartaSelada component (right before SlideMemoria or export)
-const slideIdx = c.indexOf('function SlideMemoria');
-const exportIdx = c.indexOf('export default function PaginaCliente');
-
-const target = slideIdx !== -1 ? slideIdx : exportIdx;
-c = c.slice(0, target) + parallax + c.slice(target);
+// Actually check if function ParallaxLayer is still needed
+console.log('\nHas function ParallaxLayer:', c.includes('function ParallaxLayer'));
 
 fs.writeFileSync('src/app/p/[slug]/PaginaCliente.tsx', c, 'utf8');
-console.log('Inserted at position', target);
-console.log('Verify:', c.includes('function ParallaxLayer'));
+console.log('\nAll ParallaxLayer refs cleaned');
+
+// Verify
+const final = fs.readFileSync('src/app/p/[slug]/PaginaCliente.tsx', 'utf8');
+console.log('Remaining ParallaxLayer:', (final.match(/ParallaxLayer/g) || []).length);

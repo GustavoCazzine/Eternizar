@@ -296,7 +296,7 @@ function SlideMemoria({
  >
  {/* Foto de fundo com parallax */}
  <div className="absolute inset-0 rounded-3xl overflow-hidden">
- <ParallaxLayer speed={0.12} className="absolute inset-0">
+ <div className="absolute inset-0">
  {/* eslint-disable-next-line @next/next/no-img-element */}
  <img src={foto} alt={legenda || `Memória ${index + 1}`}
  className="w-full h-full object-cover" style={{ transform: 'scale(1.15)' }} />

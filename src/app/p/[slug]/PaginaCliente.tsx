@@ -705,7 +705,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <div className="absolute inset-0 pointer-events-none" style={{ backgroundAttachment: "fixed" }}>
  {/* eslint-disable-next-line @next/next/no-img-element */}
  <img src={fotoCapa} alt="" className="w-full h-full object-cover scale-110 opacity-60" style={{ objectPosition: "center 30%" }} />
- </ParallaxLayer>
+ </div>
  )}
 
  {/* Gradiente overlay sobre a foto */}

@@ -165,14 +165,14 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
         style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
 
         {/* LEFT — Card list (desktop: vertical scroll, mobile: horizontal carousel at bottom) */}
-        <div className="order-2 lg:order-1 lg:w-[35%]">
+        <div className="order-2 lg:order-1 lg:w-[35%] lg:relative -mt-16 lg:mt-0 relative z-10">
           <div ref={listRef}
             className="flex lg:flex-col gap-3 p-4 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto lg:max-h-[480px] scrollbar-hide snap-x lg:snap-none">
             {locais.map((local, i) => (
               <motion.button key={i}
                 onClick={() => selectCard(i)}
                 whileTap={{ scale: 0.97 }}
-                className={`shrink-0 w-56 lg:w-full text-left p-4 rounded-2xl transition-all duration-300 snap-center ${selecionado === i ? 'ring-1' : ''}`}
+                className={`shrink-0 w-56 lg:w-full text-left p-4 rounded-2xl transition-all duration-300 snap-center hover:-translate-y-0.5 ${selecionado === i ? 'ring-1' : ''}`}
                 style={{
                   background: selecionado === i ? `${cor}12` : 'rgba(255,255,255,0.02)',
                   border: `1px solid ${selecionado === i ? cor + '40' : 'rgba(255,255,255,0.06)'}`,
@@ -184,7 +184,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
                     {i + 1}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-white truncate">{local.titulo}</p>
+                    <p className="text-sm font-semibold text-white truncate" style={{ fontFamily: fontes.titulo }}>{local.titulo}</p>
                     {local.endereco && (
                       <p className="text-xs text-zinc-500 mt-0.5 truncate flex items-center gap-1">
                         <MapPin className="w-3 h-3 shrink-0" />{local.endereco}

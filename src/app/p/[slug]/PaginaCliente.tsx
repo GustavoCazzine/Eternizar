@@ -959,7 +959,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
               <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
             </Secao>
             <Secao delay={0.2}>
-              <MapaAmor locais={pagina.locais} cor={cor} />
+              <MapaAmor locais={pagina.locais} cor={cor} fontes={fontes} />
             </Secao>
           </section>
         )}

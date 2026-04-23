@@ -753,8 +753,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: 0.4, duration: 0.8 }}
  >
- <p className="text-xs uppercase tracking-[0.25em] mb-6 font-medium" style={{ color: cor }}>
- Uma surpresa especial para você
+ <p className="text-xs uppercase tracking-[0.25em] mb-6 font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>
+                Uma surpresa especial para você
  </p>
  <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
  style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: fontes.titulo }}>
@@ -765,8 +765,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
  transition={{ delay: 0.8 }}
- className="text-lg md:text-xl mt-6 nome-capitalize" style={{ color: "rgba(255,255,255,0.7)" }}
- style={{ textShadow: fotoCapa ? "0 2px 20px rgba(0,0,0,0.6)" : "none" }}
+ className="text-lg md:text-xl mt-6 nome-capitalize"
+                style={{ color: "rgba(255,255,255,0.65)", textShadow: fotoCapa ? "0 2px 20px rgba(0,0,0,0.6)" : "none" }}
  >
  {pagina.subtitulo}
  </motion.p>
@@ -872,17 +872,17 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </section>
  )}
 
- {/* ===== STORIES — NOSSOS MOMENTOS ===== — FOTOS ESTILO STORIES ===== */}
- {fotosNormalizadas.length > 0 && (
- <section className="py-24 px-4">
+ {/* ===== STORIES ===== */}
+        {fotosNormalizadas.length > 0 && (
+          <section className="py-14 sm:py-20 px-4">
  <Secao className="text-center mb-10">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Memórias que ficam</p>
+ <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>Memórias que ficam</p>
  <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Nossos momentos</h2>
  <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
  </Secao>
 
  {/* Miniaturas estilo stories */}
- <div className="flex gap-4 justify-center flex-wrap max-w-2xl mx-auto">
+ <div className="flex gap-5 overflow-x-auto scrollbar-hide px-6 pb-4 -mx-4 snap-x snap-mandatory">
  {fotosNormalizadas.map((foto, i) => (
  <motion.button
  key={i}
@@ -893,7 +893,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileHover={{ scale: 1.05 }}
  whileTap={{ scale: 0.97 }}
  onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
- className="relative flex flex-col items-center gap-2 group"
+ className="relative flex flex-col items-center gap-2 group snap-center shrink-0"
  >
  {/* Anel colorido estilo story não visto */}
  <div className="p-0.5 rounded-full" style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}>

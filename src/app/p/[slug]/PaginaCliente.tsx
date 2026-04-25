@@ -1,4 +1,15 @@
 'use client'
+      {/* Cortina de abertura */}
+      {introVisivel && pagina.tipo === 'casal' && (
+        <IntroWrapped
+          fotoCapa={fotoCapa}
+          titulo={pagina.titulo}
+          cor={cor}
+          fontes={fontes}
+          onEntrar={() => setIntroVisivel(false)}
+        />
+      )}
+
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
@@ -6,7 +17,8 @@ import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle
 import StoriesViewer from '@/components/StoriesViewer'
 import IntroWrapped from '@/components/IntroWrapped'
 import CuriosidadesMagicas from '@/components/CuriosidadesMagicas'
-import MapaAmor from '@/components/MapaAmor'
+import dynamic from 'next/dynamic'
+const MapaAmor = dynamic(() => import('@/components/MapaAmor'), { ssr: false, loading: () => <div className="h-[400px] rounded-2xl" style={{ background: 'radial-gradient(circle, rgba(155,27,48,0.05), #1a1a2e)' }} /> })
 import EmojiAnimado from '@/components/EmojiAnimado'
 
 interface MusicaDados {
@@ -544,10 +556,9 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  // Carregar mensagens do guestbook
 
-useEffect(() => {
-    if (introVisivel) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
+  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : 'unset'
+    return () => { document.body.style.overflow = 'unset' }
   }, [introVisivel])
 
   useEffect(() => {
@@ -827,13 +838,13 @@ useEffect(() => {
  whileInView={{ opacity: 1, x: 0 }}
  viewport={{ once: true }}
  transition={{ delay: i * 0.1, duration: 0.6 }}
- className="flex items-center gap-4 p-4 rounded-2xl backdrop-blur-sm"
+ className="flex items-center gap-3 px-5 py-3 rounded-full backdrop-blur-sm"
  style={{
  background: `linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))`,
  border: `1px solid rgba(255,255,255,0.1)`,
  }}
  >
- <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+ <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
  style={{ background: `${cor}20`, border: `1px solid ${cor}30` }}>
  {item.icon === "MapPin" ? <MapPinIcon className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Utensils" ? <Utensils className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Film" ? <Film className="w-4 h-4" style={{ color: cor }} /> : <Heart className="w-4 h-4" style={{ color: cor }} />}
  </div>
@@ -1062,7 +1073,7 @@ useEffect(() => {
  style={{ boxShadow: `0 20px 60px ${cor}20` }}
  >
  {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={ev.fotoUrl} alt={ev.titulo} className="w-full object-cover max-h-72" />
+ <img src={ev.fotoUrl} alt={ev.titulo} className="w-full aspect-video object-cover" />
  <div className="h-px" style={{ background: `linear-gradient(to right, ${cor}, transparent)` }} />
  </motion.div>
  )}

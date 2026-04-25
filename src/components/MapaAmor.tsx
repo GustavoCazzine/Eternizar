@@ -29,6 +29,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
   const listRef = useRef<HTMLDivElement>(null)
   const [coords, setCoords] = useState<Array<{lat: number; lng: number} | null>>([])
   const [mapReady, setMapReady] = useState(false)
+  const [mapError, setMapError] = useState(false)
 
   // Geocode
   useEffect(() => {
@@ -208,7 +209,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
           <div ref={mapRef}
             className="h-[320px] lg:h-[480px] lg:rounded-2xl overflow-hidden"
             style={{ background: '#1a1a2e' }}>
-            {!hasCoords && (
+            {(mapError || !hasCoords) && (
               <div className="w-full h-full flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="w-8 h-8 mx-auto mb-2" style={{ color: cor, opacity: 0.4 }} />

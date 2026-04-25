@@ -4,6 +4,8 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle, Send, MapPin as MapPinIcon, Utensils, Film } from 'lucide-react'
 import StoriesViewer from '@/components/StoriesViewer'
+import IntroWrapped from '@/components/IntroWrapped'
+import CuriosidadesMagicas from '@/components/CuriosidadesMagicas'
 import MapaAmor from '@/components/MapaAmor'
 import EmojiAnimado from '@/components/EmojiAnimado'
 
@@ -521,6 +523,7 @@ function CapsulaAudio({ audioUrl, mensagem, cor, fontes, audioRef: musicRef }: {
 export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const containerRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [introVisivel, setIntroVisivel] = useState(true)
  const { scrollYProgress } = useScroll()
  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
  const [senhaInput, setSenhaInput] = useState('')
@@ -541,6 +544,26 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  // Carregar mensagens do guestbook
  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  useEffect(() => {
  fetch(`/api/guestbook?slug=${encodeURIComponent(pagina.slug)}`)
  .then(r => r.json())
  .then(d => {

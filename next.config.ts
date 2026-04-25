@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: blob: https://*.supabase.co https://*.mzstatic.com https://images.unsplash.com https://lh3.googleusercontent.com`,
+      `img-src 'self' https://*.basemaps.cartocdn.com data: blob: https://*.supabase.co https://*.mzstatic.com https://images.unsplash.com https://lh3.googleusercontent.com`,
       "media-src 'self' https://*.mzstatic.com https://*.itunes.apple.com blob:",
       "font-src 'self' data:",
       `connect-src 'self' https://${supaHost} https://api.mercadopago.com https://itunes.apple.com wss://${supaHost}`,

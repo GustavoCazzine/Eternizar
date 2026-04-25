@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle, Send } from 'lucide-react'
+import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle, Send, MapPin as MapPinIcon, Utensils, Film } from 'lucide-react'
 import StoriesViewer from '@/components/StoriesViewer'
 import MapaAmor from '@/components/MapaAmor'
 import EmojiAnimado from '@/components/EmojiAnimado'

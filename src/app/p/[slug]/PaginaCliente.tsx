@@ -1,14 +1,5 @@
 'use client'
-      {/* Cortina de abertura */}
-      {introVisivel && pagina.tipo === 'casal' && (
-        <IntroWrapped
-          fotoCapa={fotoCapa}
-          titulo={pagina.titulo}
-          cor={cor}
-          fontes={fontes}
-          onEntrar={() => setIntroVisivel(false)}
-        />
-      )}
+      
 
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
@@ -698,6 +689,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  }
 
  return (
+      <>
+      {introVisivel && pagina.tipo === 'casal' && (
+        <IntroWrapped fotoCapa={fotoCapa} titulo={pagina.titulo} cor={cor} fontes={fontes}
+          onEntrar={() => setIntroVisivel(false)} />
+      )}
  <div ref={containerRef} className="text-white overflow-x-hidden relative"
  style={{ background: '#121212', fontFamily: fontes.corpo }}>
 
@@ -1302,5 +1298,6 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <p className="text-xs text-zinc-700 mt-8">eternizar</p>
         </footer>
  </div>
+      </>
  )
 }

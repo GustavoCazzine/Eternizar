@@ -1,4 +1,52 @@
-'use client'
+const fs = require('fs');
+let c = fs.readFileSync('src/app/p/[slug]/PaginaCliente.tsx', 'utf8');
+
+// ===== 1. REMOVE ALL DUPLICATE SCROLL LOCK EFFECTS =====
+// Count how many exist
+const scrollLockCount = (c.match(/document\.body\.style\.overflow = introVisivel/g) || []).length;
+console.log('Scroll lock duplicates found:', scrollLockCount);
+
+// Remove ALL scroll lock useEffects (they're duplicated 4x and broke guestbook)
+const scrollLockBlock = `  useEffect(() => {
+    document.body.style.overflow = introVisivel ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  `;
+while (c.includes(scrollLockBlock)) {
+  c = c.replace(scrollLockBlock, '');
+}
+// Also try CRLF variant
+const scrollLockCRLF = `  useEffect(() => {\r\n    document.body.style.overflow = introVisivel ? 'hidden' : ''\r\n    return () => { document.body.style.overflow = '' }\r\n  }, [introVisivel])\r\n\r\n  `;
+while (c.includes(scrollLockCRLF)) {
+  c = c.replace(scrollLockCRLF, '');
+}
+
+// Verify removal
+const remaining = (c.match(/document\.body\.style\.overflow = introVisivel/g) || []).length;
+console.log('After cleanup:', remaining, 'remaining');
+
+// ===== 2. ADD SINGLE CLEAN SCROLL LOCK inside PaginaCliente =====
+// Find the guestbook useEffect (the first real effect after states)
+const guestbookEffect = c.indexOf("fetch(`/api/guestbook");
+const effectBefore = c.lastIndexOf('useEffect(', guestbookEffect);
+// Insert ONE scroll lock before the guestbook effect
+if (remaining === 0) {
+  c = c.slice(0, effectBefore) + `useEffect(() => {
+    if (introVisivel) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [introVisivel])
+
+  ` + c.slice(effectBefore);
+  console.log('1. Single scroll lock: ADDED');
+}
+
+// ===== 3. REWRITE IntroWrapped — proper setTimeout unlock =====
+const intro = `'use client'
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
@@ -104,21 +152,21 @@ export default function IntroWrapped({ fotoCapa, titulo, cor, fontes, onEntrar }
           style={{
             background: 'rgba(255,255,255,0.06)',
             backdropFilter: 'blur(20px)',
-            border: `2px solid ${cor}60`,
-            boxShadow: `0 0 80px ${cor}30, inset 0 0 40px ${cor}10`,
+            border: \`2px solid \${cor}60\`,
+            boxShadow: \`0 0 80px \${cor}30, inset 0 0 40px \${cor}10\`,
           }}
         >
           <div className="w-16 h-16 rounded-full flex items-center justify-center"
-            style={{ background: `linear-gradient(135deg, ${cor}, ${cor}bb)` }}>
+            style={{ background: \`linear-gradient(135deg, \${cor}, \${cor}bb)\` }}>
             <Play className="w-7 h-7 text-white ml-1 group-hover:scale-110 transition-transform" />
           </div>
           {/* Pulse rings */}
           <motion.div className="absolute inset-0 rounded-full"
-            style={{ border: `1px solid ${cor}40` }}
+            style={{ border: \`1px solid \${cor}40\` }}
             animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }} />
           <motion.div className="absolute inset-0 rounded-full"
-            style={{ border: `1px solid ${cor}30` }}
+            style={{ border: \`1px solid \${cor}30\` }}
             animate={{ scale: [1, 1.8], opacity: [0.3, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut', delay: 0.5 }} />
         </motion.button>
@@ -137,3 +185,25 @@ export default function IntroWrapped({ fotoCapa, titulo, cor, fontes, onEntrar }
     </div>
   )
 }
+`;
+fs.writeFileSync('src/components/IntroWrapped.tsx', intro, 'utf8');
+console.log('3. IntroWrapped rewritten: OK');
+
+// ===== 4. FIX CARTA SELADA — border-left accent + padding =====
+c = c.replace(
+  'className="max-w-lg mx-auto rounded-3xl p-8 border min-h-[200px]"',
+  'className="max-w-lg mx-auto rounded-2xl p-8 min-h-[240px]"'
+);
+// Add border-left style
+c = c.replace(
+  "style={{ background: `${cor}08`, borderColor: `${cor}20` }}>",
+  "style={{ background: '#121212', borderLeft: `4px solid ${cor}`, borderTop: 'none', borderRight: 'none', borderBottom: 'none' }}>"
+);
+console.log('4. CartaSelada border-left accent: OK');
+
+// ===== 5. VERIFY no stale intro code =====
+const introCount = (c.match(/IntroWrapped/g) || []).length;
+console.log('5. IntroWrapped references:', introCount, '(should be 2: import + render)');
+
+fs.writeFileSync('src/app/p/[slug]/PaginaCliente.tsx', c, 'utf8');
+console.log('\nAll premium fixes applied.');

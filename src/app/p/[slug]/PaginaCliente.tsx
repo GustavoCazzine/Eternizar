@@ -407,7 +407,7 @@ function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: stri
 
  return (
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
- className="max-w-lg mx-auto rounded-3xl p-8 border min-h-[200px]" style={{ background: `${cor}08`, borderColor: `${cor}20` }}>
+ className="max-w-lg mx-auto rounded-2xl p-8 min-h-[240px]" style={{ background: '#121212', borderLeft: `4px solid ${cor}`, borderTop: 'none', borderRight: 'none', borderBottom: 'none' }}>
  <p className="text-lg leading-relaxed whitespace-pre-wrap" style={{ fontFamily: fontCorpo, color: 'rgba(255,255,255,0.85)' }}>
  {textoVisivel}
  {digitandoRef.current && <span className="inline-block w-0.5 h-5 ml-0.5 animate-pulse" style={{ background: cor }} />}
@@ -543,23 +543,10 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const [guestErro, setGuestErro] = useState('')
 
  // Carregar mensagens do guestbook
- useEffect(() => {
-    document.body.style.overflow = introVisivel ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [introVisivel])
 
-  useEffect(() => {
-    document.body.style.overflow = introVisivel ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [introVisivel])
-
-  useEffect(() => {
-    document.body.style.overflow = introVisivel ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [introVisivel])
-
-  useEffect(() => {
-    document.body.style.overflow = introVisivel ? 'hidden' : ''
+useEffect(() => {
+    if (introVisivel) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [introVisivel])
 

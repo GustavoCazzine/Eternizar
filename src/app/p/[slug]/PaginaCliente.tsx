@@ -405,7 +405,7 @@ function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: stri
 
  return (
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
- className="max-w-lg mx-auto rounded-3xl p-8 border" style={{ background: `${cor}08`, borderColor: `${cor}20` }}>
+ className="max-w-lg mx-auto rounded-3xl p-8 border min-h-[200px]" style={{ background: `${cor}08`, borderColor: `${cor}20` }}>
  <p className="text-lg leading-relaxed whitespace-pre-wrap" style={{ fontFamily: fontCorpo, color: 'rgba(255,255,255,0.85)' }}>
  {textoVisivel}
  {digitandoRef.current && <span className="inline-block w-0.5 h-5 ml-0.5 animate-pulse" style={{ background: cor }} />}
@@ -800,16 +800,16 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <Secao delay={0.2}>
  <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
  </Secao>
-        {pagina.musica_dados && <Secao delay={0.3} className="mt-10"><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
+        {pagina.musica_dados && <Secao delay={0.3} className="mt-14"><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
 
  {/* Cards de dados do casal — below scroll area */}
  {(pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
- <Secao delay={0.3} className="mt-16 max-w-sm mx-auto">
- <div className="grid grid-cols-1 gap-3">
+ <Secao delay={0.3} className="mt-20 max-w-sm mx-auto">
+ <div className="grid grid-cols-2 gap-3">
  {[
- { emoji: '●', label: 'Onde tudo começou', valor: pagina.dados_casal.cidadePrimeiroEncontro },
- { emoji: '•', label: 'Comida favorita', valor: pagina.dados_casal.comeFavorita },
- { emoji: '•', label: 'Filme favorito', valor: pagina.dados_casal.filmeFavorito },
+ { icon: 'MapPin', label: 'Onde tudo começou', valor: pagina.dados_casal.cidadePrimeiroEncontro },
+ { icon: 'Utensils', label: 'Comida favorita', valor: pagina.dados_casal.comeFavorita },
+ { icon: 'Film', label: 'Filme favorito', valor: pagina.dados_casal.filmeFavorito },
  ].filter(item => item.valor).map((item, i) => (
  <motion.div
  key={i}
@@ -825,7 +825,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  >
  <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
  style={{ background: `${cor}20`, border: `1px solid ${cor}30` }}>
- {item.emoji}
+ {item.icon === "MapPin" ? <MapPinIcon className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Utensils" ? <Utensils className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Film" ? <Film className="w-4 h-4" style={{ color: cor }} /> : <Heart className="w-4 h-4" style={{ color: cor }} />}
  </div>
  <div>
  <p className="text-xs uppercase tracking-widest mb-0.5" style={{ color: `${cor}99` }}>{item.label}</p>
@@ -1100,7 +1100,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  ))}
  </div>
 
- <Secao className="text-center max-w-2xl mx-auto relative z-10">
+ <Secao className="text-center max-w-2xl mx-auto relative z-10 min-h-[280px] flex flex-col items-center justify-center">
  <motion.div
  
  

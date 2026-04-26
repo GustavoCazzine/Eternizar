@@ -20,24 +20,6 @@ interface Props {
 
 const BG_LOOP = 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3'
 
-function Aura({ cor }: { cor: string }) {
-  return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      <div className="absolute w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] rounded-full"
-        style={{
-          background: cor, filter: 'blur(120px)', opacity: 0.08,
-          top: '10%', left: '-15%',
-          animation: 'aura-drift-1 25s ease-in-out infinite',
-        }} />
-      <div className="absolute w-[50vw] h-[50vw] max-w-[450px] max-h-[450px] rounded-full"
-        style={{
-          background: '#ff2d78', filter: 'blur(130px)', opacity: 0.05,
-          bottom: '5%', right: '-10%',
-          animation: 'aura-drift-2 30s ease-in-out infinite',
-        }} />
-    </div>
-  )
-}
 
 export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, filmeFavorito, cidadeEncontro, musicaCapa, musicaNome, previewUrl, cor, onDesbloquear }: Props) {
   const [started, setStarted] = useState(false)
@@ -139,10 +121,9 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
   if (!started) {
     return (
       <div className="fixed inset-0 z-[99999] flex items-center justify-center" style={{ background: '#000' }}>
-        <Aura cor={cor} />
         <style>{`
-          @keyframes aura-drift-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
-          @keyframes aura-drift-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
+          50%{transform:translate(60px,40px) scale(1.15)}}
+          50%{transform:translate(-50px,-30px) scale(1.1)}}
         `}</style>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8 max-w-sm relative z-10">
           <motion.button onClick={iniciar} initial={{ scale: 0 }} animate={{ scale: 1 }}
@@ -180,8 +161,8 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         @keyframes globe-spin{to{transform:rotateY(360deg)}}
         @keyframes ping-radar{0%{transform:scale(0.3);opacity:0.5}100%{transform:scale(1);opacity:0}}
         @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-        @keyframes aura-drift-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
-        @keyframes aura-drift-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
+        50%{transform:translate(60px,40px) scale(1.15)}}
+        50%{transform:translate(-50px,-30px) scale(1.1)}}
         @keyframes draw-line{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
         @keyframes wave-drift{0%,100%{d:path('M-30,180 Q80,80 200,280 T430,220')}50%{d:path('M-30,200 Q100,120 180,260 T430,240')}}
         @keyframes wave-float-1{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
@@ -189,8 +170,6 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         @keyframes wave-float-3{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
         .outlined-modern{color:transparent;-webkit-text-stroke:2.5px #fff;font-weight:900;line-height:0.85;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
       `}</style>
-
-      <Aura cor={cor} />
 
       {/* ===== TELA 1 — O GANCHO ===== */}
       <section className="h-screen w-screen snap-start flex items-end relative overflow-hidden">
@@ -391,8 +370,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
               transition={{ type: 'spring', stiffness: 100, damping: 10 }}
               className="relative z-10"
             >
-              <div className="absolute inset-0 rounded-3xl pointer-events-none"
-                style={{ background: cor, filter: 'blur(70px)', opacity: 0.25, transform: 'scale(1.6)' }} />
+              
               <div className="relative w-60 h-60 sm:w-72 sm:h-72 rounded-3xl overflow-hidden shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={musicaCapa} alt="" className="w-full h-full object-cover" />

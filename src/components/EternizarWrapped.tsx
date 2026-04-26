@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Lock, Volume2 } from 'lucide-react'
 import { UNIVERSE } from '@/lib/constants'
@@ -20,6 +20,25 @@ interface Props {
 
 const BG_LOOP = 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3'
 
+function Aura({ cor }: { cor: string }) {
+  return (
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] rounded-full"
+        style={{
+          background: cor, filter: 'blur(120px)', opacity: 0.08,
+          top: '10%', left: '-15%',
+          animation: 'aura-drift-1 25s ease-in-out infinite',
+        }} />
+      <div className="absolute w-[50vw] h-[50vw] max-w-[450px] max-h-[450px] rounded-full"
+        style={{
+          background: '#ff2d78', filter: 'blur(130px)', opacity: 0.05,
+          bottom: '5%', right: '-10%',
+          animation: 'aura-drift-2 30s ease-in-out infinite',
+        }} />
+    </div>
+  )
+}
+
 export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, filmeFavorito, cidadeEncontro, musicaCapa, musicaNome, previewUrl, cor, onDesbloquear }: Props) {
   const [started, setStarted] = useState(false)
   const [saindo, setSaindo] = useState(false)
@@ -29,13 +48,12 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
   const dropRef = useRef<HTMLAudioElement | null>(null)
   const [dropped, setDropped] = useState(false)
   const musicSectionRef = useRef<HTMLDivElement>(null)
-  const isMusicVisible = useInView(musicSectionRef, { amount: 0.5 })
+  const isMusicVisible = useInView(musicSectionRef, { amount: 0.4 })
 
   const totalDias = dataInicio ? Math.floor((Date.now() - new Date(dataInicio).getTime()) / 86400000) : 0
   const totalHoras = totalDias * 24
   const gostos = [comidaFavorita, filmeFavorito].filter(Boolean)
 
-  // Count-up
   useEffect(() => {
     if (!started || totalDias <= 0) return
     let f = 0
@@ -47,48 +65,58 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
     return () => clearInterval(iv)
   }, [totalDias, started])
 
-  // Body lock
   useEffect(() => {
     document.body.style.overflow = removido ? 'unset' : 'hidden'
     return () => { document.body.style.overflow = 'unset' }
   }, [removido])
 
-  // AUDIO CROSSFADE — when music section enters view
+  // DEBUG + CROSSFADE
+  useEffect(() => {
+    console.log('[Wrapped Audio] previewUrl:', previewUrl)
+    console.log('[Wrapped Audio] isMusicVisible:', isMusicVisible, 'dropped:', dropped, 'started:', started)
+  }, [previewUrl, isMusicVisible, dropped, started])
+
   useEffect(() => {
     if (!isMusicVisible || dropped || !started) return
     setDropped(true)
-    // Fade out BG
+    console.log('[Wrapped Audio] DROP triggered! URL:', previewUrl)
     const bg = bgRef.current
     if (bg) {
       const fade = setInterval(() => {
-        const v = bg.volume - 0.1
+        const v = bg.volume - 0.05
         if (v <= 0) { clearInterval(fade); bg.pause(); bg.volume = 0 }
         else bg.volume = v
-      }, 100)
+      }, 80)
     }
-    // Fade in couple's music
     if (previewUrl) {
       const drop = new Audio(previewUrl)
       drop.volume = 0
       drop.loop = true
       drop.setAttribute('playsinline', 'true')
-      drop.play().catch(() => {})
+      drop.play()
+        .then(() => console.log('[Wrapped Audio] Couple music PLAYING'))
+        .catch(e => console.error('[Wrapped Audio] Play BLOCKED:', e))
       dropRef.current = drop
       let v = 0
       const fadeIn = setInterval(() => {
-        v += 0.1
-        if (v >= 1) { clearInterval(fadeIn); drop.volume = 1 }
-        else drop.volume = v
-      }, 100)
+        v = Math.min(v + 0.08, 0.7)
+        drop.volume = v
+        if (v >= 0.7) clearInterval(fadeIn)
+      }, 80)
+    } else {
+      console.warn('[Wrapped Audio] No previewUrl available!')
     }
   }, [isMusicVisible, dropped, started, previewUrl])
 
   function iniciar() {
+    console.log('[Wrapped Audio] Starting BG loop...')
     const bg = new Audio(BG_LOOP)
-    bg.volume = 0.25
+    bg.volume = 0.2
     bg.loop = true
     bg.setAttribute('playsinline', 'true')
-    bg.play().catch(() => {})
+    bg.play()
+      .then(() => console.log('[Wrapped Audio] BG loop PLAYING'))
+      .catch(e => console.error('[Wrapped Audio] BG BLOCKED:', e))
     bgRef.current = bg
     setStarted(true)
   }
@@ -98,7 +126,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
     const a = dropRef.current || bgRef.current
     if (a) {
       const fade = setInterval(() => {
-        const v = a.volume - 0.05
+        const v = a.volume - 0.04
         if (v <= 0) { clearInterval(fade); a.pause(); a.src = '' }
         else a.volume = v
       }, 40)
@@ -108,11 +136,15 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
 
   if (removido) return null
 
-  // ===== TAP TO START =====
   if (!started) {
     return (
       <div className="fixed inset-0 z-[99999] flex items-center justify-center" style={{ background: '#000' }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8 max-w-sm">
+        <Aura cor={cor} />
+        <style>{`
+          @keyframes aura-drift-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
+          @keyframes aura-drift-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
+        `}</style>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8 max-w-sm relative z-10">
           <motion.button onClick={iniciar} initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.3 }}
             className="w-24 h-24 rounded-full mx-auto mb-12 flex items-center justify-center cursor-pointer"
@@ -138,7 +170,6 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
     )
   }
 
-  // ===== 6 TELAS — SANS-SERIF MODERNA =====
   return (
     <div className="fixed inset-0 z-[9999] overflow-y-scroll snap-y snap-mandatory"
       style={{ opacity: saindo ? 0 : 1, pointerEvents: saindo ? 'none' : 'auto',
@@ -146,12 +177,16 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
       <style>{`
         *::-webkit-scrollbar{display:none}
         @keyframes spin-slow{to{transform:rotate(360deg)}}
-        @keyframes orbit{to{transform:rotate(360deg)}}
+        @keyframes globe-spin{to{transform:rotateY(360deg)}}
         @keyframes ping-radar{0%{transform:scale(0.3);opacity:0.5}100%{transform:scale(1);opacity:0}}
         @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-        @keyframes float-album{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes aura-drift-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
+        @keyframes aura-drift-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
+        @keyframes draw-line{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
         .outlined-modern{color:transparent;-webkit-text-stroke:2.5px #fff;font-weight:900;line-height:0.85;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
       `}</style>
+
+      <Aura cor={cor} />
 
       {/* ===== TELA 1 — O GANCHO ===== */}
       <section className="h-screen w-screen snap-start flex items-end relative overflow-hidden">
@@ -159,17 +194,22 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
           viewBox="0 0 400 800" fill="none" preserveAspectRatio="none">
           <motion.path d="M-30,180 Q80,80 200,280 T430,220"
             stroke={cor} strokeWidth="3" strokeLinecap="round" fill="none"
-            initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.25 }}
-            transition={{ duration: 3, delay: 0.3 }} />
+            strokeDasharray="1000" style={{ animation: 'draw-line 3s ease-in-out 0.3s forwards' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.3 }} transition={{ delay: 0.3, duration: 0.5 }} />
           <motion.path d="M-30,450 Q140,350 260,520 T430,440"
-            stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" fill="none"
-            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-            transition={{ duration: 3.5, delay: 0.8 }} />
+            stroke="rgba(255,255,255,0.15)" strokeWidth="2.5" fill="none"
+            strokeDasharray="1000" style={{ animation: 'draw-line 3.5s ease-in-out 0.8s forwards' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} />
           <motion.path d="M-30,620 Q180,540 310,680 T430,620"
-            stroke={`${cor}40`} strokeWidth="3.5" fill="none"
-            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-            transition={{ duration: 4, delay: 1.2 }} />
+            stroke={`${cor}50`} strokeWidth="3.5" fill="none"
+            strokeDasharray="1000" style={{ animation: 'draw-line 4s ease-in-out 1.2s forwards' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} />
+          <circle cx="330" cy="140" r="60" stroke="rgba(255,255,255,0.06)" strokeWidth="2" fill="none"
+            strokeDasharray="400" style={{ animation: 'draw-line 2.5s ease-in-out 2s forwards' }} />
+          <circle cx="70" cy="670" r="45" stroke={`${cor}25`} strokeWidth="2" fill="none"
+            strokeDasharray="300" style={{ animation: 'draw-line 2.5s ease-in-out 2.5s forwards' }} />
         </svg>
+
         <div className="relative z-10 px-8 sm:px-12 pb-28 max-w-xl">
           <motion.div initial={{ width: 0 }} animate={{ width: 48 }}
             transition={{ delay: 0.3, duration: 1 }} className="h-0.5 mb-8" style={{ background: cor }} />
@@ -183,6 +223,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             {titulo}
           </motion.p>
         </div>
+
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2">
           <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 1.2, repeat: Infinity }}
@@ -197,14 +238,15 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
       {/* ===== TELA 2 — OS NÚMEROS ===== */}
       {totalDias > 0 && (
         <section className="h-screen w-screen snap-start flex items-center relative overflow-hidden">
-          <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] pointer-events-none" style={{ zIndex: 0, opacity: 0.06 }}>
-            <div className="absolute inset-0 animate-[spin-slow_35s_linear_infinite]">
+          <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] pointer-events-none" style={{ zIndex: 0, opacity: 0.07 }}>
+            <div className="absolute inset-0 animate-[spin-slow_30s_linear_infinite]">
               {[1,2,3,4,5,6].map(i => (
                 <div key={i} className="absolute rounded-full border border-white"
                   style={{ inset: `${i*42}px`, borderWidth: i%2===0 ? 2.5 : 1 }} />
               ))}
             </div>
           </div>
+
           <div className="relative z-10 w-full px-8 sm:px-12">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               className="text-xs uppercase tracking-[0.3em] mb-8" style={{ color: cor }}>
@@ -232,31 +274,36 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         </section>
       )}
 
-      {/* ===== TELA 3A — O COSMOS ===== */}
+      {/* ===== TELA 3A — O COSMOS (GLOBO REAL) ===== */}
       <section className="h-screen w-screen snap-start flex items-center justify-center relative overflow-hidden">
-        {/* Orbital SVG wireframe */}
-        <div className="absolute pointer-events-none" style={{ zIndex: 0 }}>
-          <svg width="400" height="400" viewBox="0 0 400 400" fill="none" className="opacity-[0.06]">
-            <circle cx="200" cy="200" r="120" stroke="white" strokeWidth="0.8" />
-            <circle cx="200" cy="200" r="80" stroke="white" strokeWidth="0.5" />
-            <ellipse cx="200" cy="200" rx="180" ry="60" stroke="white" strokeWidth="0.6"
-              style={{ animation: 'orbit 25s linear infinite' }} />
-            <ellipse cx="200" cy="200" rx="160" ry="90" stroke="white" strokeWidth="0.4"
-              transform="rotate(60 200 200)" style={{ animation: 'orbit 35s linear infinite reverse' }} />
-            <ellipse cx="200" cy="200" rx="140" ry="50" stroke="white" strokeWidth="0.4"
-              transform="rotate(-30 200 200)" style={{ animation: 'orbit 20s linear infinite' }} />
-          </svg>
+        <div className="absolute pointer-events-none" style={{ zIndex: 0, perspective: '800px' }}>
+          <div style={{ width: 320, height: 320, animation: 'globe-spin 20s linear infinite', transformStyle: 'preserve-3d' }}>
+            <svg width="320" height="320" viewBox="0 0 320 320" fill="none" className="opacity-[0.12]">
+              <circle cx="160" cy="160" r="140" stroke="white" strokeWidth="1" />
+              <circle cx="160" cy="160" r="100" stroke="white" strokeWidth="0.5" />
+              <circle cx="160" cy="160" r="50" stroke="white" strokeWidth="0.3" />
+              <ellipse cx="160" cy="160" rx="140" ry="40" stroke="white" strokeWidth="0.6" />
+              <ellipse cx="160" cy="160" rx="140" ry="70" stroke="white" strokeWidth="0.4" />
+              <ellipse cx="160" cy="160" rx="140" ry="110" stroke="white" strokeWidth="0.3" />
+              <ellipse cx="160" cy="160" rx="40" ry="140" stroke="white" strokeWidth="0.6" />
+              <ellipse cx="160" cy="160" rx="80" ry="140" stroke="white" strokeWidth="0.4" />
+              <ellipse cx="160" cy="160" rx="120" ry="140" stroke="white" strokeWidth="0.3" />
+              <line x1="20" y1="160" x2="300" y2="160" stroke="white" strokeWidth="0.4" />
+              <line x1="160" y1="20" x2="160" y2="300" stroke="white" strokeWidth="0.4" />
+            </svg>
+          </div>
         </div>
+
         <div className="relative z-10 text-center px-8 max-w-lg flex flex-col items-center gap-8">
           <motion.p initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}
             className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight"
-            style={{ color: 'rgba(255,255,255,0.85)' }}>
+            style={{ color: 'rgba(255,255,255,0.9)' }}>
             O universo tem<br />{UNIVERSE.age}.
           </motion.p>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-lg sm:text-xl" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            className="text-lg sm:text-xl" style={{ color: 'rgba(255,255,255,0.55)' }}>
             A Terra gira a {UNIVERSE.earthSpeed}.
           </motion.p>
           <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
@@ -265,25 +312,25 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         </div>
       </section>
 
-      {/* ===== TELA 3B — A COLISÃO (LOCAL) ===== */}
+      {/* ===== TELA 3B — RADAR + CIDADE ===== */}
       {cidadeEncontro && (
         <section className="h-screen w-screen snap-start flex items-center justify-center relative overflow-hidden">
-          {/* Full radar rings */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
             {[0,1,2,3,4,5].map(i => (
               <div key={i} className="absolute rounded-full" style={{
                 width: `${30+i*14}vw`, height: `${30+i*14}vw`,
                 maxWidth: `${200+i*90}px`, maxHeight: `${200+i*90}px`,
                 border: `${i===0?2:1}px solid ${cor}`,
-                opacity: 0.06 + (i===0?0.12:0),
+                opacity: 0.08 + (i===0?0.15:0),
                 animation: `ping-radar ${3+i*0.8}s ease-out ${i*0.6}s infinite`,
               }} />
             ))}
-            <div className="w-5 h-5 rounded-full" style={{ background: cor, opacity: 0.5, boxShadow: `0 0 40px ${cor}` }} />
+            <div className="w-5 h-5 rounded-full" style={{ background: cor, opacity: 0.6, boxShadow: `0 0 50px ${cor}` }} />
           </div>
+
           <div className="relative z-10 text-center px-8 max-w-lg flex flex-col items-center gap-10">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
               E de {UNIVERSE.population},<br />tudo convergiu em:
             </motion.p>
             <motion.p initial={{ opacity: 0, scale: 0.7 }} whileInView={{ opacity: 1, scale: 1 }}
@@ -295,10 +342,10 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         </section>
       )}
 
-      {/* ===== TELA 4 — OS GOSTOS ===== */}
+      {/* ===== TELA 4 — MARQUEE GOSTOS ===== */}
       {gostos.length > 0 && (
         <section className="h-screen w-screen snap-start flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 flex flex-col justify-center gap-10 pointer-events-none select-none" style={{ zIndex: 0, opacity: 0.03 }}>
+          <div className="absolute inset-0 flex flex-col justify-center gap-10 pointer-events-none select-none" style={{ zIndex: 0, opacity: 0.035 }}>
             {[0,1,2,3,4,5].map(i => (
               <div key={i} className="whitespace-nowrap" style={{
                 animation: `marquee ${20+i*5}s linear infinite`,
@@ -310,6 +357,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
               </div>
             ))}
           </div>
+
           <div className="relative z-10 text-center px-8 max-w-lg flex flex-col items-center gap-12">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               className="text-xs uppercase tracking-[0.3em]" style={{ color: cor }}>
@@ -324,25 +372,28 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         </section>
       )}
 
-      {/* ===== TELA 5 — A MÚSICA (DROP) ===== */}
+      {/* ===== TELA 5 — MÚSICA (METEORO DROP) ===== */}
       <section ref={musicSectionRef} className="h-screen w-screen snap-start flex flex-col items-center justify-center relative overflow-hidden gap-12">
         {musicaCapa ? (
           <>
-            <motion.div initial={{ opacity: 0, scale: 0.4, rotate: -25 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+            {/* Album cover — METEOR entry */}
+            <motion.div
+              initial={{ opacity: 0, x: -300, rotate: -45, scale: 0.5 }}
+              whileInView={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 1.2, type: 'spring', bounce: 0.2 }}
-              className="relative z-10">
+              transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+              className="relative z-10"
+            >
               <div className="absolute inset-0 rounded-3xl pointer-events-none"
-                style={{ background: cor, filter: 'blur(60px)', opacity: 0.2, transform: 'scale(1.5)' }} />
-              <div className="relative w-56 h-56 sm:w-72 sm:h-72 rounded-3xl overflow-hidden shadow-2xl"
-                style={{ animation: 'float-album 6s ease-in-out infinite' }}>
+                style={{ background: cor, filter: 'blur(70px)', opacity: 0.25, transform: 'scale(1.6)' }} />
+              <div className="relative w-60 h-60 sm:w-72 sm:h-72 rounded-3xl overflow-hidden shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={musicaCapa} alt="" className="w-full h-full object-cover" />
               </div>
             </motion.div>
+
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: 0.8 }}
+              viewport={{ once: true }} transition={{ delay: 0.6 }}
               className="relative z-10 text-center px-8">
               <p className="text-xl sm:text-2xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.85)' }}>
                 A trilha sonora de voces.
@@ -360,15 +411,16 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
 
       {/* ===== TELA 6 — DESBLOQUEIO ===== */}
       <section className="h-screen w-screen snap-start flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style={{ zIndex: 0, opacity: 0.02 }}>
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style={{ zIndex: 0, opacity: 0.025 }}>
           <p className="outlined-modern text-[220px] sm:text-[320px] md:text-[420px] leading-none"
             style={{ transform: 'rotate(-8deg)' }}>&hearts;</p>
         </div>
+
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.8 }}
           className="relative z-10 text-center px-8 max-w-sm flex flex-col items-center gap-16">
           <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-relaxed"
-            style={{ color: 'rgba(255,255,255,0.6)' }}>
+            style={{ color: 'rgba(255,255,255,0.65)' }}>
             Mas os numeros<br />nao contam tudo.
           </p>
           <motion.button onClick={unlock} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}

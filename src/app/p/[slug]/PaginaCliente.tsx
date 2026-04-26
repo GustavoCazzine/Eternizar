@@ -78,12 +78,12 @@ interface Pagina {
 
 // Paletas de cor completas
 const paletas: Record<string, { primaria: string; secundaria: string; brilho: string; fundo: string; fundoAlt: string; texto: string }> = {
- pink: { primaria: '#9B1B30', secundaria: '#B91C3C', brilho: '#e8a0b0', fundo: '#050003', fundoAlt: '#050505', texto: '#f5e0e8' },
- violet: { primaria: '#8b5cf6', secundaria: '#7c3aed', brilho: '#c4b5fd', fundo: '#050010', fundoAlt: '#050505', texto: '#ede9fe' },
- amber: { primaria: '#f59e0b', secundaria: '#f97316', brilho: '#fcd34d', fundo: '#0a0800', fundoAlt: '#050505', texto: '#fef3c7' },
- blue: { primaria: '#3b82f6', secundaria: '#06b6d4', brilho: '#93c5fd', fundo: '#00050a', fundoAlt: '#050505', texto: '#dbeafe' },
- emerald: { primaria: '#10b981', secundaria: '#14b8a6', brilho: '#6ee7b7', fundo: '#000a05', fundoAlt: '#050505', texto: '#d1fae5' },
- rose: { primaria: '#C2185B', secundaria: '#9B1B30', brilho: '#fda4af', fundo: '#0a0003', fundoAlt: '#050505', texto: '#ffe4e6' },
+ pink: { primaria: '#9B1B30', secundaria: '#B91C3C', brilho: '#e8a0b0', fundo: '#030303', fundoAlt: '#050505', texto: '#f5e0e8' },
+ violet: { primaria: '#8b5cf6', secundaria: '#7c3aed', brilho: '#c4b5fd', fundo: '#030303', fundoAlt: '#050505', texto: '#ede9fe' },
+ amber: { primaria: '#f59e0b', secundaria: '#f97316', brilho: '#fcd34d', fundo: '#030303', fundoAlt: '#050505', texto: '#fef3c7' },
+ blue: { primaria: '#3b82f6', secundaria: '#06b6d4', brilho: '#93c5fd', fundo: '#030303', fundoAlt: '#050505', texto: '#dbeafe' },
+ emerald: { primaria: '#10b981', secundaria: '#14b8a6', brilho: '#6ee7b7', fundo: '#030303', fundoAlt: '#050505', texto: '#d1fae5' },
+ rose: { primaria: '#C2185B', secundaria: '#9B1B30', brilho: '#fda4af', fundo: '#030303', fundoAlt: '#050505', texto: '#ffe4e6' },
 }
 
 const paresFonte: Record<string, { titulo: string; corpo: string }> = {
@@ -399,9 +399,10 @@ function CartaSelada({ mensagem, cor, fontCorpo }: { mensagem: string; cor: stri
  <motion.button onClick={() => setAberta(true)} whileTap={{ scale: 0.97 }}
  className="w-full max-w-sm mx-auto flex flex-col items-center gap-3 py-6 px-5 rounded-2xl border border-dashed cursor-pointer"
  style={{ borderColor: `${cor}40`, background: `${cor}08` }}>
- <svg className="w-12 h-12" style={{ color: cor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-       <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/>
-     </svg>
+ <div className="flex items-center justify-center">
+ 
+ <svg className="w-10 h-10" style={{ color: cor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+ </div>
  <p className="text-sm font-medium" style={{ color: cor }}>Toque para abrir a carta</p>
  </motion.button>
  )
@@ -432,9 +433,10 @@ function BucketList({ items, cor }: { items: Array<{texto: string; feito: boolea
       {lista.map((item, i) => (
         <motion.button key={i} onClick={() => toggle(i)}
           whileTap={{ scale: 0.97 }}
-          className="flex items-center gap-3 px-4 py-3 text-left transition-all"
+          className="flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-all"
           style={{
-            background: 'transparent',
+            background: item.feito ? `${cor}15` : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${item.feito ? cor + '40' : 'rgba(255,255,255,0.08)'}`,
           }}>
           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${item.feito ? 'scale-110' : ''}`}
             style={{ borderColor: item.feito ? cor : 'rgba(255,255,255,0.2)', background: item.feito ? cor : 'transparent' }}>
@@ -633,51 +635,56 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  // Tela de senha
  if (!liberada) {
  return (
- <div className="min-h-screen text-white flex items-center justify-center px-4 relative overflow-hidden"
- style={{ background: '#000000' }}>
- {/* Background photo */}
- {fotoCapa && (
-   <div className="absolute inset-0">
-     {/* eslint-disable-next-line @next/next/no-img-element */}
-     <img src={fotoCapa} alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.2) blur(8px)', transform: 'scale(1.1)' }} />
-   </div>
- )}
- <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full relative z-10">
-   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.3 }}
-     className="w-16 h-16 rounded-full mx-auto mb-8 flex items-center justify-center"
-     style={{ border: `2px solid ${cor}40` }}>
-     <svg className="w-6 h-6" style={{ color: cor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-     </svg>
-   </motion.div>
-   <h1 className="text-3xl sm:text-4xl font-black mb-3" style={{ fontFamily: fontes.titulo }}>Uma surpresa te espera</h1>
-   <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>Responda para desbloquear</p>
-   {pagina.senha_dica && (
-     <div className="mb-8">
-       <p className="text-[10px] uppercase tracking-[0.3em] mb-2" style={{ color: cor }}>Dica</p>
-       <p className="text-white/60 italic text-sm">"{pagina.senha_dica}"</p>
-     </div>
-   )}
-   <input type="text" value={senhaInput}
-     onChange={e => setSenhaInput(e.target.value)}
-     onKeyDown={e => e.key === 'Enter' && verificarSenha()}
-     placeholder="Sua resposta..."
-     className="w-full bg-transparent border-b border-white/15 px-2 py-3 text-white text-center placeholder-white/20 focus:outline-none focus:border-white/40 transition mb-4"
-     style={{ borderColor: erroSenha ? '#f43f5e' : undefined }}
-   />
-   {erroSenha && (
-     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-xs mb-4">
-       Hmm, nao foi dessa vez.
-     </motion.p>
-   )}
-   <button onClick={verificarSenha}
-     className="w-full py-4 rounded-full font-bold text-white transition hover:opacity-90 mt-4"
-     style={{ background: cor }}>
-     Desbloquear
-   </button>
-   <p className="text-[10px] uppercase tracking-[0.3em] mt-12" style={{ color: 'rgba(255,255,255,0.1)' }}>eternizar</p>
+ <div className="min-h-screen text-white flex items-center justify-center px-4"
+ style={{ background: '#000' }}>
+ <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full">
+ <motion.div
+ animate={{ rotate: [0, -10, 10, -10, 0] }}
+ transition={{ duration: 1, delay: 0.5 }}
+ className="text-6xl mb-6"
+ >•</motion.div>
+ <h1 className="text-3xl sm:text-4xl font-black mb-3" style={{ fontFamily: fontes.titulo }}>Uma surpresa te espera</h1>
+ 
+ <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>Responda para desbloquear</p>
+ {pagina.senha_dica && (
+ <motion.div
+ initial={{ opacity: 0, scale: 0.95 }}
+ animate={{ opacity: 1, scale: 1 }}
+ transition={{ delay: 0.3 }}
+ className="mb-8"
+ style={{ borderColor: `${cor}40` }}
+ >
+ <p className="text-xs mb-1 uppercase tracking-widest" style={{ color: cor }}>Dica</p>
+ <p className="text-gray-300 italic">"{pagina.senha_dica}"</p>
  </motion.div>
-</div>
+ )}
+ <input
+ type="text"
+ value={senhaInput}
+ onChange={e => setSenhaInput(e.target.value)}
+ onKeyDown={e => e.key === 'Enter' && verificarSenha()}
+ placeholder="Sua resposta..."
+ className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none mb-3 transition"
+ style={{ borderColor: erroSenha ? '#f43f5e' : undefined }}
+ />
+ {erroSenha && (
+ <motion.p
+ initial={{ opacity: 0, x: -10 }}
+ animate={{ opacity: 1, x: 0 }}
+ className="text-red-400 text-sm mb-3"
+ >
+ Hmm, não foi dessa vez. Tente novamente!
+ </motion.p>
+ )}
+ <button
+ onClick={verificarSenha}
+ className="w-full py-4 rounded-full font-bold text-white transition hover:opacity-90"
+ style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}
+ >
+ Abrir surpresa
+ </button>
+ </motion.div>
+ </div>
  )
  }
 
@@ -728,9 +735,201 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  {/* Gradiente overlay sobre a foto */}
  <div className="absolute inset-0 z-[1]" style={{
  background: fotoCapa
- ? 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.85) 70%, #000 100%)'
+ ? 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.9) 75%, #000 100%)'
  : '#000'
  }} />
+
+ {/* Glow orbs animados */}
+ <div className="absolute inset-0 pointer-events-none z-[2]">
+ <motion.div
+ className="absolute top-1/4 left-1/4 w-48 h-48 rounded-full blur-2xl opacity-20"
+ style={{ background: cor }}
+ 
+ 
+ />
+ <motion.div
+ className="absolute bottom-1/3 right-1/4 w-32 h-32 rounded-full blur-2xl opacity-10"
+ style={{ background: paleta.secundaria }}
+ 
+ 
+ />
+ </div>
+
+ {/* Conteúdo principal */}
+ <div className="relative z-10 text-center px-6 max-w-3xl">
+ {/* Ícone SVG animado em vez de emoji */}
+ <motion.div
+ initial={{ scale: 0, y: 20 }}
+ animate={{ scale: 1, y: 0 }}
+ transition={{ type: "spring", duration: 1, bounce: 0.3 }}
+ className="mb-8 inline-flex items-center justify-center"
+ >
+ <motion.div
+ 
+ 
+ >
+ <Heart className="w-16 h-16 fill-current drop-shadow-lg" style={{ color: cor, filter: `drop-shadow(0 0 30px ${cor}60)` }} />
+ </motion.div>
+ </motion.div>
+
+ <motion.div
+ initial={{ opacity: 0, y: 40 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ delay: 0.4, duration: 0.8 }}
+ >
+ <p className="text-xs uppercase tracking-[0.25em] mb-6 font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>
+                Uma surpresa especial para você
+ </p>
+ <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
+ style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: fontes.titulo }}>
+ {pagina.titulo}
+ </h1>
+ {pagina.subtitulo && (
+ <motion.p
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ transition={{ delay: 0.8 }}
+ className="text-lg md:text-xl mt-6 nome-capitalize"
+                style={{ color: "rgba(255,255,255,0.65)", textShadow: fotoCapa ? "0 2px 20px rgba(0,0,0,0.6)" : "none" }}
+ >
+ {pagina.subtitulo}
+ </motion.p>
+ )}
+ </motion.div>
+ </div>
+
+ {/* Scroll indicator */}
+ <motion.div
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ transition={{ delay: 1.5 }}
+ className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
+ style={{ color: `${cor}80` }}
+ >
+ <span className="text-xs uppercase tracking-widest">Role para descobrir</span>
+ <motion.div >
+ <ArrowDown className="w-5 h-5" />
+ </motion.div>
+ </motion.div>
+ </section>
+
+ {/* ===== SLIDE 2 — CONTADOR (apenas casal) ===== */}
+ {pagina.tipo === 'casal' && pagina.dados_casal?.dataInicio && (
+ <section className="py-16 sm:py-24 px-4" style={{ background: '#000' }}>
+ <Secao className="text-center mb-10">
+ <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Juntos há exatamente</p>
+ <h2 className="text-3xl sm:text-4xl font-black mb-2">Contando cada segundo</h2>
+ <p className="text-gray-500 text-sm">Desde {new Date(pagina.dados_casal.dataInicio).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+ </Secao>
+ <Secao delay={0.2}>
+ <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
+ </Secao>
+        {pagina.musica_dados && <Secao delay={0.3} className="mt-14"><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
+
+ {/* Cards de dados do casal — below scroll area */}
+ {(pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
+ <Secao delay={0.3} className="mt-20 max-w-sm mx-auto">
+ <div className="grid grid-cols-2 gap-3">
+ {[
+ { icon: 'MapPin', label: 'Onde tudo começou', valor: pagina.dados_casal.cidadePrimeiroEncontro },
+ { icon: 'Utensils', label: 'Comida favorita', valor: pagina.dados_casal.comeFavorita },
+ { icon: 'Film', label: 'Filme favorito', valor: pagina.dados_casal.filmeFavorito },
+ ].filter(item => item.valor).map((item, i) => (
+ <motion.div
+ key={i}
+ initial={{ opacity: 0, x: -20 }}
+ whileInView={{ opacity: 1, x: 0 }}
+ viewport={{ once: true }}
+ transition={{ delay: i * 0.1, duration: 0.6 }}
+ className="flex items-center gap-2.5 px-5 py-2.5 rounded-full"
+ style={{
+ background: 'rgba(255,255,255,0.04)',
+                  backdropFilter: 'blur(5px)',
+ border: '1px solid rgba(255,255,255,0.06)',
+ }}
+ >
+ <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+ style={{ background: `${cor}20`, border: `1px solid ${cor}30` }}>
+ {item.icon === "MapPin" ? <MapPinIcon className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Utensils" ? <Utensils className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Film" ? <Film className="w-4 h-4" style={{ color: cor }} /> : <Heart className="w-4 h-4" style={{ color: cor }} />}
+ </div>
+ <div>
+ <p className="text-xs uppercase tracking-widest mb-0.5" style={{ color: `${cor}99` }}>{item.label}</p>
+ <p className="font-semibold text-white">{item.valor}</p>
+ </div>
+ </motion.div>
+ ))}
+ </div>
+ </Secao>
+ )}
+ </section>
+ )}
+
+ {/* ===== DADOS DE FORMATURA ===== */}
+ {pagina.tipo === 'formatura' && pagina.dados_formatura?.curso && (
+ <section className="py-24 px-4" style={{ background: '#000' }}>
+ <Secao className="text-center mb-10">
+ <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Uma conquista coletiva</p>
+ <h2 className="text-3xl sm:text-4xl font-black glint-effect">{pagina.dados_formatura.curso}</h2>
+ {pagina.dados_formatura.instituicao && <p className="text-gray-400 mt-2">{pagina.dados_formatura.instituicao} · {pagina.dados_formatura.anoFormatura}</p>}
+ </Secao>
+ <Secao delay={0.2} className="max-w-sm mx-auto space-y-3">
+ {pagina.dados_formatura.nomeTurma && (
+ <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}15`, border: `1px solid ${cor}30` }}>
+ <p className="text-xs text-gray-500 mb-1">A turma</p>
+ <p className="text-2xl font-black">{pagina.dados_formatura.nomeTurma}</p>
+ </div>
+ )}
+ <div className="grid grid-cols-2 gap-3">
+ {pagina.dados_formatura.quantidadeAlunos && (
+ <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}10`, border: `1px solid ${cor}20` }}>
+ <p className="text-3xl font-black" style={{ color: cor }}>{pagina.dados_formatura.quantidadeAlunos}</p>
+ <p className="text-xs text-gray-500 mt-1">Formandos</p>
+ </div>
+ )}
+ {pagina.dados_formatura.casaisFormados && (
+ <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}10`, border: `1px solid ${cor}20` }}>
+ <p className="text-3xl font-black" style={{ color: cor }}>{pagina.dados_formatura.casaisFormados}</p>
+ <p className="text-xs text-gray-500 mt-1">Casais formados</p>
+ </div>
+ )}
+ </div>
+ </Secao>
+ </section>
+ )}
+
+ {/* ===== STORIES ===== */}
+        {fotosNormalizadas.length > 0 && (
+          <section className="py-14 sm:py-20 px-4">
+ <Secao className="text-center mb-10">
+ <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>Memórias que ficam</p>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Nossos momentos</h2>
+ <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
+ </Secao>
+
+ {/* Miniaturas estilo stories */}
+ <div className="flex gap-5 overflow-x-auto scrollbar-hide px-6 pb-4 -mx-4 snap-x snap-mandatory">
+ {fotosNormalizadas.map((foto, i) => (
+ <motion.button
+ key={i}
+ initial={{ opacity: 0, scale: 0.8 }}
+ whileInView={{ opacity: 1, scale: 1 }}
+ viewport={{ once: true }}
+ transition={{ delay: i * 0.1 }}
+ whileHover={{ scale: 1.05 }}
+ whileTap={{ scale: 0.97 }}
+ onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
+ className="relative flex flex-col items-center gap-2 group snap-center shrink-0"
+ >
+ {/* Anel colorido estilo story não visto */}
+ <div className="p-0.5 rounded-full" style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}>
+ <div className="p-0.5 rounded-full bg-[#000]">
+ <div className="w-20 h-20 rounded-full overflow-hidden">
+ {/* eslint-disable-next-line @next/next/no-img-element */}
+ <img src={foto.url} alt={foto.legenda || `Foto ${i + 1}`}
+ className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+ </div>
+ </div>
+ </div>
  {/* Legenda curta */}
  <p className="text-xs text-gray-400 text-center max-w-[80px] truncate">
  {foto.legenda || `Foto ${i + 1}`}
@@ -768,7 +967,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <Secao className="max-w-2xl mx-auto text-center">
  <p className="text-xs uppercase tracking-[0.25em] mb-4 font-medium" style={{ color: cor }}>A nossa história</p>
  <div className="text-6xl font-serif mb-4 select-none" style={{ color: `${cor}40` }}>“</div>
- <p className="text-xl sm:text-2xl md:text-3xl text-white/70 leading-relaxed italic break-words" style={{ fontFamily: fontes.titulo }}>
+ <p className="text-base sm:text-xl text-gray-300 leading-relaxed italic break-words px-2">
  {pagina.dados_casal.comoSeConheceram}
  </p>
  <div className="text-6xl font-serif mt-2 text-right select-none" style={{ color: `${cor}40` }}>”</div>
@@ -781,7 +980,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {pagina.locais && pagina.locais.length > 0 && (
           <section className="py-20 px-4">
             <Secao className="text-center mb-12">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black" style={{ fontFamily: fontes.titulo }}>Mapa do Amor</h2>
+              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Mapa do Amor</h2>
               <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
             </Secao>
             <Secao delay={0.2}>
@@ -795,11 +994,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <section className="py-16 sm:py-24 overflow-hidden" style={{ background: '#000' }}>
  <Secao className="text-center mb-20 px-4">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa história</p>
- <h2 className="text-4xl sm:text-5xl md:text-6xl font-black" style={{ fontFamily: fontes.titulo }}>Linha do tempo</h2>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Linha do tempo</h2>
  </Secao>
 
  <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
- 
+ <div className="lg:left-1/2 lg:-translate-x-px"><TimelineLine cor={cor} /></div>
 
  <div className="space-y-0">
  {pagina.linha_do_tempo.map((ev, i) => (
@@ -809,8 +1008,27 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ opacity: 1, x: 0 }}
  viewport={{ once: true, margin: '-60px' }}
  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
- className="relative pb-16 sm:pb-24 last:pb-0"
+ className={`relative pb-14 sm:pb-20 last:pb-0 flex gap-4 sm:gap-6 pl-16 sm:pl-20 lg:pl-0 ${i % 2 === 0 ? "lg:flex-row lg:pr-[calc(50%+2rem)] lg:pl-8 lg:text-right" : "lg:flex-row-reverse lg:pl-[calc(50%+2rem)] lg:pr-8"}`}
  >
+ <motion.div
+ initial={{ scaleX: 0 }}
+ whileInView={{ scaleX: 1 }}
+ viewport={{ once: true }}
+ transition={{ duration: 0.4, delay: 0.2 }}
+ className="absolute left-6 sm:left-7 top-6 h-px w-8 sm:w-12 origin-left"
+ style={{ background: `linear-gradient(to right, ${cor}80, transparent)` }}
+ />
+
+ <motion.div
+ initial={{ scale: 0, rotate: -180 }}
+ whileInView={{ scale: 1, rotate: 0 }}
+ viewport={{ once: true }}
+ transition={{ type: 'spring', duration: 0.8, bounce: 0.4, delay: 0.15 }}
+ className={`absolute w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 left-0 ${i % 2 === 0 ? "lg:left-auto lg:right-[-1.5rem] lg:translate-x-1/2" : "lg:left-[-1.5rem] lg:-translate-x-1/2"}`}
+ style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 4px 20px ${cor}30` }}
+ >
+ <div className="w-3 h-3 rounded-full bg-white" />
+ </motion.div>
 
  <div className="flex-1 pt-1">
  {ev.data && (
@@ -832,7 +1050,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ opacity: 1 }}
  viewport={{ once: true }}
  transition={{ delay: 0.3 }}
- className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight break-words" style={{ fontFamily: fontes.titulo }}
+ className="text-xl sm:text-2xl font-black mb-3 leading-tight break-words"
  >
  {ev.titulo}
  </motion.h3>
@@ -855,11 +1073,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ opacity: 1, scale: 1, y: 0 }}
  viewport={{ once: true }}
  transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
- className="rounded-xl overflow-hidden"
- 
+ className="rounded-2xl overflow-hidden shadow-2xl"
+ style={{ boxShadow: `0 20px 60px ${cor}20` }}
  >
  {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={ev.fotoUrl} alt={ev.titulo} className="w-full aspect-video object-cover rounded-xl" />
+ <img src={ev.fotoUrl} alt={ev.titulo} className="w-full aspect-video object-cover" />
  <div className="h-px" style={{ background: `linear-gradient(to right, ${cor}, transparent)` }} />
  </motion.div>
  )}
@@ -917,12 +1135,15 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  </motion.div>
 
  {/* Aspas decorativas */}
+ <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-4 sm:mb-6 select-none" style={{ color: `${cor}20` }}>"</div>
 
  <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-6 sm:mb-8 px-2 sm:px-8 break-words">
  {pagina.tipo === 'casal' ? '' : pagina.mensagem}
  </p>
  {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={fontes.corpo} />}
  <div className="flex justify-center mt-8"><BotaoReacao cor={cor} /></div>
+
+ <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
 
  {/* Coração pulsante */}
  <motion.div
@@ -941,7 +1162,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {pagina.bucket_list && pagina.bucket_list.length > 0 && (
           <section className="py-20 px-4">
             <Secao className="text-center mb-12">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black" style={{ fontFamily: fontes.titulo }}>O que vamos viver</h2>
+              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>O que vamos viver</h2>
               <p className="text-gray-500 text-sm mt-2">Nossos planos e sonhos juntos</p>
             </Secao>
             <Secao delay={0.2}>
@@ -980,7 +1201,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  value={guestNome}
  onChange={e => setGuestNome(e.target.value.slice(0, 50))}
  placeholder="Seu nome"
- className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none mb-3 transition nome-capitalize"
+ className="w-full bg-transparent border-b border-white/15 px-2 py-3 text-white text-center placeholder-white/20 focus:outline-none focus:border-white/40 transition mb-4"
  style={{ borderColor: guestErro ? '#f43f5e' : undefined }}
  />
  <textarea
@@ -1023,7 +1244,11 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  whileInView={{ opacity: 1, y: 0 }}
  viewport={{ once: true }}
  transition={{ delay: Math.min(i * 0.05, 0.3) }}
- className="rounded-2xl p-5 relative" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+ className="rounded-2xl p-5 backdrop-blur-sm relative"
+ style={{
+ background: msg.aprovado === false ? 'rgba(245,158,11,0.06)' : 'rgba(255,255,255,0.04)',
+ border: msg.aprovado === false ? '1px solid rgba(245,158,11,0.25)' : '1px solid rgba(255,255,255,0.08)',
+ }}
  >
  {ehDono && msg.aprovado === false && (
  <span className="absolute top-3 right-3 text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">

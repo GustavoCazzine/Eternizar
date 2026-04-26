@@ -93,7 +93,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  return (
  <div
  className="rounded-[24px] overflow-hidden border border-white/10 shadow-2xl select-none"
- style={{ background: '#08080c', fontFamily: fontes.corpo }}
+ style={{ background: '#08080c', fontFamily: 'system-ui, -apple-system, sans-serif' }}
  >
  <div className="aspect-[9/16] w-full overflow-y-auto preview-scroll" style={{ scrollbarWidth: 'thin' }}>
 
@@ -122,7 +122,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  Uma surpresa especial
  </p>
  <h1 className="text-2xl font-black leading-[1.05] text-center text-white nome-capitalize relative z-10 px-2"
- style={{ fontFamily: fontes.titulo, textShadow: fotoCapaUrl ? '0 2px 12px rgba(0,0,0,0.8)' : 'none' }}>
+ style={{ fontFamily: 'system-ui, -apple-system, sans-serif', textShadow: fotoCapaUrl ? '0 2px 12px rgba(0,0,0,0.8)' : 'none' }}>
  {titulo || <span className="text-white/30">Título</span>}
  </h1>
  {subtitulo && (
@@ -139,7 +139,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-medium text-center" style={{ color: corHex }}>
  Juntos há
  </p>
- <h2 className="text-base font-black mb-3 text-white text-center" style={{ fontFamily: fontes.titulo }}>
+ <h2 className="text-base font-black mb-3 text-white text-center" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  Cada segundo conta
  </h2>
  <div className="grid grid-cols-3 gap-1.5 max-w-[200px] mx-auto">
@@ -188,7 +188,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-medium text-center" style={{ color: corHex }}>
  Memórias
  </p>
- <h2 className="text-base font-black mb-3 text-white text-center" style={{ fontFamily: fontes.titulo }}>
+ <h2 className="text-base font-black mb-3 text-white text-center" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  Nossos momentos
  </h2>
  <div className="flex gap-2 justify-center flex-wrap">
@@ -233,7 +233,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-medium text-center" style={{ color: corHex }}>
  Nossa história
  </p>
- <h2 className="text-base font-black mb-4 text-white text-center" style={{ fontFamily: fontes.titulo }}>
+ <h2 className="text-base font-black mb-4 text-white text-center" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  Linha do tempo
  </h2>
  <div className="relative pl-8">
@@ -301,7 +301,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  <div className="text-2xl mb-2"></div>
  <div className="text-3xl font-serif select-none leading-none" style={{ color: `${corHex}20` }}>"</div>
  <p className="text-[10px] text-gray-200 leading-relaxed font-light text-center px-3 my-1 break-words"
- style={{ fontFamily: fontes.corpo }}>
+ style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  {mensagem.length > 160 ? mensagem.slice(0, 160) + '...' : mensagem}
  </p>
  <div className="text-3xl font-serif select-none leading-none text-right w-full pr-3" style={{ color: `${corHex}20` }}>"</div>
@@ -316,7 +316,7 @@ export default function PreviaPagina(props: PreviaPaginaProps) {
  Deixe sua marca
  </p>
  <h2 className="text-sm font-black mb-3 text-white text-center flex items-center justify-center gap-1.5"
- style={{ fontFamily: fontes.titulo }}>
+ style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  <MessageCircle className="w-3 h-3" style={{ color: corHex }} />
  Livro de Visitas
  </h2>

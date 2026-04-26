@@ -185,7 +185,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
                     {i + 1}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-white truncate" style={{ fontFamily: fontes.titulo }}>{local.titulo}</p>
+                    <p className="text-sm font-semibold text-white truncate" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>{local.titulo}</p>
                     {local.endereco && (
                       <p className="text-xs text-zinc-500 mt-0.5 truncate flex items-center gap-1">
                         <MapPin className="w-3 h-3 shrink-0" />{local.endereco}
@@ -263,7 +263,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
                     style={{ background: cor, color: 'white' }}>
                     {selecionado + 1}
                   </div>
-                  <h3 className="text-base font-bold text-white" style={{ fontFamily: fontes.titulo }}>
+                  <h3 className="text-base font-bold text-white" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                     {locais[selecionado].titulo}
                   </h3>
                 </div>
@@ -273,7 +273,7 @@ export default function MapaAmor({ locais, cor, fontes }: Props) {
                   </p>
                 )}
                 {locais[selecionado].descricao && (
-                  <p className="text-sm text-zinc-300 leading-relaxed" style={{ fontFamily: fontes.corpo }}>
+                  <p className="text-sm text-zinc-300 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                     {locais[selecionado].descricao}
                   </p>
                 )}

@@ -617,7 +617,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const paleta = paletas[pagina.cor_tema] || paletas.pink
  const cor = paleta.primaria
  const corTexto = paleta.texto
- const fontes = paresFonte[pagina.fonte_par || 'classico'] || paresFonte.classico
+ const fontes = paresFonte[pagina.fonte_par || 'classico'] || { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' }
 
  const tipo = pagina.tipo
  const emoji = tipo === 'casal' ? '♥' : tipo === 'formatura' ? '★' : tipo === 'homenagem' ? '★' : ''

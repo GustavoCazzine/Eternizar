@@ -124,7 +124,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             Preparamos algo especial
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-            className="text-sm mb-14" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            className="text-sm mb-14" style={{ color: 'rgba(255,255,255,0.8)' }}>
             Ative o som para a melhor experiencia.
           </motion.p>
           <motion.button onClick={iniciar} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -185,7 +185,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             O mundo<br />girou e...
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
-            className="text-sm mt-8 nome-capitalize" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            className="text-base mt-8 nome-capitalize" style={{ color: 'rgba(255,255,255,0.8)' }}>
             {titulo}
           </motion.p>
         </div>
@@ -228,12 +228,12 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             </motion.div>
             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.5 }}
-              className="text-lg sm:text-xl mt-6" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              className="text-lg sm:text-xl mt-6" style={{ color: 'rgba(255,255,255,0.85)' }}>
               dias desde que tudo mudou.
             </motion.p>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
               viewport={{ once: true }} transition={{ delay: 0.8 }}
-              className="text-sm mt-4" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              className="text-base mt-4" style={{ color: 'rgba(255,255,255,0.8)' }}>
               Tempo suficiente para assistir La La Land {filmeRef.toLocaleString('pt-BR')} vezes.
             </motion.p>
           </div>
@@ -260,7 +260,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
 
           <div className="relative z-10 text-center px-8 max-w-lg flex flex-col items-center gap-10">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
               De 8 bilhoes de pessoas,<br />tudo convergiu em:
             </motion.p>
             <motion.p initial={{ opacity: 0, scale: 0.7 }} whileInView={{ opacity: 1, scale: 1 }}
@@ -328,15 +328,15 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.8 }}
               className="relative z-10 text-center px-8">
-              <p className="text-xl sm:text-2xl" style={{ color: 'rgba(255,255,255,0.75)', fontFamily: fontes.titulo }}>
+              <p className="text-xl sm:text-2xl" style={{ color: 'rgba(255,255,255,0.85)', fontFamily: fontes.titulo }}>
                 A trilha sonora de voces.
               </p>
-              {musicaNome && <p className="text-sm mt-3" style={{ color: 'rgba(255,255,255,0.45)' }}>{musicaNome}</p>}
+              {musicaNome && <p className="text-sm mt-3" style={{ color: 'rgba(255,255,255,0.8)' }}>{musicaNome}</p>}
             </motion.div>
           </>
         ) : (
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="text-xl relative z-10" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: fontes.titulo }}>
+            className="text-xl relative z-10" style={{ color: 'rgba(255,255,255,0.8)', fontFamily: fontes.titulo }}>
             Cada momento tem sua trilha sonora.
           </motion.p>
         )}
@@ -352,7 +352,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
           viewport={{ once: true }} transition={{ duration: 0.8 }}
           className="relative z-10 text-center px-8 max-w-sm flex flex-col items-center gap-16">
           <p className="text-3xl sm:text-4xl md:text-5xl leading-relaxed"
-            style={{ fontFamily: fontes.titulo, color: 'rgba(255,255,255,0.6)' }}>
+            style={{ fontFamily: fontes.titulo, color: 'rgba(255,255,255,0.8)' }}>
             Mas os numeros<br />nao contam tudo.
           </p>
           <motion.button onClick={unlock} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Lock, Volume2 } from 'lucide-react'
 import { UNIVERSE } from '@/lib/constants'
 
@@ -30,7 +30,7 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
   const dropRef = useRef<HTMLAudioElement | null>(null)
   const [dropped, setDropped] = useState(false)
   const musicSectionRef = useRef<HTMLDivElement>(null)
-  const isMusicVisible = useInView(musicSectionRef, { amount: 0.4 })
+  const [isMusicVisible, setIsMusicVisible] = useState(false)
 
   const totalDias = dataInicio ? Math.floor((Date.now() - new Date(dataInicio).getTime()) / 86400000) : 0
   const totalHoras = totalDias * 24
@@ -51,6 +51,22 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
     document.body.style.overflow = removido ? 'unset' : 'hidden'
     return () => { document.body.style.overflow = 'unset' }
   }, [removido])
+
+  // Manual IntersectionObserver for music drop (more reliable with scroll-snap)
+  useEffect(() => {
+    if (!started || !musicSectionRef.current) return
+    const el = musicSectionRef.current
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        console.log('[Wrapped Audio] Music section VISIBLE via IO')
+        setIsMusicVisible(true)
+        obs.disconnect()
+      }
+    }, { threshold: 0.3 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [started])
+
 
   // DEBUG + CROSSFADE
   useEffect(() => {
@@ -122,8 +138,6 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
     return (
       <div className="fixed inset-0 z-[99999] flex items-center justify-center" style={{ background: '#000' }}>
         <style>{`
-          50%{transform:translate(60px,40px) scale(1.15)}}
-          50%{transform:translate(-50px,-30px) scale(1.1)}}
         `}</style>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8 max-w-sm relative z-10">
           <motion.button onClick={iniciar} initial={{ scale: 0 }} animate={{ scale: 1 }}
@@ -161,8 +175,6 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         @keyframes globe-spin{to{transform:rotateY(360deg)}}
         @keyframes ping-radar{0%{transform:scale(0.3);opacity:0.5}100%{transform:scale(1);opacity:0}}
         @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-        50%{transform:translate(60px,40px) scale(1.15)}}
-        50%{transform:translate(-50px,-30px) scale(1.1)}}
         @keyframes draw-line{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
         @keyframes wave-drift{0%,100%{d:path('M-30,180 Q80,80 200,280 T430,220')}50%{d:path('M-30,200 Q100,120 180,260 T430,240')}}
         @keyframes wave-float-1{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
@@ -177,15 +189,15 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
           viewBox="0 0 400 800" fill="none" preserveAspectRatio="none">
           <motion.path d="M-30,180 Q80,80 200,280 T430,220"
             stroke={cor} strokeWidth="3" strokeLinecap="round" fill="none"
-            strokeDasharray="1000" style={{ animation: 'draw-line 3s ease-in-out 0.3s forwards' }}
+            strokeDasharray="1000" strokeDashoffset="1000" style={{ animation: 'draw-line 3s ease-in-out 0.3s forwards, wave-float-1 6s ease-in-out 3.5s infinite' }}
             initial={{ opacity: 0 }} animate={{ opacity: 0.3 }} transition={{ delay: 0.3, duration: 0.5 }} />
           <motion.path d="M-30,450 Q140,350 260,520 T430,440"
             stroke="rgba(255,255,255,0.15)" strokeWidth="2.5" fill="none"
-            strokeDasharray="1000" style={{ animation: 'draw-line 3.5s ease-in-out 0.8s forwards' }}
+            strokeDasharray="1000" strokeDashoffset="1000" style={{ animation: 'draw-line 3.5s ease-in-out 0.8s forwards, wave-float-2 7s ease-in-out 4.5s infinite' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} />
           <motion.path d="M-30,620 Q180,540 310,680 T430,620"
             stroke={`${cor}50`} strokeWidth="3.5" fill="none"
-            strokeDasharray="1000" style={{ animation: 'draw-line 4s ease-in-out 1.2s forwards' }}
+            strokeDasharray="1000" strokeDashoffset="1000" style={{ animation: 'draw-line 4s ease-in-out 1.2s forwards, wave-float-3 8s ease-in-out 5.5s infinite' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} />
           
           

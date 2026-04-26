@@ -695,9 +695,12 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {showWrapped && pagina.tipo === 'casal' && (
           <EternizarWrapped
             titulo={pagina.titulo}
-            fotoCapa={fotoCapa}
             dataInicio={pagina.dados_casal?.dataInicio}
             comidaFavorita={pagina.dados_casal?.comeFavorita}
+            filmeFavorito={pagina.dados_casal?.filmeFavorito}
+            cidadeEncontro={pagina.dados_casal?.cidadePrimeiroEncontro}
+            musicaCapa={pagina.musica_dados?.capa}
+            musicaNome={pagina.musica_dados?.nome}
             cor={cor}
             fontes={fontes}
             onDesbloquear={() => setShowWrapped(false)}

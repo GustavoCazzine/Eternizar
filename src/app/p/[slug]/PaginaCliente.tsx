@@ -491,7 +491,7 @@ function CapsulaAudio({ audioUrl, mensagem, cor, fontes, audioRef: musicRef }: {
   if (!tocando && !started.current) {
     return (
       <div className="text-center">
-        <p className="text-lg text-white/60 mb-6 italic" style={{ fontFamily: fontes.titulo }}>
+        <p className="text-lg text-white/60 mb-6 italic" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
           Feche os olhos, ou apenas leia.
         </p>
         <motion.button onClick={iniciar} whileTap={{ scale: 0.95 }}
@@ -515,7 +515,7 @@ function CapsulaAudio({ audioUrl, mensagem, cor, fontes, audioRef: musicRef }: {
         ))}
       </div>
       {/* Typing text */}
-      <p className="text-xl leading-relaxed whitespace-pre-wrap" style={{ fontFamily: fontes.corpo, color: 'rgba(255,255,255,0.85)' }}>
+      <p className="text-xl leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: 'rgba(255,255,255,0.85)' }}>
         {texto}
         {texto.length < mensagem.length && <span className="inline-block w-0.5 h-6 ml-0.5 animate-pulse" style={{ background: cor }} />}
       </p>
@@ -617,7 +617,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const paleta = paletas[pagina.cor_tema] || paletas.pink
  const cor = paleta.primaria
  const corTexto = paleta.texto
- const fontes = paresFonte[pagina.fonte_par || 'classico'] || { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' }
+ const fontes = { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' }
 
  const tipo = pagina.tipo
  const emoji = tipo === 'casal' ? '♥' : tipo === 'formatura' ? '★' : tipo === 'homenagem' ? '★' : ''
@@ -643,7 +643,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  transition={{ duration: 1, delay: 0.5 }}
  className="text-6xl mb-6"
  >•</motion.div>
- <h1 className="text-3xl sm:text-4xl font-black mb-3" style={{ fontFamily: fontes.titulo }}>Uma surpresa te espera</h1>
+ <h1 className="text-3xl sm:text-4xl font-black mb-3" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Uma surpresa te espera</h1>
  
  <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>Responda para desbloquear</p>
  {pagina.senha_dica && (
@@ -690,7 +690,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  return (
  <div ref={containerRef} className="text-white overflow-x-hidden relative"
- style={{ background: '#000', fontFamily: fontes.corpo }}>
+ style={{ background: '#000', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
         {showWrapped && pagina.tipo === 'casal' && (
           <EternizarWrapped
@@ -784,7 +784,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
                 Uma surpresa especial para você
  </p>
  <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
- style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: fontes.titulo }}>
+ style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: 'system-ui, -apple-system, sans-serif' }}>
  {pagina.titulo}
  </h1>
  {pagina.subtitulo && (
@@ -905,7 +905,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <section className="py-14 sm:py-20 px-4">
  <Secao className="text-center mb-10">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>Memórias que ficam</p>
- <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Nossos momentos</h2>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Nossos momentos</h2>
  <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
  </Secao>
 
@@ -983,7 +983,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {pagina.locais && pagina.locais.length > 0 && (
           <section className="py-20 px-4">
             <Secao className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Mapa do Amor</h2>
+              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Mapa do Amor</h2>
               <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
             </Secao>
             <Secao delay={0.2}>
@@ -998,7 +998,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <section className="py-16 sm:py-24 overflow-hidden" style={{ background: '#000' }}>
  <Secao className="text-center mb-20 px-4">
  <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa história</p>
- <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>Linha do tempo</h2>
+ <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Linha do tempo</h2>
  </Secao>
 
  <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
@@ -1144,7 +1144,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-6 sm:mb-8 px-2 sm:px-8 break-words">
  {pagina.tipo === 'casal' ? '' : pagina.mensagem}
  </p>
- {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={fontes.corpo} />}
+ {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={'system-ui, -apple-system, sans-serif'} />}
  <div className="flex justify-center mt-8"><BotaoReacao cor={cor} /></div>
 
  <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
@@ -1166,7 +1166,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {pagina.bucket_list && pagina.bucket_list.length > 0 && (
           <section className="py-20 px-4">
             <Secao className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: fontes.titulo }}>O que vamos viver</h2>
+              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>O que vamos viver</h2>
               <p className="text-gray-500 text-sm mt-2">Nossos planos e sonhos juntos</p>
             </Secao>
             <Secao delay={0.2}>
@@ -1302,7 +1302,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
  {/* Rodapé */}
         <footer className="py-20 text-center border-t border-white/5">
-          <p className="text-2xl sm:text-3xl font-light text-white/30 italic" style={{ fontFamily: fontes.titulo }}>
+          <p className="text-2xl sm:text-3xl font-light text-white/30 italic" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
             A história continua...
           </p>
           <a href="/criar" className="inline-block mt-6 px-6 py-3 rounded-xl text-sm font-medium transition border border-white/10 hover:border-white/25 text-zinc-500 hover:text-white">

@@ -692,6 +692,18 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  <div ref={containerRef} className="text-white overflow-x-hidden relative"
  style={{ background: '#121212', fontFamily: fontes.corpo }}>
 
+        {showWrapped && pagina.tipo === 'casal' && (
+          <EternizarWrapped
+            titulo={pagina.titulo}
+            fotoCapa={fotoCapa}
+            dataInicio={pagina.dados_casal?.dataInicio}
+            comidaFavorita={pagina.dados_casal?.comeFavorita}
+            cor={cor}
+            fontes={fontes}
+            onDesbloquear={() => setShowWrapped(false)}
+          />
+        )}
+
  {/* Barra de progresso */}
  <div className="fixed top-0 left-0 right-0 h-0.5 z-50" style={{ background: 'rgba(255,255,255,0.05)' }}>
  <motion.div style={{ width: progressWidth, backgroundColor: cor }} className="h-full" />

@@ -12,7 +12,7 @@ export interface CidadeResult {
 export function useCidadeAutocomplete() {
   const [resultados, setResultados] = useState<CidadeResult[]>([])
   const [buscando, setBuscando] = useState(false)
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const buscar = useCallback((query: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -22,24 +22,30 @@ export function useCidadeAutocomplete() {
       setBuscando(true)
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5&countrycodes=br`,
-          { headers: { 'User-Agent': 'Eternizar/1.0', 'Accept-Language': 'pt-BR' } }
+          `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1&countrycodes=br`,
+          {
+            headers: {
+              'Accept-Language': 'pt-BR',
+              'User-Agent': 'EternizarApp_Validation/1.0 (contato@eternizar.app)',
+            },
+          }
         )
         if (!res.ok) throw new Error('Nominatim failed')
         const data = await res.json()
 
         const cidades: CidadeResult[] = data
-          .filter((r: any) => r.type === 'city' || r.type === 'town' || r.type === 'village' || r.class === 'place')
+          .filter((r: any) => r.class === 'place' || r.type === 'city' || r.type === 'town' || r.type === 'village' || r.type === 'municipality' || r.type === 'administrative')
+          .slice(0, 5)
           .map((r: any) => {
             const addr = r.address || {}
-            const cidade = addr.city || addr.town || addr.village || r.name || ''
+            const cidade = addr.city || addr.town || addr.village || addr.municipality || r.name || ''
             const estado = addr.state || ''
             const sigla = estadoParaSigla(estado)
             return {
-              nome: sigla ? `${cidade}, ${sigla}` : cidade,
+              nome: sigla ? `${cidade}, ${sigla}` : cidade || r.display_name?.split(',')[0] || query,
               lat: parseFloat(r.lat),
               lng: parseFloat(r.lon),
-              displayName: sigla ? `${cidade}, ${sigla}` : r.display_name?.split(',').slice(0, 2).join(','),
+              displayName: r.display_name || '',
             }
           })
 
@@ -49,7 +55,7 @@ export function useCidadeAutocomplete() {
       } finally {
         setBuscando(false)
       }
-    }, 400)
+    }, 600)
   }, [])
 
   const limpar = useCallback(() => setResultados([]), [])
@@ -58,6 +64,7 @@ export function useCidadeAutocomplete() {
 }
 
 function estadoParaSigla(estado: string): string {
+  const normalized = estado.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
   const map: Record<string, string> = {
     'Acre': 'AC', 'Alagoas': 'AL', 'Amapa': 'AP', 'Amazonas': 'AM',
     'Bahia': 'BA', 'Ceara': 'CE', 'Distrito Federal': 'DF', 'Espirito Santo': 'ES',
@@ -67,5 +74,5 @@ function estadoParaSigla(estado: string): string {
     'Rio Grande do Sul': 'RS', 'Rondonia': 'RO', 'Roraima': 'RR', 'Santa Catarina': 'SC',
     'Sao Paulo': 'SP', 'Sergipe': 'SE', 'Tocantins': 'TO',
   }
-  return map[estado] || ''
+  return map[normalized] || ''
 }

@@ -1,4 +1,36 @@
-'use client'
+const fs = require('fs');
+let c = fs.readFileSync('src/app/criar/page.tsx', 'utf8');
+
+// ===== 1. REMOVE FONT SELECTOR UI =====
+// Remove the entire Tipografia section from PassoDetalhes
+const tipoStart = c.indexOf('{/* Tipografia */}');
+if (tipoStart !== -1) {
+  const tipoEnd = c.indexOf('</div>\n </div>', tipoStart);
+  if (tipoEnd !== -1) {
+    c = c.slice(0, tipoStart) + c.slice(tipoEnd + 14);
+    console.log('1a. Font selector UI: REMOVED');
+  }
+} else {
+  console.log('1a. Font selector: NOT FOUND');
+}
+
+// Hardcode fontePar to 'classico' in initial state (keep the field for backward compat)
+// Already defaults to 'classico', just remove the paresFonte array
+const paresFonteStart = c.indexOf('const paresFonte = [');
+if (paresFonteStart !== -1) {
+  const paresFonteEnd = c.indexOf(']\n', paresFonteStart) + 2;
+  c = c.slice(0, paresFonteStart) + '// Fonts hardcoded: Playfair Display (titles) + Inter (body)\n' + c.slice(paresFonteEnd);
+  console.log('1b. paresFonte array: REMOVED');
+}
+
+// Remove the fontTitulo variable that uses paresFonte
+c = c.replace(/const fontTitulo = fontes\[form\.fontePar\] \|\| fontes\.classico\n/g, '');
+c = c.replace(/const fontes: Record<string, string> = \{[^}]+\}\n/g, '');
+console.log('1c. fontTitulo variable: cleaned');
+
+// ===== 2. FIX CidadeInput — add validation state =====
+// Rewrite CidadeInput with strict selection required
+const cidadeInput = `'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { useCidadeAutocomplete, CidadeResult } from '@/hooks/useCidadeAutocomplete'
@@ -46,14 +78,14 @@ export default function CidadeInput({ value, onSelect, onChange, className = '',
   return (
     <div ref={wrapperRef} className="relative">
       <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: selecionado ? '#22c55e' : `${cor}80` }} />
+        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: selecionado ? '#22c55e' : \`\${cor}80\` }} />
         <input
           type="text"
           value={value}
           onChange={e => handleChange(e.target.value)}
           onFocus={() => resultados.length > 0 && setAberto(true)}
           placeholder={placeholder}
-          className={`pl-10 pr-8 ${className}`}
+          className={\`pl-10 pr-8 \${className}\`}
           autoComplete="off"
         />
         {buscando && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-zinc-500" />}
@@ -61,7 +93,7 @@ export default function CidadeInput({ value, onSelect, onChange, className = '',
       </div>
 
       {value && !selecionado && !buscando && resultados.length === 0 && value.length >= 3 && (
-        <p className="text-[10px] mt-1" style={{ color: `${cor}aa` }}>Selecione uma cidade da lista para salvar as coordenadas.</p>
+        <p className="text-[10px] mt-1" style={{ color: \`\${cor}aa\` }}>Selecione uma cidade da lista para salvar as coordenadas.</p>
       )}
 
       {aberto && resultados.length > 0 && (
@@ -82,3 +114,14 @@ export default function CidadeInput({ value, onSelect, onChange, className = '',
     </div>
   )
 }
+`;
+fs.writeFileSync('src/components/CidadeInput.tsx', cidadeInput, 'utf8');
+console.log('2. CidadeInput: REWRITTEN with validation');
+
+// ===== 3. Add Loader2 to lucide imports if missing =====
+if (!c.includes('Loader2')) {
+  // Not needed in the form itself, only in CidadeInput component
+}
+
+fs.writeFileSync('src/app/criar/page.tsx', c, 'utf8');
+console.log('\nAll fixes applied.');

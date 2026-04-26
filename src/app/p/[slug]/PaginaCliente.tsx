@@ -87,10 +87,10 @@ const paletas: Record<string, { primaria: string; secundaria: string; brilho: st
 }
 
 const paresFonte: Record<string, { titulo: string; corpo: string }> = {
- classico: { titulo: 'var(--font-cormorant)', corpo: 'var(--font-outfit)' },
- moderno: { titulo: 'var(--font-space)', corpo: 'var(--font-inter)' },
- romantico: { titulo: 'var(--font-playfair)', corpo: 'var(--font-outfit)' },
- divertido: { titulo: 'var(--font-caveat)', corpo: 'var(--font-inter)' },
+  classico:  { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' },
+  moderno:   { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' },
+  romantico: { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' },
+  divertido: { titulo: 'system-ui, -apple-system, sans-serif', corpo: 'system-ui, -apple-system, sans-serif' },
 }
 
 // Componente de seção com entrada animada
@@ -703,7 +703,6 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
             musicaNome={pagina.musica_dados?.nome}
             previewUrl={pagina.musica_dados?.previewUrl}
             cor={cor}
-            fontes={fontes}
             onDesbloquear={() => setShowWrapped(false)}
           />
         )}
@@ -988,7 +987,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
               <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
             </Secao>
             <Secao delay={0.2}>
-              <MapaAmor locais={pagina.locais} cor={cor} fontes={fontes} />
+              <MapaAmor locais={pagina.locais} cor={cor}
+            />
             </Secao>
           </section>
         )}
@@ -1179,7 +1179,8 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
         {pagina.audio_mensagem && (
           <section className="py-24 px-4" style={{ background: '#000000' }}>
             <Secao>
-              <CapsulaAudio audioUrl={pagina.audio_mensagem} mensagem={pagina.mensagem} cor={cor} fontes={fontes} audioRef={audioRef} />
+              <CapsulaAudio audioUrl={pagina.audio_mensagem} mensagem={pagina.mensagem} cor={cor}
+            audioRef={audioRef} />
             </Secao>
           </section>
         )}

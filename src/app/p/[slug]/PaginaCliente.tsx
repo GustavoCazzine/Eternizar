@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { Heart, Calendar, ArrowDown, Play, Pause, Volume2, Images, MessageCircle, Send, MapPin as MapPinIcon, Utensils, Film } from 'lucide-react'
 import StoriesViewer from '@/components/StoriesViewer'
-import IntroWrapped from '@/components/IntroWrapped'
+import EternizarWrapped from '@/components/EternizarWrapped'
 import CuriosidadesMagicas from '@/components/CuriosidadesMagicas'
 import dynamic from 'next/dynamic'
 const MapaAmor = dynamic(() => import('@/components/MapaAmor'), { ssr: false, loading: () => <div className="h-[400px] rounded-2xl" style={{ background: 'radial-gradient(circle, rgba(155,27,48,0.05), #1a1a2e)' }} /> })
@@ -526,7 +526,7 @@ function CapsulaAudio({ audioUrl, mensagem, cor, fontes, audioRef: musicRef }: {
 export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  const containerRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const [introVisivel, setIntroVisivel] = useState(true)
+  const [showWrapped, setShowWrapped] = useState(true)
  const { scrollYProgress } = useScroll()
  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
  const [senhaInput, setSenhaInput] = useState('')
@@ -548,9 +548,9 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  // Carregar mensagens do guestbook
 
   useEffect(() => {
-    document.body.style.overflow = introVisivel ? 'hidden' : 'unset'
+    document.body.style.overflow = showWrapped ? 'hidden' : 'unset'
     return () => { document.body.style.overflow = 'unset' }
-  }, [introVisivel])
+  }, [showWrapped])
 
   useEffect(() => {
  fetch(`/api/guestbook?slug=${encodeURIComponent(pagina.slug)}`)
@@ -689,11 +689,6 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  }
 
  return (
-      <>
-      {introVisivel && pagina.tipo === 'casal' && (
-        <IntroWrapped fotoCapa={fotoCapa} titulo={pagina.titulo} cor={cor} fontes={fontes}
-          onEntrar={() => setIntroVisivel(false)} />
-      )}
  <div ref={containerRef} className="text-white overflow-x-hidden relative"
  style={{ background: '#121212', fontFamily: fontes.corpo }}>
 
@@ -1298,6 +1293,5 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
           <p className="text-xs text-zinc-700 mt-8">eternizar</p>
         </footer>
  </div>
-      </>
  )
 }

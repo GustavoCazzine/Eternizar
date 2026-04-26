@@ -81,12 +81,6 @@ const cores = [
 
 const emojisRapidos = ['♥', '★', '✈', '♫', '✦', '⌂', '•', '●', '✶', '❀', '☀', '☺']
 
-const paresFonte = [
- { id: 'classico', nome: 'Clássico', desc: 'Elegante e atemporal', titulo: 'var(--font-cormorant)', corpo: 'var(--font-outfit)', preview: 'Cormorant + Outfit' },
- { id: 'moderno', nome: 'Moderno', desc: 'Limpo e contemporâneo', titulo: 'var(--font-space)', corpo: 'var(--font-inter)', preview: 'Space Grotesk + Inter' },
- { id: 'romantico', nome: 'Romântico', desc: 'Suave e poético', titulo: 'var(--font-playfair)', corpo: 'var(--font-outfit)', preview: 'Playfair + Outfit' },
- { id: 'divertido', nome: 'Divertido', desc: 'Casual e descontraído', titulo: 'var(--font-caveat)', corpo: 'var(--font-inter)', preview: 'Caveat + Inter' },
-]
 
 const inputClass = "w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 transition text-sm"
 
@@ -158,13 +152,7 @@ function Previa({ form, tituloFinal, subtituloFinal, corHex }: {
  const paleta = cores.find(c => c.valor === form.corTema)
  const fundoAlt = paleta ? `${corHex}15` : '#2d0018'
 
- const fontes: Record<string, string> = {
- classico: 'var(--font-cormorant)',
- moderno: 'var(--font-space)',
- romantico: 'var(--font-playfair)',
- divertido: 'var(--font-caveat)',
- }
- const fontTitulo = fontes[form.fontePar] || fontes.classico
+ const fontTitulo = String.raw`var(--font-playfair)`
 
  return (
  <div className="rounded-[28px] overflow-hidden border border-white/8 shadow-2xl bg-black">
@@ -768,20 +756,6 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
  <button key={c.valor} onClick={() => upd('corTema', c.valor)}
  className={`w-10 h-10 rounded-full transition-all ${c.classe} ${form.corTema === c.valor ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0a0a0a] scale-110' : 'opacity-60 hover:opacity-100'}`}
  title={c.nome} />
- ))}
- </div>
- </div>
-
- {/* Tipografia */}
- <div>
- <Label sub="Define o estilo das fontes da página">Tipografia</Label>
- <div className="grid grid-cols-2 gap-2">
- {paresFonte.map(p => (
- <button key={p.id} onClick={() => upd('fontePar', p.id)}
- className={`p-3 rounded-xl border text-left transition-all ${form.fontePar === p.id ? 'border-pink-500 bg-pink-500/10' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}>
- <p className="text-base font-bold text-white" style={{ fontFamily: p.titulo }}>{p.nome}</p>
- <p className="text-[11px] text-zinc-500 mt-0.5" style={{ fontFamily: p.corpo }}>{p.desc}</p>
- </button>
  ))}
  </div>
  </div>

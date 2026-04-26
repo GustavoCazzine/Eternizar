@@ -183,6 +183,10 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
         @keyframes aura-drift-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}}
         @keyframes aura-drift-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-30px) scale(1.1)}}
         @keyframes draw-line{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+        @keyframes wave-drift{0%,100%{d:path('M-30,180 Q80,80 200,280 T430,220')}50%{d:path('M-30,200 Q100,120 180,260 T430,240')}}
+        @keyframes wave-float-1{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+        @keyframes wave-float-2{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+        @keyframes wave-float-3{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
         .outlined-modern{color:transparent;-webkit-text-stroke:2.5px #fff;font-weight:900;line-height:0.85;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
       `}</style>
 
@@ -204,10 +208,8 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             stroke={`${cor}50`} strokeWidth="3.5" fill="none"
             strokeDasharray="1000" style={{ animation: 'draw-line 4s ease-in-out 1.2s forwards' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} />
-          <circle cx="330" cy="140" r="60" stroke="rgba(255,255,255,0.06)" strokeWidth="2" fill="none"
-            strokeDasharray="400" style={{ animation: 'draw-line 2.5s ease-in-out 2s forwards' }} />
-          <circle cx="70" cy="670" r="45" stroke={`${cor}25`} strokeWidth="2" fill="none"
-            strokeDasharray="300" style={{ animation: 'draw-line 2.5s ease-in-out 2.5s forwards' }} />
+          
+          
         </svg>
 
         <div className="relative z-10 px-8 sm:px-12 pb-28 max-w-xl">

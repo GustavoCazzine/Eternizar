@@ -11,6 +11,10 @@ import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
+import CidadeInput from '@/components/CidadeInput'
+import { calculateTotalDays, calculateWeekendsTogether, formatRelativeDate } from '@/utils/dateMath'
+import { VALIDATION } from '@/lib/schema'
+
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
 // Efeito typewriter para titulos
@@ -727,13 +731,13 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
  <div className="grid grid-cols-2 gap-3">
  <div>
  <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> Cidade do 1º encontro</p>
- <input value={form.dadosCasal.cidadePrimeiroEncontro} onChange={e => updCasal('cidadePrimeiroEncontro', e.target.value)}
- placeholder="Ex: São Paulo, Rio de Janeiro..." className={inputClass} list="cidades" autoComplete="off" />
- <datalist id="cidades">
- {['São Paulo, SP','Rio de Janeiro, RJ','Belo Horizonte, MG','Brasília, DF','Curitiba, PR','Salvador, BA','Fortaleza, CE','Recife, PE','Porto Alegre, RS','Goiânia, GO','Manaus, AM','Campinas, SP','São Luís, MA','Florianópolis, SC','Vitória, ES','Natal, RN','Santos, SP','Ribeirão Preto, SP','Sorocaba, SP','Joinville, SC','Londrina, PR','Niterói, RJ','Aracaju, SE','Maceió, AL','Campo Grande, MS'].map(c => (
- <option key={c} value={c} />
- ))}
- </datalist>
+ <CidadeInput
+   value={form.dadosCasal.cidadePrimeiroEncontro}
+   onChange={v => updCasal('cidadePrimeiroEncontro', v)}
+   onSelect={cidade => updCasal('cidadePrimeiroEncontro', cidade.nome)}
+   className={inputClass}
+   placeholder="Comece a digitar a cidade..."
+ />
  </div>
  <div>
  <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1"><Utensils className="w-3 h-3" /> Comida favorita</p>
@@ -789,7 +793,7 @@ function PassoDetalhes({ form, upd, updCasal, updFormatura }: PassoProps) {
 // Passo: Bucket List (sonhos do casal)
 function PassoBucketList({ form, upd }: PassoProps) {
   function addItem() {
-    if (form.bucketList.length >= 20) return
+    if (form.bucketList.length >= VALIDATION.maxBucketItems) return
     upd('bucketList', [...form.bucketList, { texto: '', feito: false }])
   }
   function removeItem(i: number) {
@@ -853,7 +857,7 @@ function PassoBucketList({ form, upd }: PassoProps) {
           <Plus className="w-4 h-4" /> Adicionar item
         </button>
       )}
-      <p className="text-xs text-zinc-600 mt-3">{form.bucketList.length}/20 itens</p>
+      <p className="text-xs text-zinc-600 mt-3">{form.bucketList.length}/{VALIDATION.maxBucketItems} itens</p>
     </div>
   )
 }
@@ -861,7 +865,7 @@ function PassoBucketList({ form, upd }: PassoProps) {
 // Passo: Locais especiais (preparado para mapa)
 function PassoLocais({ form, upd }: PassoProps) {
   function addLocal() {
-    if (form.locais.length >= 10) return
+    if (form.locais.length >= VALIDATION.maxLocais) return
     upd('locais', [...form.locais, { titulo: '', descricao: '', endereco: '' }])
   }
   function removeLocal(i: number) {
@@ -908,8 +912,18 @@ function PassoLocais({ form, upd }: PassoProps) {
             </div>
             <input value={local.titulo} onChange={e => updateLocal(i, 'titulo', e.target.value)}
               placeholder="Nome do lugar" className={`${inputClass} mb-2`} />
-            <input value={local.endereco} onChange={e => updateLocal(i, 'endereco', e.target.value)}
-              placeholder="Endereco (cidade, estado)" className={`${inputClass} mb-2`} list="cidades" autoComplete="off" />
+            <CidadeInput
+                value={local.endereco}
+                onChange={v => updateLocal(i, 'endereco', v)}
+                onSelect={cidade => {
+                  updateLocal(i, 'endereco', cidade.nome)
+                  const nova = [...form.locais]
+                  nova[i] = { ...nova[i], lat: cidade.lat, lng: cidade.lng }
+                  upd('locais', nova)
+                }}
+                className={`${inputClass} mb-2`}
+                placeholder="Comece a digitar a cidade..."
+              />
             <textarea value={local.descricao} onChange={e => updateLocal(i, 'descricao', e.target.value.slice(0, 200))}
               placeholder="O que aconteceu aqui? (opcional)" rows={2} className={inputClass} />
             <p className="text-xs text-zinc-600 mt-1 text-right">{local.descricao.length}/200</p>
@@ -948,11 +962,11 @@ function PassoMensagem({ form, upd }: PassoProps) {
  </button>
  ))}
  </div>
-<textarea value={form.mensagem} onChange={e => upd('mensagem', e.target.value.slice(0, 600))}
+<textarea value={form.mensagem} onChange={e => upd('mensagem', e.target.value.slice(0, VALIDATION.mensagem.max))}
  rows={6} placeholder="Escreva aqui do coração... Esta mensagem aparece no final, como o grande fechamento emocional da página."
  maxLength={600}
  className={`${inputClass} resize-none`} />
- <p className="text-xs text-gray-600 mt-1">{form.mensagem.length}/600 caracteres</p>
+ <p className="text-xs text-gray-600 mt-1">{form.mensagem.length}/{VALIDATION.mensagem.max} caracteres</p>
 
           {/* Upload de audio */}
           <div className="mt-6 p-4 rounded-2xl border border-white/[0.15]" style={{ background: 'rgba(255,255,255,0.04)' }}>

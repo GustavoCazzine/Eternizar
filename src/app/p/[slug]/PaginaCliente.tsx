@@ -701,6 +701,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
             cidadeEncontro={pagina.dados_casal?.cidadePrimeiroEncontro}
             musicaCapa={pagina.musica_dados?.capa}
             musicaNome={pagina.musica_dados?.nome}
+            previewUrl={pagina.musica_dados?.previewUrl}
             cor={cor}
             fontes={fontes}
             onDesbloquear={() => setShowWrapped(false)}

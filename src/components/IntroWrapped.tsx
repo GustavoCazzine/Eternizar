@@ -67,7 +67,7 @@ export default function IntroWrapped({ fotoCapa, titulo, cor, fontes, onEntrar }
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
           className="text-xl sm:text-2xl mb-3 italic"
-          style={{ fontFamily: fontes.titulo, color: 'rgba(255,255,255,0.8)' }}
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: 'rgba(255,255,255,0.8)' }}
         >
           Uma historia em cada segundo...
         </motion.p>
@@ -78,7 +78,7 @@ export default function IntroWrapped({ fotoCapa, titulo, cor, fontes, onEntrar }
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
           className="text-3xl sm:text-5xl font-black mb-2 nome-capitalize"
-          style={{ fontFamily: fontes.titulo, color: 'white' }}
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: 'white' }}
         >
           {titulo}
         </motion.h1>

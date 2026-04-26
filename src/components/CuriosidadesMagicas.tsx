@@ -60,7 +60,7 @@ export default function CuriosidadesMagicas({ dataInicio, cor, fontes }: Props) 
         {items.map((fato, i) => (
           <span key={i} className="inline-flex items-center gap-3 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cor }} />
-            <span className="text-sm sm:text-base" style={{ fontFamily: fontes.titulo, color: 'rgba(255,255,255,0.65)' }}>
+            <span className="text-sm sm:text-base" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: 'rgba(255,255,255,0.65)' }}>
               {fato}
             </span>
           </span>

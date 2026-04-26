@@ -301,12 +301,12 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
             viewport={{ once: true }} transition={{ duration: 0.8 }}
             className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight"
             style={{ color: 'rgba(255,255,255,0.9)' }}>
-            O universo tem<br />{UNIVERSE.age}.
+            Em um universo com<br />{UNIVERSE.age}...
           </motion.p>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
             className="text-lg sm:text-xl" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            A Terra gira a {UNIVERSE.earthSpeed}.
+            E um planeta que gira a {UNIVERSE.earthSpeed} no escuro...
           </motion.p>
           <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
             viewport={{ once: true }} transition={{ delay: 1, duration: 0.6 }}
@@ -333,10 +333,15 @@ export default function EternizarWrapped({ titulo, dataInicio, comidaFavorita, f
           <div className="relative z-10 text-center px-8 max-w-lg flex flex-col items-center gap-10">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              E de {UNIVERSE.population},<br />tudo convergiu em:
+              A maior das coincidencias aconteceu.
+            </motion.p>
+            <motion.p initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              Entre 8 bilhoes de pessoas,<br />nossos caminhos se cruzaram em:
             </motion.p>
             <motion.p initial={{ opacity: 0, scale: 0.7 }} whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, type: 'spring' }}
+              viewport={{ once: true }} transition={{ delay: 0.8, duration: 0.6, type: 'spring' }}
               className="text-5xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight">
               {cidadeEncontro}
             </motion.p>

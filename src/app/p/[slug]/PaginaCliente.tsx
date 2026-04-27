@@ -689,627 +689,305 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
  }
 
  return (
- <div ref={containerRef} className="text-white overflow-x-hidden relative"
- style={{ background: '#000', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+ <div ref={containerRef} className="text-white relative"
+   style={{ background: '#000', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
-        {showWrapped && pagina.tipo === 'casal' && (
-          <EternizarWrapped
-            titulo={pagina.titulo}
-            dataInicio={pagina.dados_casal?.dataInicio}
-            comidaFavorita={pagina.dados_casal?.comeFavorita}
-            filmeFavorito={pagina.dados_casal?.filmeFavorito}
-            cidadeEncontro={pagina.dados_casal?.cidadePrimeiroEncontro}
-            musicaCapa={pagina.musica_dados?.capa}
-            musicaNome={pagina.musica_dados?.nome}
-            previewUrl={pagina.musica_dados?.previewUrl}
-            cor={cor}
-            onDesbloquear={() => setShowWrapped(false)}
-          />
-        )}
+   {showWrapped && pagina.tipo === 'casal' && (
+     <EternizarWrapped
+       titulo={pagina.titulo}
+       dataInicio={pagina.dados_casal?.dataInicio}
+       comidaFavorita={pagina.dados_casal?.comeFavorita}
+       filmeFavorito={pagina.dados_casal?.filmeFavorito}
+       cidadeEncontro={pagina.dados_casal?.cidadePrimeiroEncontro}
+       musicaCapa={pagina.musica_dados?.capa}
+       musicaNome={pagina.musica_dados?.nome}
+       previewUrl={pagina.musica_dados?.previewUrl}
+       cor={cor}
+       onDesbloquear={() => setShowWrapped(false)}
+     />
+   )}
 
- {/* Barra de progresso */}
- <div className="fixed top-0 left-0 right-0 h-0.5 z-50" style={{ background: 'rgba(255,255,255,0.05)' }}>
- <motion.div style={{ width: progressWidth, backgroundColor: cor }} className="h-full" />
- </div>
+   {/* Progress bar */}
+   <div className="fixed top-0 left-0 right-0 h-0.5 z-50" style={{ background: 'rgba(255,255,255,0.05)' }}>
+     <motion.div style={{ width: progressWidth, backgroundColor: cor }} className="h-full" />
+   </div>
 
+   <style>{`
+     @keyframes spin-slow { to { transform: rotate(360deg) } }
+     @keyframes pulse-second { 0%,100% { opacity: 1 } 50% { opacity: 0.5 } }
+   `}</style>
 
- {/* Partículas decorativas globais */}
- <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
- {[...Array(5)].map((_, i) => (
- <motion.div key={`particle-${i}`} className="absolute rounded-full"
- style={{ width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2, background: `${cor}${20 + i * 8}`,
- left: `${10 + i * 18}%`, top: `${25 + ((i * 23) % 50)}%` }}
- 
- 
- />
- ))}
- </div>
- {/* ===== SLIDE 1 — ABERTURA HERO ===== */}
- <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+   {/* ===== HERO ===== */}
+   <section className="min-h-[100dvh] flex flex-col items-center justify-center relative overflow-hidden">
+     {fotoCapa && (
+       <div className="absolute inset-0 pointer-events-none">
+         {/* eslint-disable-next-line @next/next/no-img-element */}
+         <img src={fotoCapa} alt="" className="w-full h-full object-cover opacity-50" style={{ objectPosition: 'center 30%' }} />
+         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 50%, #000 100%)' }} />
+       </div>
+     )}
+     <div className="relative z-10 text-center px-6 max-w-2xl">
+       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.3 }} className="mb-8">
+         <Heart className="w-12 h-12 sm:w-16 sm:h-16 mx-auto" style={{ color: cor, fill: cor }} />
+       </motion.div>
+       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+         className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-4 sm:mb-6" style={{ color: cor }}>
+         Uma surpresa especial para voce
+       </motion.p>
+       <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}
+         className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight nome-capitalize">
+         {pagina.titulo}
+       </motion.h1>
+       {pagina.subtitulo && (
+         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
+           className="text-base sm:text-lg mt-4 sm:mt-6 nome-capitalize" style={{ color: 'rgba(255,255,255,0.6)' }}>
+           {pagina.subtitulo}
+         </motion.p>
+       )}
+     </div>
+     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
+       className="absolute bottom-8 left-1/2 -translate-x-1/2">
+       <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 1.2, repeat: Infinity }}
+         className="w-6 h-9 rounded-full border-2 border-white/20 flex items-start justify-center pt-2">
+         <motion.div animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }} transition={{ duration: 1.2, repeat: Infinity }}
+           className="w-1 h-2 rounded-full bg-white/50" />
+       </motion.div>
+     </motion.div>
+   </section>
 
- {/* Foto de capa como fundo com parallax */}
- {fotoCapa && (
- <div className="absolute inset-0 pointer-events-none" style={{ backgroundAttachment: "fixed" }}>
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={fotoCapa} alt="" className="w-full h-full object-cover scale-110 opacity-60" style={{ objectPosition: "center 30%" }} />
- </div>
- )}
+   {/* ===== COUNTER ===== */}
+   {pagina.tipo === 'casal' && pagina.dados_casal?.dataInicio && (
+     <section className="min-h-[100dvh] flex items-center justify-center px-6 relative">
+       <div className="absolute -top-20 -left-20 w-[300px] h-[300px] pointer-events-none opacity-[0.04]">
+         <div className="absolute inset-0 animate-[spin-slow_40s_linear_infinite]">
+           {[1,2,3,4].map(i => (<div key={i} className="absolute rounded-full border border-white" style={{ inset: i*35 }} />))}
+         </div>
+       </div>
+       <Secao className="text-center max-w-xl w-full">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Contando cada segundo</p>
+         <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
+         {pagina.musica_dados?.previewUrl && (
+           <Secao delay={0.3} className="mt-12 sm:mt-16">
+             <div className="flex items-center gap-4 max-w-sm mx-auto">
+               <button onClick={() => {
+                 if (!audioRef.current) { audioRef.current = new Audio(pagina.musica_dados!.previewUrl!); audioRef.current.volume = 0.5; audioRef.current.loop = true }
+                 if (audioRef.current.paused) audioRef.current.play().catch(() => {}); else audioRef.current.pause()
+               }} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0"
+                 style={{ background: `${cor}20`, border: `1px solid ${cor}40` }}>
+                 <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white ml-0.5" />
+               </button>
+               {pagina.musica_dados.capa && (
+                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0">
+                   {/* eslint-disable-next-line @next/next/no-img-element */}
+                   <img src={pagina.musica_dados.capa} alt="" className="w-full h-full object-cover" />
+                 </div>
+               )}
+               <div className="min-w-0">
+                 <p className="text-sm text-white truncate">{pagina.musica_dados.nome}</p>
+                 <p className="text-xs text-white/40 truncate">{pagina.musica_dados.artista}</p>
+               </div>
+             </div>
+           </Secao>
+         )}
+       </Secao>
+     </section>
+   )}
 
- {/* Gradiente overlay sobre a foto */}
- <div className="absolute inset-0 z-[1]" style={{
- background: fotoCapa
- ? 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.9) 75%, #000 100%)'
- : '#000'
- }} />
+   {/* ===== FOTOS ===== */}
+   {fotosNormalizadas.length > 0 && (
+     <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
+       <Secao className="w-full max-w-4xl">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Nossos momentos</p>
+         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+           {fotosNormalizadas.slice(0, 6).map((foto, i) => (
+             <motion.button key={i} onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
+               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+               transition={{ delay: i * 0.1, duration: 0.6 }}
+               className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden group">
+               {/* eslint-disable-next-line @next/next/no-img-element */}
+               <img src={foto.url} alt={foto.legenda || ''} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+               {foto.legenda && (
+                 <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/60 to-transparent">
+                   <p className="text-[10px] sm:text-xs text-white/80 truncate">{foto.legenda}</p>
+                 </div>
+               )}
+             </motion.button>
+           ))}
+         </div>
+         {fotosNormalizadas.length > 6 && (
+           <button onClick={() => { setStoryInicial(0); setStoriesAberto(true) }}
+             className="mt-6 mx-auto flex items-center gap-2 text-sm" style={{ color: cor }}>
+             <Images className="w-4 h-4" /> Ver todas as {fotosNormalizadas.length} fotos
+           </button>
+         )}
+       </Secao>
+     </section>
+   )}
 
- {/* Glow orbs animados */}
- <div className="absolute inset-0 pointer-events-none z-[2]">
- <motion.div
- className="absolute top-1/4 left-1/4 w-48 h-48 rounded-full blur-2xl opacity-20"
- style={{ background: cor }}
- 
- 
- />
- <motion.div
- className="absolute bottom-1/3 right-1/4 w-32 h-32 rounded-full blur-2xl opacity-10"
- style={{ background: paleta.secundaria }}
- 
- 
- />
- </div>
+   {storiesAberto && <StoriesViewer fotos={fotosNormalizadas} startIndex={storyInicial} onClose={() => setStoriesAberto(false)} cor={cor} />}
 
- {/* Conteúdo principal */}
- <div className="relative z-10 text-center px-6 max-w-3xl">
- {/* Ícone SVG animado em vez de emoji */}
- <motion.div
- initial={{ scale: 0, y: 20 }}
- animate={{ scale: 1, y: 0 }}
- transition={{ type: "spring", duration: 1, bounce: 0.3 }}
- className="mb-8 inline-flex items-center justify-center"
- >
- <motion.div
- 
- 
- >
- <Heart className="w-16 h-16 fill-current drop-shadow-lg" style={{ color: cor, filter: `drop-shadow(0 0 30px ${cor}60)` }} />
- </motion.div>
- </motion.div>
+   {/* ===== COMO SE CONHECERAM ===== */}
+   {pagina.dados_casal?.comoSeConheceram && (
+     <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
+       <Secao className="text-center max-w-2xl">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Como tudo comecou</p>
+         <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed italic text-white/80 break-words">
+           &ldquo;{pagina.dados_casal.comoSeConheceram}&rdquo;
+         </p>
+         <div className="w-12 h-px mx-auto mt-8 sm:mt-12" style={{ background: cor }} />
+       </Secao>
+     </section>
+   )}
 
- <motion.div
- initial={{ opacity: 0, y: 40 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ delay: 0.4, duration: 0.8 }}
- >
- <p className="text-xs uppercase tracking-[0.25em] mb-6 font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>
-                Uma surpresa especial para você
- </p>
- <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 leading-[1.05] nome-capitalize px-2"
- style={{ textShadow: fotoCapa ? "0 4px 40px rgba(0,0,0,0.8)" : "none", fontFamily: 'system-ui, -apple-system, sans-serif' }}>
- {pagina.titulo}
- </h1>
- {pagina.subtitulo && (
- <motion.p
- initial={{ opacity: 0 }}
- animate={{ opacity: 1 }}
- transition={{ delay: 0.8 }}
- className="text-lg md:text-xl mt-6 nome-capitalize"
-                style={{ color: "rgba(255,255,255,0.65)", textShadow: fotoCapa ? "0 2px 20px rgba(0,0,0,0.6)" : "none" }}
- >
- {pagina.subtitulo}
- </motion.p>
- )}
- </motion.div>
- </div>
+   {/* ===== TAGS ===== */}
+   {pagina.dados_casal && (pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
+     <section className="py-16 sm:py-20 px-6">
+       <Secao className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
+         {[
+           pagina.dados_casal.cidadePrimeiroEncontro && { icon: <MapPinIcon className="w-3.5 h-3.5" style={{ color: cor }} />, text: pagina.dados_casal.cidadePrimeiroEncontro },
+           pagina.dados_casal.comeFavorita && { icon: <Utensils className="w-3.5 h-3.5" style={{ color: cor }} />, text: pagina.dados_casal.comeFavorita },
+           pagina.dados_casal.filmeFavorito && { icon: <Film className="w-3.5 h-3.5" style={{ color: cor }} />, text: pagina.dados_casal.filmeFavorito },
+         ].filter(Boolean).map((item: any, i) => (
+           <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+             transition={{ delay: i * 0.1 }} className="flex items-center gap-2.5 px-5 py-2.5 rounded-full"
+             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+             {item.icon}
+             <span className="text-sm text-white/80">{item.text}</span>
+           </motion.div>
+         ))}
+       </Secao>
+     </section>
+   )}
 
- {/* Scroll indicator */}
- <motion.div
- initial={{ opacity: 0 }}
- animate={{ opacity: 1 }}
- transition={{ delay: 1.5 }}
- className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
- style={{ color: `${cor}80` }}
- >
- <span className="text-xs uppercase tracking-widest">Role para descobrir</span>
- <motion.div >
- <ArrowDown className="w-5 h-5" />
- </motion.div>
- </motion.div>
- </section>
+   {/* ===== MAPA ===== */}
+   {pagina.locais && pagina.locais.length > 0 && (
+     <section className="py-16 sm:py-20 px-6">
+       <Secao className="max-w-3xl mx-auto">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Mapa do amor</p>
+         <div className="rounded-2xl overflow-hidden" style={{ height: 400 }}>
+           <MapaAmor locais={pagina.locais} cor={cor} />
+         </div>
+       </Secao>
+     </section>
+   )}
 
- {/* ===== SLIDE 2 — CONTADOR (apenas casal) ===== */}
- {pagina.tipo === 'casal' && pagina.dados_casal?.dataInicio && (
- <section className="py-16 sm:py-24 px-4" style={{ background: '#000' }}>
- <Secao className="text-center mb-10">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Juntos há exatamente</p>
- <h2 className="text-3xl sm:text-4xl font-black mb-2">Contando cada segundo</h2>
- <p className="text-gray-500 text-sm">Desde {new Date(pagina.dados_casal.dataInicio).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
- </Secao>
- <Secao delay={0.2}>
- <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
- </Secao>
-        {pagina.musica_dados && <Secao delay={0.3} className="mt-14"><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>}
+   {/* ===== TIMELINE ===== */}
+   {pagina.linha_do_tempo && pagina.linha_do_tempo.length > 0 && (
+     <section className="py-16 sm:py-24 px-6">
+       <Secao className="max-w-2xl mx-auto">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-12 sm:mb-16 text-center" style={{ color: cor }}>Nossa timeline</p>
+         <div className="space-y-16 sm:space-y-24">
+           {pagina.linha_do_tempo.map((ev, i) => (
+             <motion.div key={i} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.8, delay: 0.1 }} className="text-center">
+               <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-4 sm:mb-6" style={{ color: `${cor}aa` }}>
+                 {ev.data && new Date(ev.data + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
+               </p>
+               {ev.fotoUrl && (
+                 <div className="rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-8 aspect-video">
+                   {/* eslint-disable-next-line @next/next/no-img-element */}
+                   <img src={ev.fotoUrl} alt={ev.titulo} className="w-full h-full object-cover" />
+                 </div>
+               )}
+               <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight mb-3 break-words">{ev.titulo}</h3>
+               {ev.descricao && <p className="text-sm sm:text-base text-white/60 leading-relaxed max-w-lg mx-auto break-words">{ev.descricao}</p>}
+               {i < pagina.linha_do_tempo.length - 1 && (
+                 <div className="w-px h-12 sm:h-16 mx-auto mt-10 sm:mt-14" style={{ background: `${cor}30` }} />
+               )}
+             </motion.div>
+           ))}
+         </div>
+       </Secao>
+     </section>
+   )}
 
- {/* Cards de dados do casal — below scroll area */}
- {(pagina.dados_casal.cidadePrimeiroEncontro || pagina.dados_casal.comeFavorita || pagina.dados_casal.filmeFavorito) && (
- <Secao delay={0.3} className="mt-20 max-w-sm mx-auto">
- <div className="grid grid-cols-2 gap-3">
- {[
- { icon: 'MapPin', label: 'Onde tudo começou', valor: pagina.dados_casal.cidadePrimeiroEncontro },
- { icon: 'Utensils', label: 'Comida favorita', valor: pagina.dados_casal.comeFavorita },
- { icon: 'Film', label: 'Filme favorito', valor: pagina.dados_casal.filmeFavorito },
- ].filter(item => item.valor).map((item, i) => (
- <motion.div
- key={i}
- initial={{ opacity: 0, x: -20 }}
- whileInView={{ opacity: 1, x: 0 }}
- viewport={{ once: true }}
- transition={{ delay: i * 0.1, duration: 0.6 }}
- className="flex items-center gap-2.5 px-5 py-2.5 rounded-full"
- style={{
- background: 'rgba(255,255,255,0.04)',
-                  backdropFilter: 'blur(5px)',
- border: '1px solid rgba(255,255,255,0.06)',
- }}
- >
- <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
- style={{ background: `${cor}20`, border: `1px solid ${cor}30` }}>
- {item.icon === "MapPin" ? <MapPinIcon className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Utensils" ? <Utensils className="w-4 h-4" style={{ color: cor }} /> : item.icon === "Film" ? <Film className="w-4 h-4" style={{ color: cor }} /> : <Heart className="w-4 h-4" style={{ color: cor }} />}
- </div>
- <div>
- <p className="text-xs uppercase tracking-widest mb-0.5" style={{ color: `${cor}99` }}>{item.label}</p>
- <p className="font-semibold text-white">{item.valor}</p>
- </div>
- </motion.div>
- ))}
- </div>
- </Secao>
- )}
- </section>
- )}
+   {/* ===== MENSAGEM ===== */}
+   <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
+     <Secao className="text-center max-w-2xl">
+       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Uma mensagem do coracao</p>
+       <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-white/85 whitespace-pre-wrap break-words">{pagina.mensagem}</p>
+       <div className="w-12 h-px mx-auto mt-8 sm:mt-12" style={{ background: cor }} />
+     </Secao>
+   </section>
 
- {/* ===== DADOS DE FORMATURA ===== */}
- {pagina.tipo === 'formatura' && pagina.dados_formatura?.curso && (
- <section className="py-24 px-4" style={{ background: '#000' }}>
- <Secao className="text-center mb-10">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Uma conquista coletiva</p>
- <h2 className="text-3xl sm:text-4xl font-black glint-effect">{pagina.dados_formatura.curso}</h2>
- {pagina.dados_formatura.instituicao && <p className="text-gray-400 mt-2">{pagina.dados_formatura.instituicao} · {pagina.dados_formatura.anoFormatura}</p>}
- </Secao>
- <Secao delay={0.2} className="max-w-sm mx-auto space-y-3">
- {pagina.dados_formatura.nomeTurma && (
- <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}15`, border: `1px solid ${cor}30` }}>
- <p className="text-xs text-gray-500 mb-1">A turma</p>
- <p className="text-2xl font-black">{pagina.dados_formatura.nomeTurma}</p>
- </div>
- )}
- <div className="grid grid-cols-2 gap-3">
- {pagina.dados_formatura.quantidadeAlunos && (
- <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}10`, border: `1px solid ${cor}20` }}>
- <p className="text-3xl font-black" style={{ color: cor }}>{pagina.dados_formatura.quantidadeAlunos}</p>
- <p className="text-xs text-gray-500 mt-1">Formandos</p>
- </div>
- )}
- {pagina.dados_formatura.casaisFormados && (
- <div className="text-center p-4 rounded-2xl" style={{ background: `${cor}10`, border: `1px solid ${cor}20` }}>
- <p className="text-3xl font-black" style={{ color: cor }}>{pagina.dados_formatura.casaisFormados}</p>
- <p className="text-xs text-gray-500 mt-1">Casais formados</p>
- </div>
- )}
- </div>
- </Secao>
- </section>
- )}
+   {/* ===== BUCKET LIST ===== */}
+   {pagina.bucket_list && (pagina.bucket_list as any[]).length > 0 && (
+     <section className="py-16 sm:py-20 px-6">
+       <Secao className="max-w-lg mx-auto">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Nossos sonhos juntos</p>
+         <div className="space-y-3">
+           {(pagina.bucket_list as any[]).map((item: any, i: number) => (
+             <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+               transition={{ delay: i * 0.05 }} className="flex items-center gap-3 py-3">
+               <div className="w-5 h-5 rounded-full border flex items-center justify-center shrink-0"
+                 style={{ borderColor: item.feito ? cor : 'rgba(255,255,255,0.15)', background: item.feito ? cor : 'transparent' }}>
+                 {item.feito && <span className="text-xs text-white">&#10003;</span>}
+               </div>
+               <span className={`text-sm sm:text-base ${item.feito ? 'line-through text-white/40' : 'text-white/80'}`}>{item.texto}</span>
+             </motion.div>
+           ))}
+         </div>
+       </Secao>
+     </section>
+   )}
 
- {/* ===== STORIES ===== */}
-        {fotosNormalizadas.length > 0 && (
-          <section className="py-14 sm:py-20 px-4">
- <Secao className="text-center mb-10">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>Memórias que ficam</p>
- <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Nossos momentos</h2>
- <p className="text-gray-500 text-sm mt-2">Toque nas fotos para ver como stories</p>
- </Secao>
+   {/* ===== AUDIO CAPSULE ===== */}
+   {pagina.audio_mensagem && (
+     <section className="min-h-[60dvh] flex items-center justify-center px-6 py-16">
+       <Secao className="max-w-xl mx-auto w-full">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Capsula de voz</p>
+         <CapsulaAudio audioUrl={pagina.audio_mensagem} mensagem={pagina.mensagem} cor={cor} musicRef={audioRef} />
+       </Secao>
+     </section>
+   )}
 
- {/* Miniaturas estilo stories */}
- <div className="flex gap-5 overflow-x-auto scrollbar-hide px-6 pb-4 -mx-4 snap-x snap-mandatory">
- {fotosNormalizadas.map((foto, i) => (
- <motion.button
- key={i}
- initial={{ opacity: 0, scale: 0.8 }}
- whileInView={{ opacity: 1, scale: 1 }}
- viewport={{ once: true }}
- transition={{ delay: i * 0.1 }}
- whileHover={{ scale: 1.05 }}
- whileTap={{ scale: 0.97 }}
- onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
- className="relative flex flex-col items-center gap-2 group snap-center shrink-0"
- >
- {/* Anel colorido estilo story não visto */}
- <div className="p-0.5 rounded-full" style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}>
- <div className="p-0.5 rounded-full bg-[#000]">
- <div className="w-20 h-20 rounded-full overflow-hidden">
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={foto.url} alt={foto.legenda || `Foto ${i + 1}`}
- className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
- </div>
- </div>
- </div>
- {/* Legenda curta */}
- <p className="text-xs text-gray-400 text-center max-w-[80px] truncate">
- {foto.legenda || `Foto ${i + 1}`}
- </p>
- </motion.button>
- ))}
- </div>
+   {/* ===== GUESTBOOK ===== */}
+   <section className="py-16 sm:py-20 px-6">
+     <Secao className="max-w-lg mx-auto">
+       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Deixe sua mensagem</p>
+       <div className="space-y-3 mb-10">
+         <input value={guestNome} onChange={e => setGuestNome(e.target.value)} placeholder="Seu nome"
+           className="w-full bg-transparent border-b border-white/10 px-2 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-white/30 transition" />
+         <textarea value={guestMsg} onChange={e => setGuestMsg(e.target.value)} placeholder="Sua mensagem..." rows={3}
+           className="w-full bg-transparent border-b border-white/10 px-2 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-white/30 transition resize-none" />
+         <button onClick={enviarGuestbook} disabled={guestEnviando || !guestNome.trim() || !guestMsg.trim()}
+           className="w-full py-3 rounded-full text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-30" style={{ background: cor }}>
+           {guestEnviando ? 'Enviando...' : 'Enviar'}
+         </button>
+         {guestSucesso && <p className="text-xs text-center text-green-400">Mensagem enviada!</p>}
+         {guestPendente && <p className="text-xs text-center text-amber-400">Aguardando aprovacao.</p>}
+         {guestErro && <p className="text-xs text-center text-red-400">{guestErro}</p>}
+       </div>
+       {guestMsgs.length > 0 && (
+         <div className="space-y-6">
+           {guestMsgs.filter(m => m.aprovado !== false || ehDono).map(msg => (
+             <motion.div key={msg.id} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+               className="py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+               <div className="flex items-center gap-2 mb-2">
+                 <p className="text-sm font-bold text-white">{msg.nome}</p>
+                 <p className="text-[10px] text-white/25">{new Date(msg.created_at).toLocaleDateString('pt-BR')}</p>
+                 {msg.aprovado === false && <span className="text-[9px] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">Pendente</span>}
+               </div>
+               <p className="text-sm text-white/60 leading-relaxed">{msg.mensagem}</p>
+               {ehDono && msg.aprovado === false && (
+                 <button onClick={() => aprovarMsg(msg.id)} className="text-[10px] mt-2 px-3 py-1 rounded-full" style={{ background: `${cor}20`, color: cor }}>Aprovar</button>
+               )}
+             </motion.div>
+           ))}
+         </div>
+       )}
+     </Secao>
+   </section>
 
- {/* Botão ver todas */}
- <Secao className="text-center mt-8">
- <button
- onClick={() => { setStoryInicial(0); setStoriesAberto(true) }}
- className="flex items-center gap-2 mx-auto px-6 py-3 rounded-2xl text-sm font-medium transition"
- style={{ background: `${cor}20`, color: cor, border: `1px solid ${cor}40` }}
- >
- <Images className="w-4 h-4" />
- Ver todas as memórias
- </button>
- </Secao>
-
- {/* Stories Viewer */}
- <StoriesViewer
- fotos={fotosNormalizadas}
- cor={cor}
- aberto={storiesAberto}
- indiceInicial={storyInicial}
- onFechar={() => setStoriesAberto(false)}
- />
- </section>
- )}
-
- {/* ===== COMO SE CONHECERAM ===== */}
- {pagina.tipo === 'casal' && pagina.dados_casal?.comoSeConheceram && (
- <section className="py-20 px-4">
- <Secao className="max-w-2xl mx-auto text-center">
- <p className="text-xs uppercase tracking-[0.25em] mb-4 font-medium" style={{ color: cor }}>A nossa história</p>
- <div className="text-6xl font-serif mb-4 select-none" style={{ color: `${cor}40` }}>“</div>
- <p className="text-base sm:text-xl text-gray-300 leading-relaxed italic break-words px-2">
- {pagina.dados_casal.comoSeConheceram}
- </p>
- <div className="text-6xl font-serif mt-2 text-right select-none" style={{ color: `${cor}40` }}>”</div>
- </Secao>
- </section>
- )}
-
- 
-        {/* ===== MAPA DO AMOR ===== */}
-        {pagina.locais && pagina.locais.length > 0 && (
-          <section className="py-20 px-4">
-            <Secao className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Mapa do Amor</h2>
-              <p className="text-gray-500 text-sm mt-2">Os lugares que fazem parte da nossa historia</p>
-            </Secao>
-            <Secao delay={0.2}>
-              <MapaAmor locais={pagina.locais} cor={cor}
-            />
-            </Secao>
-          </section>
-        )}
-
-{/* ===== LINHA DO TEMPO ===== */}
- {pagina.linha_do_tempo?.length > 0 && (
- <section className="py-16 sm:py-24 overflow-hidden" style={{ background: '#000' }}>
- <Secao className="text-center mb-20 px-4">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Nossa história</p>
- <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Linha do tempo</h2>
- </Secao>
-
- <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
- <div className="lg:left-1/2 lg:-translate-x-px"><TimelineLine cor={cor} /></div>
-
- <div className="space-y-0">
- {pagina.linha_do_tempo.map((ev, i) => (
- <motion.div
- key={i}
- initial={{ opacity: 0, x: -60 }}
- whileInView={{ opacity: 1, x: 0 }}
- viewport={{ once: true, margin: '-60px' }}
- transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
- className={`relative pb-14 sm:pb-20 last:pb-0 flex gap-4 sm:gap-6 pl-16 sm:pl-20 lg:pl-0 ${i % 2 === 0 ? "lg:flex-row lg:pr-[calc(50%+2rem)] lg:pl-8 lg:text-right" : "lg:flex-row-reverse lg:pl-[calc(50%+2rem)] lg:pr-8"}`}
- >
- <motion.div
- initial={{ scaleX: 0 }}
- whileInView={{ scaleX: 1 }}
- viewport={{ once: true }}
- transition={{ duration: 0.4, delay: 0.2 }}
- className="absolute left-6 sm:left-7 top-6 h-px w-8 sm:w-12 origin-left"
- style={{ background: `linear-gradient(to right, ${cor}80, transparent)` }}
- />
-
- <motion.div
- initial={{ scale: 0, rotate: -180 }}
- whileInView={{ scale: 1, rotate: 0 }}
- viewport={{ once: true }}
- transition={{ type: 'spring', duration: 0.8, bounce: 0.4, delay: 0.15 }}
- className={`absolute w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 left-0 ${i % 2 === 0 ? "lg:left-auto lg:right-[-1.5rem] lg:translate-x-1/2" : "lg:left-[-1.5rem] lg:-translate-x-1/2"}`}
- style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})`, boxShadow: `0 4px 20px ${cor}30` }}
- >
- <div className="w-3 h-3 rounded-full bg-white" />
- </motion.div>
-
- <div className="flex-1 pt-1">
- {ev.data && (
- <motion.div
- initial={{ opacity: 0, y: -10 }}
- whileInView={{ opacity: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ delay: 0.25 }}
- className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs mb-3"
- style={{ background: `${cor}18`, border: `1px solid ${cor}30`, color: `${cor}cc` }}
- >
- <Calendar className="w-3 h-3" />
- {ev.data}
- </motion.div>
- )}
-
- <motion.h3
- initial={{ opacity: 0 }}
- whileInView={{ opacity: 1 }}
- viewport={{ once: true }}
- transition={{ delay: 0.3 }}
- className="text-xl sm:text-2xl font-black mb-3 leading-tight break-words"
- >
- {ev.titulo}
- </motion.h3>
-
- {ev.descricao && (
- <motion.p
- initial={{ opacity: 0, y: 10 }}
- whileInView={{ opacity: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ delay: 0.35 }}
- className="text-gray-400 leading-relaxed mb-5"
- >
- {ev.descricao}
- </motion.p>
- )}
-
- {ev.fotoUrl && (
- <motion.div
- initial={{ opacity: 0, scale: 0.95, y: 20 }}
- whileInView={{ opacity: 1, scale: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
- className="rounded-2xl overflow-hidden shadow-2xl"
- style={{ boxShadow: `0 20px 60px ${cor}20` }}
- >
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={ev.fotoUrl} alt={ev.titulo} className="w-full aspect-video object-cover" />
- <div className="h-px" style={{ background: `linear-gradient(to right, ${cor}, transparent)` }} />
- </motion.div>
- )}
-
- {i < pagina.linha_do_tempo.length - 1 && !ev.fotoUrl && (
- <div className="mt-4 h-px w-24" style={{ background: `linear-gradient(to right, ${cor}30, transparent)` }} />
- )}
- </div>
- </motion.div>
- ))}
- </div>
- </div>
- </section>
- )}
-
- {/* Player moved to counter section */}
-
- {/* Player for non-casal */}
-        {pagina.tipo !== 'casal' && pagina.musica_dados && (
-          <section className="py-12 px-4" style={{ background: '#000' }}>
-            <Secao><PlayerMusica dados={pagina.musica_dados} cor={cor} /></Secao>
-          </section>
-        )}
-
-        {/* ===== SLIDE 5 — MENSAGEM FINAL ===== */}
- <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden"
- style={{ background: '#000' }}>
-
- {/* Partículas de fundo */}
- <div className="absolute inset-0 pointer-events-none overflow-hidden">
- {[...Array(6)].map((_, i) => (
- <motion.div
- key={i}
- className="absolute rounded-full"
- style={{
- width: 4 + i * 3,
- height: 4 + i * 3,
- backgroundColor: `${cor}${30 + i * 10}`,
- left: `${15 + i * 13}%`,
- top: `${20 + (i % 3) * 25}%`,
- }}
- 
- 
- />
- ))}
- </div>
-
- <Secao className="text-center max-w-2xl mx-auto relative z-10 min-h-[280px] flex flex-col items-center justify-center">
- <motion.div
- 
- 
- className="text-6xl mb-10"
- >
- 
- </motion.div>
-
- {/* Aspas decorativas */}
- <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-4 sm:mb-6 select-none" style={{ color: `${cor}20` }}>"</div>
-
- <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mb-6 sm:mb-8 px-2 sm:px-8 break-words">
- {pagina.tipo === 'casal' ? '' : pagina.mensagem}
- </p>
- {pagina.tipo === 'casal' && <CartaSelada mensagem={pagina.mensagem} cor={cor} fontCorpo={'system-ui, -apple-system, sans-serif'} />}
- <div className="flex justify-center mt-8"><BotaoReacao cor={cor} /></div>
-
- <div className="text-5xl sm:text-7xl md:text-8xl font-serif leading-none mb-6 sm:mb-8 select-none text-right" style={{ color: `${cor}20` }}>"</div>
-
- {/* Coração pulsante */}
- <motion.div
- 
- 
- >
- <Heart className="w-10 h-10 mx-auto fill-current" style={{ color: cor }} />
- </motion.div>
- </Secao>
- </section>
-
- 
-
- 
-        {/* ===== BUCKET LIST ===== */}
-        {pagina.bucket_list && pagina.bucket_list.length > 0 && (
-          <section className="py-20 px-4">
-            <Secao className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>O que vamos viver</h2>
-              <p className="text-gray-500 text-sm mt-2">Nossos planos e sonhos juntos</p>
-            </Secao>
-            <Secao delay={0.2}>
-              <BucketList items={pagina.bucket_list} cor={cor} />
-            </Secao>
-          </section>
-        )}
-
-        {/* ===== CAPSULA DE AUDIO ===== */}
-        {pagina.audio_mensagem && (
-          <section className="py-24 px-4" style={{ background: '#000000' }}>
-            <Secao>
-              <CapsulaAudio audioUrl={pagina.audio_mensagem} mensagem={pagina.mensagem} cor={cor}
-            audioRef={audioRef} />
-            </Secao>
-          </section>
-        )}
-
-{/* ===== LIVRO DE VISITAS ===== */}
- {pagina.compartilhavel !== false && (
- <section className="py-24 px-4" style={{ background: '#000' }}>
- <Secao className="text-center mb-12">
- <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: cor }}>Deixe sua marca</p>
- <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center gap-3">
- <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" style={{ color: cor }} />
- Livro de Visitas
- </h2>
- <p className="text-gray-500 text-sm mt-2">Deixe uma mensagem carinhosa</p>
- </Secao>
-
- <div className="max-w-lg mx-auto">
- {/* Formulário */}
- <Secao delay={0.1}>
- <div className="rounded-2xl p-6 mb-8" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
- <input
- type="text"
- value={guestNome}
- onChange={e => setGuestNome(e.target.value.slice(0, 50))}
- placeholder="Seu nome"
- className="w-full bg-transparent border-b border-white/15 px-2 py-3 text-white text-center placeholder-white/20 focus:outline-none focus:border-white/40 transition mb-4"
- style={{ borderColor: guestErro ? '#f43f5e' : undefined }}
- />
- <textarea
- value={guestMsg}
- onChange={e => setGuestMsg(e.target.value.slice(0, 300))}
- placeholder="Sua mensagem... (max 300 caracteres)"
- rows={3}
- className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none mb-3 transition resize-none"
- />
- <div className="flex items-center justify-between">
- <span className="text-xs text-gray-600">{guestMsg.length}/300</span>
- <button
- onClick={enviarGuestbook}
- disabled={guestEnviando || !guestNome.trim() || !guestMsg.trim()}
- className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm text-white transition disabled:opacity-40 hover:opacity-90"
- style={{ background: `linear-gradient(135deg, ${cor}, ${paleta.secundaria})` }}
- >
- <Send className="w-4 h-4" />
- {guestEnviando ? 'Enviando...' : 'Enviar'}
- </button>
- </div>
- {guestSucesso && (
- <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-emerald-400 text-sm mt-3 text-center">
- {guestPendente ? 'Mensagem enviada! Aguardando aprovação do criador' : 'Mensagem enviada com carinho!'}
- </motion.p>
- )}
- {guestErro && (
- <p className="text-red-400 text-sm mt-3 text-center">{guestErro}</p>
- )}
- </div>
- </Secao>
-
- {/* Lista de mensagens */}
- {guestMsgs.length > 0 && (
- <div className="space-y-4">
- {guestMsgs.map((msg, i) => (
- <motion.div
- key={msg.id}
- initial={{ opacity: 0, y: 20 }}
- whileInView={{ opacity: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ delay: Math.min(i * 0.05, 0.3) }}
- className="rounded-2xl p-5 backdrop-blur-sm relative"
- style={{
- background: msg.aprovado === false ? 'rgba(245,158,11,0.06)' : 'rgba(255,255,255,0.04)',
- border: msg.aprovado === false ? '1px solid rgba(245,158,11,0.25)' : '1px solid rgba(255,255,255,0.08)',
- }}
- >
- {ehDono && msg.aprovado === false && (
- <span className="absolute top-3 right-3 text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
- Pendente
- </span>
- )}
- <div className="flex items-center gap-3 mb-3">
- <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: `${cor}20`, color: cor }}>
- {msg.nome.charAt(0).toUpperCase()}
- </div>
- <div>
- <p className="text-white font-semibold text-sm nome-capitalize">{msg.nome}</p>
- <p className="text-gray-600 text-xs">
- {new Date(msg.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
- </p>
- </div>
- </div>
- <p className="text-gray-300 text-sm leading-relaxed break-words">{msg.mensagem}</p>
-
- {ehDono && (
- <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
- {msg.aprovado === false ? (
- <button onClick={() => aprovarMsg(msg.id, true)}
- className="flex-1 py-2 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition">
- Aprovar
- </button>
- ) : (
- <button onClick={() => aprovarMsg(msg.id, false)}
- className="flex-1 py-2 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 hover:bg-amber-500/20 transition">
- Ocultar
- </button>
- )}
- <button onClick={() => deletarMsg(msg.id)}
- className="px-3 py-2 rounded-lg text-xs font-semibold bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition">
- Excluir
- </button>
- </div>
- )}
- </motion.div>
- ))}
- </div>
- )}
- </div>
- </section>
- )}
-
- {/* Rodapé */}
-        <footer className="py-20 text-center border-t border-white/5">
-          <p className="text-2xl sm:text-3xl font-light text-white/30 italic" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-            A história continua...
-          </p>
-          <a href="/criar" className="inline-block mt-6 px-6 py-3 rounded-xl text-sm font-medium transition border border-white/10 hover:border-white/25 text-zinc-500 hover:text-white">
-            Criar sua homenagem
-          </a>
-          <p className="text-xs text-zinc-700 mt-8">eternizar</p>
-        </footer>
+   {/* ===== FOOTER ===== */}
+   <section className="py-20 sm:py-28 text-center px-6">
+     <Secao className="max-w-md mx-auto">
+       <div className="w-8 h-px mx-auto mb-8" style={{ background: cor }} />
+       <p className="text-xl sm:text-2xl font-black tracking-tight mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>A historia continua...</p>
+       <p className="text-[9px] uppercase tracking-[0.3em]" style={{ color: 'rgba(255,255,255,0.08)' }}>eternizar</p>
+     </Secao>
+   </section>
  </div>
  )
 }

@@ -717,6 +717,17 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
      @keyframes pulse-second { 0%,100% { opacity: 1 } 50% { opacity: 0.5 } }
    `}</style>
 
+   {/* Decorative floating elements */}
+   <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+     <svg className="absolute top-[15%] right-[5%] w-32 h-32 sm:w-48 sm:h-48 opacity-[0.03]" viewBox="0 0 100 100">
+       <circle cx="50" cy="50" r="45" stroke="white" strokeWidth="0.5" fill="none" />
+       <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="0.3" fill="none" />
+     </svg>
+     <svg className="absolute bottom-[20%] left-[3%] w-24 h-24 sm:w-40 sm:h-40 opacity-[0.025]" viewBox="0 0 100 100">
+       <circle cx="50" cy="50" r="48" stroke="white" strokeWidth="0.5" fill="none" />
+     </svg>
+   </div>
+
    {/* ===== HERO ===== */}
    <section className="min-h-[100dvh] flex flex-col items-center justify-center relative overflow-hidden">
      {fotoCapa && (
@@ -794,38 +805,46 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    )}
 
    {/* ===== FOTOS ===== */}
+   {/* ===== FOTOS STORIES ===== */}
    {fotosNormalizadas.length > 0 && (
-     <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
-       <Secao className="w-full max-w-4xl">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Nossos momentos</p>
-         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-           {fotosNormalizadas.slice(0, 6).map((foto, i) => (
-             <motion.button key={i} onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
-               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-               transition={{ delay: i * 0.1, duration: 0.6 }}
-               className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden group">
-               {/* eslint-disable-next-line @next/next/no-img-element */}
-               <img src={foto.url} alt={foto.legenda || ''} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-               {foto.legenda && (
-                 <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/60 to-transparent">
-                   <p className="text-[10px] sm:text-xs text-white/80 truncate">{foto.legenda}</p>
-                 </div>
-               )}
-             </motion.button>
-           ))}
-         </div>
-         {fotosNormalizadas.length > 6 && (
-           <button onClick={() => { setStoryInicial(0); setStoriesAberto(true) }}
-             className="mt-6 mx-auto flex items-center gap-2 text-sm" style={{ color: cor }}>
-             <Images className="w-4 h-4" /> Ver todas as {fotosNormalizadas.length} fotos
-           </button>
-         )}
+     <section className="py-16 sm:py-20 overflow-hidden">
+       <Secao className="max-w-4xl mx-auto px-6">
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-10 text-center" style={{ color: cor }}>
+           Nossos momentos
+         </p>
        </Secao>
+
+       <div className="flex gap-3 sm:gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
+         {fotosNormalizadas.map((foto, i) => (
+           <motion.button key={i}
+             onClick={() => { setStoryInicial(i); setStoriesAberto(true) }}
+             initial={{ opacity: 0, scale: 0.9 }}
+             whileInView={{ opacity: 1, scale: 1 }}
+             viewport={{ once: true }}
+             transition={{ delay: i * 0.08 }}
+             className="relative shrink-0 snap-center group"
+             style={{ width: 'min(180px, 38vw)', aspectRatio: '9/16' }}>
+             <div className="w-full h-full rounded-xl sm:rounded-2xl overflow-hidden"
+               style={{ border: `2px solid ${cor}40`, padding: 2 }}>
+               <div className="w-full h-full rounded-[10px] sm:rounded-xl overflow-hidden relative">
+                 {/* eslint-disable-next-line @next/next/no-img-element */}
+                 <img src={foto.url} alt={foto.legenda || `Foto ${i + 1}`}
+                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                 {foto.legenda && (
+                   <p className="absolute bottom-2 left-2 right-2 text-[9px] sm:text-[10px] text-white/80 truncate">
+                     {foto.legenda}
+                   </p>
+                 )}
+               </div>
+             </div>
+           </motion.button>
+         ))}
+       </div>
      </section>
    )}
 
-   {storiesAberto && <StoriesViewer fotos={fotosNormalizadas} startIndex={storyInicial} onClose={() => setStoriesAberto(false)} cor={cor} />}
+   {storiesAberto && <StoriesViewer fotos={fotosNormalizadas} indiceInicial={storyInicial} aberto={storiesAberto} onFechar={() => setStoriesAberto(false)} cor={cor} />}
 
    {/* ===== COMO SE CONHECERAM ===== */}
    {pagina.dados_casal?.comoSeConheceram && (
@@ -876,7 +895,14 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    {pagina.linha_do_tempo && pagina.linha_do_tempo.length > 0 && (
      <section className="py-16 sm:py-24 px-6">
        <Secao className="max-w-2xl mx-auto">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-12 sm:mb-16 text-center" style={{ color: cor }}>Nossa timeline</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-6 text-center" style={{ color: cor }}>Nossa timeline</p>
+         <div className="flex items-center justify-center gap-2 mb-12 sm:mb-16">
+           <div className="w-1.5 h-1.5 rounded-full" style={{ background: cor, opacity: 0.4 }} />
+           <div className="w-8 h-px" style={{ background: `${cor}30` }} />
+           <div className="w-2 h-2 rounded-full" style={{ background: cor, opacity: 0.6 }} />
+           <div className="w-8 h-px" style={{ background: `${cor}30` }} />
+           <div className="w-1.5 h-1.5 rounded-full" style={{ background: cor, opacity: 0.4 }} />
+         </div>
          <div className="space-y-16 sm:space-y-24">
            {pagina.linha_do_tempo.map((ev, i) => (
              <motion.div key={i} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
@@ -901,6 +927,13 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
        </Secao>
      </section>
    )}
+
+   {/* Decorative wave separator */}
+   <div className="max-w-xs mx-auto opacity-[0.06] my-4">
+     <svg viewBox="0 0 200 20" fill="none" className="w-full">
+       <path d="M0,10 Q25,0 50,10 T100,10 T150,10 T200,10" stroke="white" strokeWidth="0.5" />
+     </svg>
+   </div>
 
    {/* ===== MENSAGEM ===== */}
    <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
@@ -985,6 +1018,18 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
      <Secao className="max-w-md mx-auto">
        <div className="w-8 h-px mx-auto mb-8" style={{ background: cor }} />
        <p className="text-xl sm:text-2xl font-black tracking-tight mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>A historia continua...</p>
+       <svg className="w-20 h-20 mx-auto mt-6 mb-4 opacity-[0.06]" viewBox="0 0 80 80" fill="none">
+         <circle cx="20" cy="20" r="1.5" fill="white" />
+         <circle cx="55" cy="15" r="1" fill="white" />
+         <circle cx="40" cy="45" r="1.5" fill="white" />
+         <circle cx="65" cy="55" r="1" fill="white" />
+         <circle cx="25" cy="60" r="1.5" fill="white" />
+         <line x1="20" y1="20" x2="55" y2="15" stroke="white" strokeWidth="0.3" />
+         <line x1="55" y1="15" x2="40" y2="45" stroke="white" strokeWidth="0.3" />
+         <line x1="40" y1="45" x2="65" y2="55" stroke="white" strokeWidth="0.3" />
+         <line x1="40" y1="45" x2="25" y2="60" stroke="white" strokeWidth="0.3" />
+         <line x1="20" y1="20" x2="40" y2="45" stroke="white" strokeWidth="0.3" />
+       </svg>
        <p className="text-[9px] uppercase tracking-[0.3em]" style={{ color: 'rgba(255,255,255,0.08)' }}>eternizar</p>
      </Secao>
    </section>

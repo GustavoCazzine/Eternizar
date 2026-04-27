@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.100.1",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
+    "cobe": "^2.0.1",
     "framer-motion": "^12.38.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.7.0",

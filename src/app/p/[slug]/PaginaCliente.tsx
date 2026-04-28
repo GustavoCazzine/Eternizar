@@ -743,7 +743,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
        </motion.div>
        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
          className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-4 sm:mb-6" style={{ color: cor }}>
-         Uma surpresa especial para voce
+         Alguem pensou em cada detalhe por voce
        </motion.p>
        <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}
          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight nome-capitalize">
@@ -775,7 +775,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
          </div>
        </div>
        <Secao className="text-center max-w-xl w-full">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Contando cada segundo</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>O tempo que construimos juntos</p>
          <ContadorTempo dataInicio={pagina.dados_casal.dataInicio} cor={cor} paleta={paleta} />
          {pagina.musica_dados?.previewUrl && (
            <Secao delay={0.3} className="mt-12 sm:mt-16">
@@ -846,11 +846,17 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
 
    {storiesAberto && <StoriesViewer fotos={fotosNormalizadas} indiceInicial={storyInicial} aberto={storiesAberto} onFechar={() => setStoriesAberto(false)} cor={cor} />}
 
+   {/* Transition */}
+   <div className="flex flex-col items-center py-6">
+     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }}
+       className="w-px h-12 origin-top" style={{ background: `${cor}20` }} />
+   </div>
+
    {/* ===== COMO SE CONHECERAM ===== */}
    {pagina.dados_casal?.comoSeConheceram && (
      <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
        <Secao className="text-center max-w-2xl">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Como tudo comecou</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>E assim, tudo fez sentido</p>
          <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed italic text-white/80 break-words">
            &ldquo;{pagina.dados_casal.comoSeConheceram}&rdquo;
          </p>
@@ -879,11 +885,18 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
      </section>
    )}
 
+   {/* Transition */}
+   <div className="flex items-center justify-center gap-3 py-6 opacity-[0.08]">
+     <div className="w-12 h-px bg-white" />
+     <svg className="w-4 h-4" viewBox="0 0 16 16" fill="white"><circle cx="8" cy="8" r="2" /></svg>
+     <div className="w-12 h-px bg-white" />
+   </div>
+
    {/* ===== MAPA ===== */}
    {pagina.locais && pagina.locais.length > 0 && (
      <section className="py-16 sm:py-20 px-6">
        <Secao className="max-w-3xl mx-auto">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Mapa do amor</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Os lugares que guardam a gente</p>
          <div className="rounded-2xl overflow-hidden" style={{ height: 400 }}>
            <MapaAmor locais={pagina.locais} cor={cor} />
          </div>
@@ -895,7 +908,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    {pagina.linha_do_tempo && pagina.linha_do_tempo.length > 0 && (
      <section className="py-16 sm:py-24 px-6">
        <Secao className="max-w-2xl mx-auto">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-6 text-center" style={{ color: cor }}>Nossa timeline</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-6 text-center" style={{ color: cor }}>Cada capitulo dessa historia</p>
          <div className="flex items-center justify-center gap-2 mb-12 sm:mb-16">
            <div className="w-1.5 h-1.5 rounded-full" style={{ background: cor, opacity: 0.4 }} />
            <div className="w-8 h-px" style={{ background: `${cor}30` }} />
@@ -928,6 +941,16 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
      </section>
    )}
 
+   {/* Transition: timeline → message */}
+   <div className="flex flex-col items-center py-10">
+     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }}
+       transition={{ duration: 1 }} className="w-px h-20 origin-top" style={{ background: `${cor}20` }} />
+     <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+       transition={{ delay: 0.6 }}>
+       <Heart className="w-4 h-4 mt-3" style={{ color: `${cor}40` }} />
+     </motion.div>
+   </div>
+
    {/* Decorative wave separator */}
    <div className="max-w-xs mx-auto opacity-[0.06] my-4">
      <svg viewBox="0 0 200 20" fill="none" className="w-full">
@@ -938,7 +961,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    {/* ===== MENSAGEM ===== */}
    <section className="min-h-[80dvh] flex items-center justify-center px-6 py-20">
      <Secao className="text-center max-w-2xl">
-       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>Uma mensagem do coracao</p>
+       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12" style={{ color: cor }}>O que eu nunca soube dizer em voz alta</p>
        <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-white/85 whitespace-pre-wrap break-words">{pagina.mensagem}</p>
        <div className="w-12 h-px mx-auto mt-8 sm:mt-12" style={{ background: cor }} />
      </Secao>
@@ -948,7 +971,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    {pagina.bucket_list && (pagina.bucket_list as any[]).length > 0 && (
      <section className="py-16 sm:py-20 px-6">
        <Secao className="max-w-lg mx-auto">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Nossos sonhos juntos</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>O que ainda vamos viver</p>
          <div className="space-y-3">
            {(pagina.bucket_list as any[]).map((item: any, i: number) => (
              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -965,11 +988,17 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
      </section>
    )}
 
+   {/* Transition */}
+   <div className="flex flex-col items-center py-6">
+     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }}
+       className="w-px h-10 origin-top" style={{ background: `${cor}15` }} />
+   </div>
+
    {/* ===== AUDIO CAPSULE ===== */}
    {pagina.audio_mensagem && (
      <section className="min-h-[60dvh] flex items-center justify-center px-6 py-16">
        <Secao className="max-w-xl mx-auto w-full">
-         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Capsula de voz</p>
+         <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Fecha os olhos e escuta</p>
          <CapsulaAudio audioUrl={pagina.audio_mensagem} mensagem={pagina.mensagem} cor={cor} musicRef={audioRef} />
        </Secao>
      </section>
@@ -978,7 +1007,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    {/* ===== GUESTBOOK ===== */}
    <section className="py-16 sm:py-20 px-6">
      <Secao className="max-w-lg mx-auto">
-       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Deixe sua mensagem</p>
+       <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-8 sm:mb-12 text-center" style={{ color: cor }}>Quem passou por aqui deixou um pedaco de si</p>
        <div className="space-y-3 mb-10">
          <input value={guestNome} onChange={e => setGuestNome(e.target.value)} placeholder="Seu nome"
            className="w-full bg-transparent border-b border-white/10 px-2 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-white/30 transition" />
@@ -1017,7 +1046,7 @@ export default function PaginaCliente({ pagina }: { pagina: Pagina }) {
    <section className="py-20 sm:py-28 text-center px-6">
      <Secao className="max-w-md mx-auto">
        <div className="w-8 h-px mx-auto mb-8" style={{ background: cor }} />
-       <p className="text-xl sm:text-2xl font-black tracking-tight mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>A historia continua...</p>
+       <p className="text-xl sm:text-2xl font-black tracking-tight mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>Enquanto existir nos, existira essa historia.</p>
        <svg className="w-20 h-20 mx-auto mt-6 mb-4 opacity-[0.06]" viewBox="0 0 80 80" fill="none">
          <circle cx="20" cy="20" r="1.5" fill="white" />
          <circle cx="55" cy="15" r="1" fill="white" />

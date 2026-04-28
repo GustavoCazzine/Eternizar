@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Lock, Volume2 } from 'lucide-react'
-import createGlobe from 'cobe'
 import { UNIVERSE } from '@/lib/constants'
 
 interface Props {
@@ -21,117 +20,72 @@ interface Props {
 
 const BG_LOOP = 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3'
 
-function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace('#', '')
-  return [
-    parseInt(h.substring(0, 2), 16) / 255,
-    parseInt(h.substring(2, 4), 16) / 255,
-    parseInt(h.substring(4, 6), 16) / 255,
-  ]
-}
-
-function CobeGlobe({ cor }: { cor: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const phiRef = useRef(0)
-  const [size, setSize] = useState(400)
-
-  useEffect(() => {
-    const w = Math.min(window.innerWidth * 0.8, 500)
-    setSize(Math.round(w))
+function Starfield() {
+  const stars = useMemo(() => {
+    const layers: Array<{ x: number; y: number; size: number; opacity: number; dur: number }[]> = [[], [], []]
+    for (let i = 0; i < 60; i++) {
+      layers[0].push({
+        x: Math.random() * 100, y: Math.random() * 100,
+        size: 1, opacity: 0.3, dur: 4 + Math.random() * 2,
+      })
+    }
+    for (let i = 0; i < 30; i++) {
+      layers[1].push({
+        x: Math.random() * 100, y: Math.random() * 100,
+        size: 2, opacity: 0.6, dur: 2 + Math.random() * 2,
+      })
+    }
+    for (let i = 0; i < 12; i++) {
+      layers[2].push({
+        x: Math.random() * 100, y: Math.random() * 100,
+        size: 2.5, opacity: 1, dur: 1 + Math.random(),
+      })
+    }
+    return layers
   }, [])
 
-  useEffect(() => {
-    if (!canvasRef.current) return
-    const rgb = hexToRgb(cor)
-    const globe = createGlobe(canvasRef.current, {
-      devicePixelRatio: typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 1.5 : 1,
-      width: size * 2,
-      height: size * 2,
-      phi: 0,
-      theta: 0.25,
-      dark: 1,
-      diffuse: 0,
-      mapSamples: 6000,
-      mapBrightness: 0,
-      baseColor: [0.05, 0.05, 0.05],
-      markerColor: rgb,
-      glowColor: [rgb[0] * 0.3, rgb[1] * 0.3, rgb[2] * 0.3],
-      markers: [],
-      opacity: 0.6,
-      onRender: (state) => {
-        state.phi = phiRef.current
-        phiRef.current += 0.003
-      },
-    })
-    return () => globe.destroy()
-  }, [cor, size])
-
   return (
-    <canvas
-      ref={canvasRef}
-      width={size * 2}
-      height={size * 2}
-      className="opacity-[0.18]"
-      style={{ width: size, height: size }}
-    />
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+      {stars.map((layer, li) =>
+        layer.map((s, si) => (
+          <div key={`${li}-${si}`} className="absolute rounded-full"
+            style={{
+              left: `${s.x}%`, top: `${s.y}%`,
+              width: s.size, height: s.size,
+              background: 'white',
+              opacity: s.opacity,
+              boxShadow: li === 2 ? '0 0 4px rgba(255,255,255,0.6)' : 'none',
+              animation: `twinkle ${s.dur}s ease-in-out ${Math.random() * s.dur}s infinite`,
+            }} />
+        ))
+      )}
+    </div>
   )
 }
 
 function SineWaves({ cor }: { cor: string }) {
   return (
-    <svg
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      viewBox="0 0 1440 800"
-      fill="none"
-      preserveAspectRatio="none"
-      style={{ zIndex: 0 }}
-    >
-      <path
-        d="M-100,300 C100,200 300,400 500,300 C700,200 900,400 1100,300 C1300,200 1500,400 1600,300"
-        stroke={cor}
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.3"
-        strokeDasharray="3000"
-        strokeDashoffset="3000"
-        style={{ animation: 'draw-wave 4s ease-out 0.5s forwards, slide-wave 12s linear 4.5s infinite' }}
-      />
-      <path
-        d="M-100,450 C150,350 350,550 550,450 C750,350 950,550 1150,450 C1350,350 1550,550 1600,450"
-        stroke="rgba(255,255,255,0.1)"
-        strokeWidth="1.5"
-        fill="none"
-        strokeDasharray="3000"
-        strokeDashoffset="3000"
-        style={{ animation: 'draw-wave 5s ease-out 1.5s forwards, slide-wave 15s linear 6.5s infinite reverse' }}
-      />
-      <path
-        d="M-100,580 C200,500 400,650 600,580 C800,500 1000,650 1200,580 C1400,500 1550,650 1600,580"
-        stroke={cor}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.15"
-        strokeDasharray="3000"
-        strokeDashoffset="3000"
-        style={{ animation: 'draw-wave 6s ease-out 2.5s forwards, slide-wave 18s linear 8.5s infinite' }}
-      />
+    <svg className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 1440 800" fill="none" preserveAspectRatio="none" style={{ zIndex: 0 }}>
+      <path d="M-100,300 C100,200 300,400 500,300 C700,200 900,400 1100,300 C1300,200 1500,400 1600,300"
+        stroke={cor} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.3"
+        strokeDasharray="3000" strokeDashoffset="3000"
+        style={{ animation: 'draw-wave 4s ease-out 0.5s forwards, slide-wave 12s linear 4.5s infinite' }} />
+      <path d="M-100,450 C150,350 350,550 550,450 C750,350 950,550 1150,450 C1350,350 1550,550 1600,450"
+        stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" fill="none"
+        strokeDasharray="3000" strokeDashoffset="3000"
+        style={{ animation: 'draw-wave 5s ease-out 1.5s forwards, slide-wave 15s linear 6.5s infinite reverse' }} />
+      <path d="M-100,580 C200,500 400,650 600,580 C800,500 1000,650 1200,580 C1400,500 1550,650 1600,580"
+        stroke={cor} strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.15"
+        strokeDasharray="3000" strokeDashoffset="3000"
+        style={{ animation: 'draw-wave 6s ease-out 2.5s forwards, slide-wave 18s linear 8.5s infinite' }} />
     </svg>
   )
 }
 
 export default function EternizarWrapped({
-  titulo,
-  dataInicio,
-  comidaFavorita,
-  filmeFavorito,
-  cidadeEncontro,
-  musicaCapa,
-  musicaNome,
-  previewUrl,
-  cor,
-  onDesbloquear,
+  titulo, dataInicio, comidaFavorita, filmeFavorito, cidadeEncontro,
+  musicaCapa, musicaNome, previewUrl, cor, onDesbloquear,
 }: Props) {
   const [started, setStarted] = useState(false)
   const [saindo, setSaindo] = useState(false)
@@ -142,13 +96,10 @@ export default function EternizarWrapped({
   const [musicDropped, setMusicDropped] = useState(false)
   const musicSectionRef = useRef<HTMLDivElement>(null)
 
-  const totalDias = dataInicio
-    ? Math.floor((Date.now() - new Date(dataInicio).getTime()) / 86400000)
-    : 0
+  const totalDias = dataInicio ? Math.floor((Date.now() - new Date(dataInicio).getTime()) / 86400000) : 0
   const totalHoras = totalDias * 24
   const gostos = [comidaFavorita, filmeFavorito].filter(Boolean)
 
-  // Count-up animation
   useEffect(() => {
     if (!started || totalDias <= 0) return
     let f = 0
@@ -160,50 +111,43 @@ export default function EternizarWrapped({
     return () => clearInterval(iv)
   }, [totalDias, started])
 
-  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = removido ? 'unset' : 'hidden'
     return () => { document.body.style.overflow = 'unset' }
   }, [removido])
 
-  // Music drop — IntersectionObserver on Tela 5
   useEffect(() => {
     if (!started || musicDropped || !musicSectionRef.current) return
     const el = musicSectionRef.current
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !musicDropped) {
-          setMusicDropped(true)
-          // Fade out BG
-          const bg = bgAudioRef.current
-          if (bg) {
-            const fade = setInterval(() => {
-              const v = bg.volume - 0.02
-              if (v <= 0) { clearInterval(fade); bg.pause(); bg.volume = 0 }
-              else bg.volume = v
-            }, 50)
-          }
-          // Play couple music
-          if (previewUrl) {
-            const audio = new Audio(previewUrl)
-            audio.volume = 0
-            audio.loop = true
-            audio.setAttribute('playsinline', 'true')
-            audio.play().then(() => {
-              coupleAudioRef.current = audio
-              let v = 0
-              const fadeIn = setInterval(() => {
-                v = Math.min(v + 0.05, 0.6)
-                audio.volume = v
-                if (v >= 0.6) clearInterval(fadeIn)
-              }, 60)
-            }).catch(() => {})
-          }
-          obs.disconnect()
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !musicDropped) {
+        setMusicDropped(true)
+        const bg = bgAudioRef.current
+        if (bg) {
+          const fade = setInterval(() => {
+            const v = bg.volume - 0.02
+            if (v <= 0) { clearInterval(fade); bg.pause(); bg.volume = 0 }
+            else bg.volume = v
+          }, 50)
         }
-      },
-      { threshold: 0.3 }
-    )
+        if (previewUrl) {
+          const audio = new Audio(previewUrl)
+          audio.volume = 0
+          audio.loop = true
+          audio.setAttribute('playsinline', 'true')
+          audio.play().then(() => {
+            coupleAudioRef.current = audio
+            let v = 0
+            const fadeIn = setInterval(() => {
+              v = Math.min(v + 0.05, 0.6)
+              audio.volume = v
+              if (v >= 0.6) clearInterval(fadeIn)
+            }, 60)
+          }).catch(() => {})
+        }
+        obs.disconnect()
+      }
+    }, { threshold: 0.3 })
     obs.observe(el)
     return () => obs.disconnect()
   }, [started, musicDropped, previewUrl])
@@ -233,12 +177,13 @@ export default function EternizarWrapped({
 
   if (removido) return null
 
-  // ===== START SCREEN =====
   if (!started) {
     return (
       <div className="fixed inset-0 z-[99999] flex items-center justify-center" style={{ background: '#000' }}>
+        <Starfield />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="text-center px-6 sm:px-8 max-w-sm relative z-10">
+          <style>{`@keyframes twinkle { 0%,100% { opacity: var(--tw-o, 0.3) } 50% { opacity: 0.05 } }`}</style>
           <motion.button onClick={iniciar} initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.3 }}
             className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-10 sm:mb-12 flex items-center justify-center cursor-pointer"
@@ -264,7 +209,6 @@ export default function EternizarWrapped({
     )
   }
 
-  // ===== WRAPPED EXPERIENCE =====
   return (
     <div className="fixed inset-0 z-[9999] overflow-y-scroll snap-y snap-mandatory"
       style={{ opacity: saindo ? 0 : 1, pointerEvents: saindo ? 'none' : 'auto',
@@ -276,16 +220,12 @@ export default function EternizarWrapped({
         @keyframes spin-slow { to { transform: rotate(360deg) } }
         @keyframes ping-radar { 0% { transform: scale(0.3); opacity: 0.5 } 100% { transform: scale(1); opacity: 0 } }
         @keyframes marquee { 0% { transform: translateX(0) } 100% { transform: translateX(-50%) } }
+        @keyframes twinkle { 0%,100% { opacity: var(--base-o) } 50% { opacity: 0.05 } }
         .outlined-modern {
-          color: transparent;
-          -webkit-text-stroke: 2px #fff;
-          font-weight: 900;
-          line-height: 0.85;
-          font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+          color: transparent; -webkit-text-stroke: 2px #fff; font-weight: 900;
+          line-height: 0.85; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
         }
-        @media (min-width: 640px) {
-          .outlined-modern { -webkit-text-stroke: 2.5px #fff; }
-        }
+        @media (min-width: 640px) { .outlined-modern { -webkit-text-stroke: 2.5px #fff; } }
       `}</style>
 
       {/* ===== TELA 1 — ONDAS ===== */}
@@ -293,16 +233,14 @@ export default function EternizarWrapped({
         <SineWaves cor={cor} />
         <div className="relative z-10 px-6 sm:px-12 pb-24 sm:pb-28 max-w-xl">
           <motion.div initial={{ width: 0 }} animate={{ width: 48 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="h-0.5 mb-6 sm:mb-8" style={{ background: cor }} />
+            transition={{ delay: 0.3, duration: 1 }} className="h-0.5 mb-6 sm:mb-8" style={{ background: cor }} />
           <motion.p initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.02] tracking-tight">
             O mundo<br />girou e...
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
-            className="text-sm sm:text-base mt-6 sm:mt-8 nome-capitalize"
-            style={{ color: 'rgba(255,255,255,0.6)' }}>
+            className="text-sm sm:text-base mt-6 sm:mt-8 nome-capitalize" style={{ color: 'rgba(255,255,255,0.6)' }}>
             {titulo}
           </motion.p>
         </div>
@@ -310,8 +248,7 @@ export default function EternizarWrapped({
           className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2">
           <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 1.2, repeat: Infinity }}
             className="w-6 h-9 rounded-full border-2 border-white/20 flex items-start justify-center pt-2">
-            <motion.div animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }}
-              transition={{ duration: 1.2, repeat: Infinity }}
+            <motion.div animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }} transition={{ duration: 1.2, repeat: Infinity }}
               className="w-1 h-2 rounded-full bg-white/50" />
           </motion.div>
         </motion.div>
@@ -323,77 +260,75 @@ export default function EternizarWrapped({
           <div className="absolute -bottom-32 sm:-bottom-40 -right-32 sm:-right-40 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] pointer-events-none"
             style={{ zIndex: 0, opacity: 0.07 }}>
             <div className="absolute inset-0 animate-[spin-slow_30s_linear_infinite]">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {[1,2,3,4,5,6].map(i => (
                 <div key={i} className="absolute rounded-full border border-white"
-                  style={{ inset: `${i * 30}px`, borderWidth: i % 2 === 0 ? 2 : 1 }} />
+                  style={{ inset: `${i*30}px`, borderWidth: i%2===0 ? 2 : 1 }} />
               ))}
             </div>
           </div>
           <div className="relative z-10 w-full px-6 sm:px-12">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-6 sm:mb-8"
-              style={{ color: cor }}>
+              className="text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-6 sm:mb-8" style={{ color: cor }}>
               Desde o primeiro dia
             </motion.p>
             <motion.div initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }} transition={{ duration: 1, type: 'spring' }}
-              className="-ml-2 sm:-ml-8">
+              viewport={{ once: true }} transition={{ duration: 1, type: 'spring' }} className="-ml-2 sm:-ml-8">
               <p className="outlined-modern text-[100px] sm:text-[180px] md:text-[240px] lg:text-[280px] tabular-nums"
-                style={{ transform: 'rotate(-3deg)' }}>
-                {diasAnim}
-              </p>
+                style={{ transform: 'rotate(-3deg)' }}>{diasAnim}</p>
             </motion.div>
             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.5 }}
-              className="text-base sm:text-lg md:text-xl mt-4 sm:mt-6"
-              style={{ color: 'rgba(255,255,255,0.85)' }}>
+              className="text-base sm:text-lg md:text-xl mt-4 sm:mt-6" style={{ color: 'rgba(255,255,255,0.85)' }}>
               dias desde que tudo mudou.
             </motion.p>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
               viewport={{ once: true }} transition={{ delay: 0.8 }}
-              className="text-sm sm:text-base mt-2 sm:mt-3"
-              style={{ color: 'rgba(255,255,255,0.5)' }}>
+              className="text-sm sm:text-base mt-2 sm:mt-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
               {totalHoras.toLocaleString('pt-BR')} horas. Cada uma delas, com voce.
             </motion.p>
           </div>
         </section>
       )}
 
-      {/* ===== TELA 3A — COBE GLOBE ===== */}
+      {/* ===== TELA 3A — COSMOS (STARFIELD) ===== */}
       <section className="h-[100dvh] w-screen snap-start flex items-center justify-center relative overflow-hidden">
-        <div className="absolute pointer-events-none" style={{ zIndex: 0 }}>
-          <CobeGlobe cor={cor} />
-        </div>
-        <div className="relative z-10 text-center px-6 sm:px-8 max-w-lg flex flex-col items-center gap-6 sm:gap-8">
+        <Starfield />
+        <div className="relative z-10 text-center px-6 sm:px-8 max-w-2xl flex flex-col items-center gap-6 sm:gap-10">
           <motion.p initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.8 }}
-            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight"
-            style={{ color: 'rgba(255,255,255,0.9)' }}>
+            viewport={{ once: true }} transition={{ duration: 1 }}
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight"
+            style={{ color: 'rgba(255,255,255,0.95)' }}>
             Em um universo com<br />{UNIVERSE.age}...
           </motion.p>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-base sm:text-lg md:text-xl"
-            style={{ color: 'rgba(255,255,255,0.55)' }}>
+            viewport={{ once: true }} transition={{ delay: 0.6, duration: 0.8 }}
+            className="text-base sm:text-lg md:text-xl leading-relaxed"
+            style={{ color: 'rgba(255,255,255,0.5)' }}>
             E um planeta que gira a {UNIVERSE.earthSpeed} no escuro...
           </motion.p>
-          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }} transition={{ delay: 1, duration: 0.6 }}
-            className="w-12 h-px" style={{ background: cor }} />
+
+          {/* Destiny line connecting to 3B */}
+          <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }} transition={{ delay: 1.2, duration: 1.5 }}
+            className="w-px h-16 sm:h-24 origin-top mt-4" style={{ background: `${cor}40` }} />
+          <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }}
+            viewport={{ once: true }} transition={{ delay: 2.5, type: 'spring' }}
+            className="w-2 h-2 rounded-full" style={{ background: cor, boxShadow: `0 0 12px ${cor}` }} />
         </div>
       </section>
 
       {/* ===== TELA 3B — RADAR + CIDADE ===== */}
       {cidadeEncontro && (
         <section className="h-[100dvh] w-screen snap-start flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+          <Starfield />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 1 }}>
+            {[0,1,2,3,4,5].map(i => (
               <div key={i} className="absolute rounded-full" style={{
-                width: `${25 + i * 12}vw`, height: `${25 + i * 12}vw`,
-                maxWidth: `${180 + i * 80}px`, maxHeight: `${180 + i * 80}px`,
-                border: `${i === 0 ? 2 : 1}px solid ${cor}`,
-                opacity: 0.08 + (i === 0 ? 0.15 : 0),
-                animation: `ping-radar ${3 + i * 0.8}s ease-out ${i * 0.6}s infinite`,
+                width: `${25+i*12}vw`, height: `${25+i*12}vw`,
+                maxWidth: `${180+i*80}px`, maxHeight: `${180+i*80}px`,
+                border: `${i===0?2:1}px solid ${cor}`,
+                opacity: 0.08 + (i===0 ? 0.15 : 0),
+                animation: `ping-radar ${3+i*0.8}s ease-out ${i*0.6}s infinite`,
               }} />
             ))}
             <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full"
@@ -401,14 +336,12 @@ export default function EternizarWrapped({
           </div>
           <div className="relative z-10 text-center px-6 sm:px-8 max-w-lg flex flex-col items-center gap-6 sm:gap-10">
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-sm sm:text-base leading-relaxed"
-              style={{ color: 'rgba(255,255,255,0.75)' }}>
+              className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
               A maior das coincidencias aconteceu.
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-sm sm:text-base leading-relaxed"
-              style={{ color: 'rgba(255,255,255,0.6)' }}>
+              className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
               Entre 8 bilhoes de pessoas,<br />nossos caminhos se cruzaram em:
             </motion.p>
             <motion.p initial={{ opacity: 0, scale: 0.7 }} whileInView={{ opacity: 1, scale: 1 }}
@@ -425,10 +358,10 @@ export default function EternizarWrapped({
         <section className="h-[100dvh] w-screen snap-start flex items-center justify-center relative overflow-hidden">
           <div className="absolute inset-0 flex flex-col justify-center gap-6 sm:gap-10 pointer-events-none select-none"
             style={{ zIndex: 0, opacity: 0.035 }}>
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+            {[0,1,2,3,4,5].map(i => (
               <div key={i} className="whitespace-nowrap" style={{
-                animation: `marquee ${20 + i * 5}s linear infinite`,
-                animationDirection: i % 2 ? 'reverse' : 'normal',
+                animation: `marquee ${20+i*5}s linear infinite`,
+                animationDirection: i%2 ? 'reverse' : 'normal',
               }}>
                 <span className="text-5xl sm:text-7xl md:text-9xl font-black uppercase tracking-tight">
                   {(gostos.join(' & ') + '   ').repeat(8)}
@@ -455,8 +388,7 @@ export default function EternizarWrapped({
         className="h-[100dvh] w-screen snap-start flex flex-col items-center justify-center relative overflow-hidden gap-8 sm:gap-12">
         {musicaCapa ? (
           <>
-            <motion.div
-              initial={{ opacity: 0, x: -200, rotate: -30, scale: 0.5 }}
+            <motion.div initial={{ opacity: 0, x: -200, rotate: -30, scale: 0.5 }}
               whileInView={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{ type: 'spring', stiffness: 100, damping: 10 }}
@@ -474,10 +406,7 @@ export default function EternizarWrapped({
                 A trilha sonora de voces.
               </p>
               {musicaNome && (
-                <p className="text-xs sm:text-sm mt-2 sm:mt-3"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  {musicaNome}
-                </p>
+                <p className="text-xs sm:text-sm mt-2 sm:mt-3" style={{ color: 'rgba(255,255,255,0.5)' }}>{musicaNome}</p>
               )}
             </motion.div>
           </>
@@ -510,8 +439,7 @@ export default function EternizarWrapped({
             <Lock className="w-5 h-5 group-hover:rotate-12 transition-transform" />
             Destrancar nossa pagina
           </motion.button>
-          <p className="text-[9px] uppercase tracking-[0.3em]"
-            style={{ color: 'rgba(255,255,255,0.06)' }}>eternizar</p>
+          <p className="text-[9px] uppercase tracking-[0.3em]" style={{ color: 'rgba(255,255,255,0.06)' }}>eternizar</p>
         </motion.div>
       </section>
     </div>
